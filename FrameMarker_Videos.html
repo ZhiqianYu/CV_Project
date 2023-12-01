@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Frame Annotator - Videos</title>
+    
+    <!--css File loader-->
+    <link rel="stylesheet" href="./Styles/navbar.css">
+    <link rel="stylesheet" href="./Styles/videos.css">
+    <link rel="stylesheet" href="./Styles/search.css">
+    <link rel="stylesheet" href="./Styles/ripple.css">
+
+    <!--js File loader-->
+    <script src="./Styles/ripples.js"></script>
+    <script src="./Styles/search.js"></script>
+    <script src="./Styles/videoData.js"></script>
+
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <!-- Left section of the navbar -->
+        <div class="navbar-left">
+            <a href="#title">Frame Annotator</a>
+            <a href="#home">Home</a>
+            <a href="#videos">Videos</a>
+            <a href="#exports">Exports</a>
+        </div>
+    
+        <!-- Right section of the navbar -->
+        <div class="navbar-right">
+            <a href="#login">Login</a>
+            <div class="search-container">
+                <input type="text" placeholder="Search...">
+                <div class="search-icon" onclick="performSearch()">
+                    <span>&#128269;</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 筛选功能 -->
+    <div class="filter-section">
+        <label for="uploader-filter">Filter by Uploader:</label>
+        <select id="uploader-filter">
+            <option value="all">All Uploaders</option>
+            <option value="uploader1">Uploader 1</option>
+            <option value="uploader2">Uploader 2</option>
+            <!-- Add more uploader options if needed -->
+        </select>
+
+        <label for="date-filter">Filter by Upload Date:</label>
+        <input type="date" id="date-filter">
+
+        <label for="completion-filter">Filter by Completion:</label>
+        <select id="completion-filter">
+            <option value="all">All Videos</option>
+            <option value="completed">Completed</option>
+            <option value="incomplete">Incomplete</option>
+        </select>
+
+        <button id="apply-filters-btn">Apply Filters</button>
+    </div>
+
+    <!-- 在筛选功能下方增加的视频主体内容部分 -->
+    <div class="video-container">
+        <!-- 第1行视频框 -->
+        <div class="video-row">
+            <div class="video-item">
+                <div class="placeholder-img"></div>
+                <div class="placeholder-details">
+                    <div class="placeholder-details-title"></div>
+                    <div class="placeholder-details-user"></div>
+                </div>
+            </div>
+
+            <div class="video-item">
+                <div class="placeholder-img"></div>
+                <div class="placeholder-details">
+                    <div class="placeholder-details-title"></div>
+                    <div class="placeholder-details-user"></div>
+                </div>
+            </div>
+
+            <div class="video-item">
+                <div class="placeholder-img"></div>
+                <div class="placeholder-details">
+                    <div class="placeholder-details-title"></div>
+                    <div class="placeholder-details-user"></div>
+                </div>
+            </div>
+
+            <div class="video-item">
+                <div class="placeholder-img"></div>
+                <div class="placeholder-details">
+                    <div class="placeholder-details-title"></div>
+                    <div class="placeholder-details-user"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第2行视频框 -->
+        <div class="video-row">
+            <div class="video-item">
+                <div class="placeholder-img"></div>
+                <div class="placeholder-details">
+                    <div class="placeholder-details-title"></div>
+                    <div class="placeholder-details-user"></div>
+                </div>
+            </div>
+
+            <div class="video-item">
+                <div class="placeholder-img"></div>
+                <div class="placeholder-details">
+                    <div class="placeholder-details-title"></div>
+                    <div class="placeholder-details-user"></div>
+                </div>
+            </div>
+
+            <div class="video-item">
+                <div class="placeholder-img"></div>
+                <div class="placeholder-details">
+                    <div class="placeholder-details-title"></div>
+                    <div class="placeholder-details-user"></div>
+                </div>
+            </div>
+            
+            <div class="video-item">
+                <div class="placeholder-img"></div>
+                <div class="placeholder-details">
+                    <div class="placeholder-details-title"></div>
+                    <div class="placeholder-details-user"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

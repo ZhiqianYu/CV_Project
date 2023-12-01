@@ -1,0 +1,84 @@
+/* 导航栏样式 */
+.navbar {
+    overflow: hidden;
+    background-color: rgb(51, 151, 222, 0.8);
+    position: fixed; /* Fix the navbar at the top */
+    top: 0; /* Align it to the top */
+    width: 100%; /* Take the full width of the viewport */
+    z-index: 1000; /* Ensure it's above other elements */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    height: 60px;
+    
+}
+
+/* Styles for the left section of the navbar */
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-left a {
+/* navbar 左侧部分 字体*/
+    color: rgb(227, 239, 223);
+    text-decoration: none;
+    padding: 25px 20px;
+    font-size: 18px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.navbar-left a[href="#title"] {
+    font-size: 26px;
+    text-shadow: 3px 4px 6px rgba(0, 0, 0, 0.4);
+    padding-right: 40px;
+    padding-top: 21px;
+    padding-left: 40px;
+}
+
+/* Styles for the right section of the navbar */
+.navbar-right {
+    display: flex;
+    align-items: right;
+}
+
+.navbar-right a[href="#login"] {
+    color: rgb(227, 239, 223);
+    font-size: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    padding: 25px 20px;
+    float: right;
+}
+
+.navbar-right .search-container {
+    margin-right: 5px;
+}
+
+.navbar-right input[type="text"] {
+    padding: 5px;
+    font-size: 17px;
+    border: none;
+    border-radius: 7px;
+}
+
+.navbar-right .search-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* 悬浮效果 */
+.navbar a[href="#home"]:hover,
+.navbar a[href="#videos"]:hover,
+.navbar a[href="#exports"]:hover,
+.navbar a[href="#login"]:hover,
+.search-icon:hover {
+    color: rgb(226, 25, 25); /* Change the color to red */
+    font-weight: bold; /* Make the font bold */
+}

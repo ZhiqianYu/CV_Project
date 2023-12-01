@@ -1,0 +1,29 @@
+.ripple {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(51, 152, 253, 0.3);
+    pointer-events: none;
+    animation: rippleEffect 500ms ease-out, glowEffect 1s linear infinite;
+}
+
+@keyframes rippleEffect {
+    0% {
+    transform: scale(0);
+    opacity: 1;
+    }
+    100% {
+    transform: scale(2.5);
+    opacity: 0;
+    }
+}
+
+@keyframes glowEffect {
+    0% {
+        box-shadow: 0 0 0 0px rgba(51, 152, 253, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 0 30px rgba(51, 152, 253, 0);
+    }
+}

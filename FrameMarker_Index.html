@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Frame Annotator</title>
+    
+    <!--css File loader-->
+    <link rel="stylesheet" href="./Styles/navbar.css">
+    <link rel="stylesheet" href="./Styles/index.css">
+    <link rel="stylesheet" href="./Styles/search.css">
+    <link rel="stylesheet" href="./Styles/ripple.css">
+
+    <!--js File loader-->
+    <script src="./Styles/ripples.js"></script>
+    <script src="./Styles/search.js"></script>
+
+</head>
+
+<body>
+
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <!-- Left section of the navbar -->
+        <div class="navbar-left">
+            <a href="#title">Frame Annotator</a>
+            <a href="#home">Home</a>
+            <a href="#videos">Videos</a>
+            <a href="#exports">Exports</a>
+        </div>
+    
+        <!-- Right section of the navbar -->
+        <div class="navbar-right">
+            <a href="#login">Login</a>
+            <div class="search-container">
+                <input type="text" placeholder="Search...">
+                <div class="search-icon" onclick="performSearch()">
+                    <span>&#128269;</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- 页面内容 -->
+    <div class="content" style="padding-top: 20px;">
+        <!-- 居中显示文本 -->
+        <div style="margin-bottom: 30px; user-select: none;">
+            <h2 style="margin-bottom: 20px;">Hello, this is the video frame annotator tool.</h2>
+            <p style="margin-bottom: 5px;">Please upload the file to start the annotation.</p>
+            <p style="margin-bottom: 5px;">You can go to Videos to check the already uploaded files.</p>
+        </div>
+    
+        <!-- 上传文件按钮 -->
+        <div style="margin-top: 20px;">
+            <form action="upload.html" method="post" enctype="multipart/form-data">
+                <label for="file-upload" class="upload-btn">Upload File</label>
+                <input type="file" id="file-upload" style="display: none;">
+            </form>
+        </div>
+    </div>  
+
+</body>
+
+</html>

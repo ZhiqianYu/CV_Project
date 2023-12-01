@@ -1,0 +1,43 @@
+/* 搜索容器样式 */
+.search-container {
+    float: right;
+    padding: 12px;
+    position: relative;
+    padding-right: 80px;
+}
+
+/* 搜索图标样式 */
+.search-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; /* 将图标变为圆形 */
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: absolute;
+    top: 36px;
+    right: 40px; /* 距离右侧的距离 */
+    transform: translateY(-50%);
+}
+
+.search-icon :hover {
+    background-color: #c16767;
+    color: rgb(214, 55, 55);
+    border-radius: 50%; /* 将图标变为圆形 */
+}
+
+/* 搜索框样式 */
+.search-container input[type=text] {
+    padding: 6px;
+    margin-top: 8px;
+    font-size: 17px;
+    border: none;
+    padding-right: 10px;
+    border-radius: 7px;
+}
+
+.search-container button {
+    display: none; /* 不再需要按钮 */
+}
