@@ -18,9 +18,14 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+import debug_toolbar
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('__debug__/', include(debug_toolbar.urls)),
+
+    # user defined apps: the path is exactly the same as in address bar
+    # and include the urls.py files in corresponding app
     path('', include('homepage.urls')),
     path('video/', include('videopage.urls')),
 ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
