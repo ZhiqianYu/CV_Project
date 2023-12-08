@@ -27,5 +27,5 @@ urlpatterns = [
     # user defined apps: the path is exactly the same as in address bar
     # and include the urls.py files in corresponding app
     path('', include('homepage.urls')),
-    path('video/', include('videopage.urls')),
+    path('videopage/', include('videopage.urls')),
 ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
