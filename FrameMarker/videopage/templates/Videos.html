@@ -25,15 +25,15 @@
     <div class="navbar">
         <!-- Left section of the navbar -->
         <div class="navbar-left">
-            <a href="#title">Frame Annotator</a>
-            <a href="#home">Home</a>
-            <a href="#videos">Videos</a>
-            <a href="#exports">Exports</a>
+            <a href="{% url 'index' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'index' %}" class="navbar-l-link">Home</a>
+            <a href="{% url 'videos' %}" class="navbar-l-link">Videos</a>
+            <a href="#exports" class="navbar-l-link">Exports</a>
         </div>
     
         <!-- Right section of the navbar -->
         <div class="navbar-right">
-            <a href="#login">Login</a>
+            <a href="#login" class="navbar-r-link">Login</a>
             <div class="search-container">
                 <input type="text" placeholder="Search...">
                 <div class="search-icon" onclick="performSearch()">

@@ -20,21 +20,22 @@
     align-items: center;
 }
 
-.navbar-left a {
-/* navbar 左侧部分 字体*/
+.navbar-left .navbar-title {
+    /* navbar 左侧部分 标题*/
+    color: rgb(227, 239, 223);
+    text-decoration: none;
+    padding: 25px 20px;
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.navbar-left .navbar-l-link {
+    /* Styles for the links */
     color: rgb(227, 239, 223);
     text-decoration: none;
     padding: 25px 20px;
     font-size: 18px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-}
-
-.navbar-left a[href="#title"] {
-    font-size: 26px;
-    text-shadow: 3px 4px 6px rgba(0, 0, 0, 0.4);
-    padding-right: 40px;
-    padding-top: 21px;
-    padding-left: 40px;
 }
 
 /* Styles for the right section of the navbar */
@@ -74,9 +75,8 @@
 }
 
 /* 悬浮效果 */
-.navbar a[href="#home"]:hover,
-.navbar a[href="#videos"]:hover,
-.navbar a[href="#exports"]:hover,
+.navbar-left .navbar-title:hover,
+.navbar-left .navbar-l-link:hover,
 .navbar a[href="#login"]:hover,
 .search-icon:hover {
     color: rgb(226, 25, 25); /* Change the color to red */
