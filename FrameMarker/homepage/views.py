@@ -3,4 +3,4 @@ from django.shortcuts import render
 # Create your views here. 
 
 def index(request):
-    return render(request, 'FrameMarker_Index.html')
+    return render(request, 'Index.html')
