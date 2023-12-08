@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -120,6 +121,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# 设置 homepage 应用程序的静态文件目录
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'homepage/static'),
+    
+]
+
+# 设置 videopage 应用程序的静态文件目录
+STATICFILES_DIRS += [
+    os.path.join(BASE_DIR, 'videopage/static'),
+    # 其他 videopage 应用程序的静态文件目录...
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
