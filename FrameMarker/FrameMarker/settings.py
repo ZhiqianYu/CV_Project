@@ -59,7 +59,8 @@ ROOT_URLCONF = 'FrameMarker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'homepage/templates'), 
+                 os.path.join(BASE_DIR, 'videopage/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

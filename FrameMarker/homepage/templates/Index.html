@@ -24,11 +24,12 @@
     <div class="navbar">
         <!-- Left section of the navbar -->
         <div class="navbar-left">
-            <a href="#title">Frame Annotator</a>
-            <a href="#home">Home</a>
-            <a href="#videos">Videos</a>
-            <a href="#exports">Exports</a>
+            <a href="{% url 'index' %}">Frame Annotator</a>
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'redirect_to_videos' %}">Videos</a>
+            <a href="export">Exports</a>
         </div>
+        
     
         <!-- Right section of the navbar -->
         <div class="navbar-right">

@@ -1,8 +1,8 @@
 from django.urls import path
+from django.shortcuts import redirect
 from . import views
 
 urlpatterns = [
     path('', views.index, name='videos'),
-    path('upload/', views.upload_video, name='upload_video'),
-    path('videos/', views.video_list, name='video_list'),
+    path('home/', views.redirect_to_home, name='redirect_to_home'), 
 ]
