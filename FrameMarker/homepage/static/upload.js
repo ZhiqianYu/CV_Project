@@ -12,6 +12,7 @@ function showFileName(input) {
     }
 }
 
+
 function uploadFile() {
     var form = document.getElementById('uploadForm');
     var formData = new FormData(form);
@@ -27,6 +28,7 @@ function uploadFile() {
     });
 }
 
+// 处理response返回值
 function handleUploadResponse(response) {
     if (response.status === 'Upload Success') {
         var uploadAnother = confirm('视频成功上传，是否上传另一个视频？');
