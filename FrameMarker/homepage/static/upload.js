@@ -49,7 +49,7 @@ function handleUploadResponse(response) {
             document.getElementById('chooseFileBtn').textContent = 'Choose File';
             document.querySelector('button[type="button"]').style.display = 'none';
         } else {
-            window.location.href = '/videopage/';
+            window.location.href = 'videos'; // 上传成功后跳转到videos页面, 与url的path相同
         }
     } else if (response.status === 'Upload Failed') {
         alert('文件上传失败：' + response.message);
