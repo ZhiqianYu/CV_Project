@@ -1,4 +1,6 @@
 from django.urls import re_path, path
+from django.contrib.auth import views as auth_views
+
 from . import views
 
 urlpatterns = [
@@ -9,4 +11,10 @@ urlpatterns = [
     
     # 处理文件上传
     path('upload/', views.upload_file, name = 'upload_file'),
+
+    # 用户注册
+    path('register/', views.register_view, name = 'register'),
+
+    # 用户登录
+    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
 ]

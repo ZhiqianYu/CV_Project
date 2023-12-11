@@ -21,7 +21,7 @@ function showFileName(input) {
 }
 
 function uploadFile() {
-    var form = document.getElementById('uploadForm');
+    var form = document.getElementById('UploadForm');
     var formData = new FormData(form);
 
     fetch(form.action, {

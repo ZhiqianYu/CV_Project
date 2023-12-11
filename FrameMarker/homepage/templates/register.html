@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Register</title>
+    
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'user.css' %}">
+
+    <script src="{% static 'user.js' %}"></script>
+
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <!-- Left section of the navbar -->
+        <div class="navbar-left">
+            <a href="{% url 'homepage' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'homepage' %}" class="navbar-l-link">Home</a>
+            <a href="{% url 'videopage' %}" class="navbar-l-link">Videos</a>
+            <a href="export" class="navbar-l-link">Exports</a>
+        </div>
+        
+    
+        <!-- Right section of the navbar -->
+        <div class="navbar-right">
+            <a href="{% url 'login' %}" class="navbar-login">Login</a>
+        </div>
+    </div>
+    
+    
+
+    <div class="content" style="padding-top: 20px;">
+        <h2>Register</h2>
+        <form method="post" id="RegisterForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Register</button>
+        </form>
+
+        <!-- 显示错误信息 -->
+        {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>

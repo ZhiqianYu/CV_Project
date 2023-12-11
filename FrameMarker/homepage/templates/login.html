@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Login</title>
+    
+    <!--css File loader-->
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'navbar.css' %}">
+
+    <!--js File loader-->
+    <script src="{% static 'user.js' %}"></script>
+
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <!-- Left section of the navbar -->
+        <div class="navbar-left">
+            <a href="{% url 'homepage' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'homepage' %}" class="navbar-l-link">Home</a>
+            <a href="{% url 'videopage' %}" class="navbar-l-link">Videos</a>
+            <a href="export" class="navbar-l-link">Exports</a>
+        </div>
+        
+    
+        <!-- Right section of the navbar -->
+        <div class="navbar-right">
+            <a href="{% url 'register' %}" class="navbar-register">Register</a>
+        </div>
+    </div>
+
+    <div class="content" style="padding-top: 20px;">
+        <h2>Login</h2>
+        <form method="post" id="LoginForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    
+</body>
+</html>

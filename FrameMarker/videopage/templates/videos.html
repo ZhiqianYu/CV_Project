@@ -33,7 +33,9 @@
     
         <!-- Right section of the navbar -->
         <div class="navbar-right">
-            <a href="#login" class="navbar-r-link">Login</a>
+            <a href="{% url 'login' %}" class="navbar-login">Login</a>
+            <span class="navbar-separator">|</span>
+            <a href="{% url 'register' %}" class="navbar-register">Register</a>
             <div class="search-container">
                 <input type="text" placeholder="Search...">
                 <div class="search-icon" onclick="performSearch()">
@@ -44,31 +46,36 @@
     </div>
 
     <!-- 筛选功能 -->
-    <div class="filter-section">
-        <label for="uploader-filter">Filter by Uploader:</label>
-        <select id="uploader-filter">
-            <option value="all">All Uploaders</option>
-            <option value="uploader1">Uploader 1</option>
-            <option value="uploader2">Uploader 2</option>
-            <!-- Add more uploader options if needed -->
-        </select>
+    <div class="filter-container">
+        <form action="{% url 'videopage' %}" method="get">
+            
 
-        <label for="date-filter">Filter by Upload Date:</label>
-        <input type="date" id="date-filter">
+            <label for="upload-time">上传时间:</label>
+            <input type="date" id="upload-time" name="upload_time">
 
-        <label for="completion-filter">Filter by Completion:</label>
-        <select id="completion-filter">
-            <option value="all">All Videos</option>
-            <option value="completed">Completed</option>
-            <option value="incomplete">Incomplete</option>
-        </select>
+            <label for="uploader">上传者:</label>
+            <input type="text" id="uploader" name="uploader">
 
-        <button id="apply-filters-btn">Apply Filters</button>
-    </div>
+            <label for="started-annotation">是否开始标注:</label>
+            <input type="checkbox" id="started-annotation" name="started_annotation">
 
-    <!-- 在筛选功能下方增加的视频主体内容部分 -->
-    <div class="video-container">
+            <label for="completed-annotation">是否完成标注:</label>
+            <input type="checkbox" id="completed-annotation" name="completed_annotation">
 
+            <label for="accepted-annotation">标注已审核:</label>
+            <input type="checkbox" id="accepted-annotation" name="accepted_annotation">
+
+            <label for="sort-by">排序方式:</label>
+            <select id="sort-by" name="sort_by">
+                <option value="upload_time">上传时间</option>
+                <option value="uploader">上传者</option>
+                <option value="started_annotation">是否开始标注</option>
+                <option value="completed_annotation">是否完成标注</option>
+                <option value="accepted_annotation">标注已审核</option>
+            </select>
+
+            <input type="submit" value="筛选">
+        </form>
     </div>
 
 </body>
