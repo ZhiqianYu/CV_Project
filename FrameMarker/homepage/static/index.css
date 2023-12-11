@@ -29,6 +29,18 @@ body {
     text-shadow: 3px 4px 6px rgba(234, 37, 37, 0.856); /* 添加阴影 */
 }
 
-.upload-btn:hover {
-    background-color: #555;
+.submit-btn {
+    margin-top: 5px;
+    padding: 5px 5px;
+    font-size: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #1e76b1;
+    color: white;
+    border-radius: 5px;
+    text-shadow: 3px 4px 6px rgba(234, 37, 37, 0.856); /* 添加阴影 */
+}
+
+.upload-btn:hover, .submit-btn:hover {
+    box-shadow: 0 0 15px rgba(222, 36, 36, 0.8); /* 渐变发光效果 */
 }

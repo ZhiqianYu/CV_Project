@@ -64,17 +64,18 @@
             {% csrf_token %}
             <!-- 上传文件 -->
             <div style="margin-top: 20px;">
-                <label for="fileInput" id="chooseFileBtn" class="upload-btn">Choose File</label>
+                <label class="upload-btn" for="fileInput" id="chooseFileBtn">Choose File</label>
                 <input type="file" name="file" id="fileInput" style="display: none;" onchange="showFileName(this)" accept=".mp4, .avi, .mov" />
             </div>
 
-            <div style="margin-top: 20px;">
+            <div class="choosefilename" style="margin-top: 20px;">
                 <span id="fileNameArea" style="display: none;"></span>
             </div>
 
             <div style="margin-top: 10px;">
-                <button type="button" onclick="uploadFile()" style="display: none;" class="small-btn">Upload</button>
+                <button class="submit-btn" type="button" onclick="uploadFile()" style="display: none;">Upload</button>
             </div>
+
         </form>
     </div>  
 
