@@ -7,8 +7,7 @@ from .forms import UploadForm
 import os
 
 # 链接定向
-
-def indexpage(request):
+def homepage(request):
     return render(request, 'index.html')
 
 def videopage(request):

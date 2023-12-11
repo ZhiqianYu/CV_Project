@@ -3,6 +3,6 @@ from django.shortcuts import redirect
 from . import views
 
 urlpatterns = [
-    path('videopage', views.index, name='videos'),
-    path('', views.redirect_to_home, name='redirect_to_home'), 
+    path('', views.homepage, name='homepage'),
+    path('videos/', views.videopage, name='videopage'), 
 ]
