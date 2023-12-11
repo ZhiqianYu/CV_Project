@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Frame Annotator</title>
+    
+    <!--css File loader-->
+    <link rel="stylesheet" href="{% static 'navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'search.css' %}">
+    <link rel="stylesheet" href="{% static 'ripple.css' %}">
+
+    <!--js File loader-->
+    <script src="{% static 'ripples.js' %}"></script>
+    <script src="{% static 'search.js' %}"></script>
+    
+    <!-- 引入 jQuery 库 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- 引入处理表单提交的JavaScript文件 -->
+    <script src="{% static 'upload_form.js' %}"></script>
+
+</head>
+
+<body>
+
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <!-- Left section of the navbar -->
+        <div class="navbar-left">
+            <a href="{% url 'index' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'index' %}" class="navbar-l-link">Home</a>
+            <a href="{% url 'videopage' %}" class="navbar-l-link">Videos</a>
+            <a href="export" class="navbar-l-link">Exports</a>
+        </div>
+        
+    
+        <!-- Right section of the navbar -->
+        <div class="navbar-right">
+            <a href="#login" class="navbar-r-link">Login</a>
+            <div class="search-container">
+                <input type="text" placeholder="Search...">
+                <div class="search-icon" onclick="performSearch()">
+                    <span>&#128269;</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- 页面内容 -->
+    <div class="content" style="padding-top: 20px;">
+        <!-- 居中显示文本 -->
+        <div style="margin-bottom: 30px; user-select: none;">
+            <h2 style="margin-bottom: 20px;">Hello, this is the video frame annotator tool.</h2>
+            <p style="margin-bottom: 5px;">Please upload the file to start the annotation.</p>
+            <p style="margin-bottom: 5px;">You can go to Videos to check the already uploaded files.</p>
+        </div>
+    
+        <!-- 上传文件按钮 -->
+        <div style="margin-top: 20px;" class="upload-btn">
+            <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- 文件上传字段 -->
+                <input type="file" name="file" id="file-upload">
+                <!-- 提交按钮 -->
+                <input type="submit" value="Upload">
+            </form>
+        </div>
+    </div>  
+
+</body>
+
+</html>

@@ -28,4 +28,5 @@ urlpatterns = [
     # and include the urls.py files in corresponding app
     path('', include('homepage.urls')),
     path('videopage/', include('videopage.urls')),
+    
 ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
