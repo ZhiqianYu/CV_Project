@@ -17,7 +17,7 @@
     <script src="{% static 'search.js' %}"></script>
     
     <!-- 引入 jQuery 库 -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
 
     <!-- 引入处理表单提交的JavaScript文件 -->
     <script src="{% static 'upload.js' %}"></script>
@@ -54,7 +54,7 @@
     <div class="content" style="padding-top: 20px;">
         <!-- 居中显示文本 -->
         <div style="margin-bottom: 30px; user-select: none;">
-            <h2 style="margin-bottom: 20px;">Hello, this is the video frame annotator tool.</h2>
+            <h2 style="margin-bottom: 40px; margin-top: 30px;">Hello, this is the video frame annotator tool.</h2>
             <p style="margin-bottom: 5px;">Please upload the file to start the annotation.</p>
             <p style="margin-bottom: 5px;">You can go to Videos to check the already uploaded files.</p>
         </div>
@@ -62,21 +62,19 @@
         <!-- 上传文件 -->
         <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data" id="uploadForm">
             {% csrf_token %}
-            <!-- 上传文件 -->
-            <div style="margin-top: 20px;">
-                <label class="upload-btn" for="fileInput" id="chooseFileBtn">Choose File</label>
+            
+            <!-- 初始upload按钮，点击选文件，按钮变为changefile，旁边出现新upload按钮-->
+            <div style="margin-top: 20px;" user-select: none;>
+                <label class="upload-btn" for="fileInput" id="chooseFileBtn">Upload</label>
                 <input type="file" name="file" id="fileInput" style="display: none;" onchange="showFileName(this)" accept=".mp4, .avi, .mov" />
+                <button class="submit-btn" type="button" id="uploadFileBtn" style="display: none;" onclick="uploadFile()">Upload</button>
             </div>
-
-            <div class="choosefilename" style="margin-top: 20px;">
+        
+            <div class="choosefilename" style="margin-top: 20px;" user-select: none;>
                 <span id="fileNameArea" style="display: none;"></span>
             </div>
-
-            <div style="margin-top: 10px;">
-                <button class="submit-btn" type="button" onclick="uploadFile()" style="display: none;">Upload</button>
-            </div>
-
         </form>
+        
     </div>  
 
 </body>

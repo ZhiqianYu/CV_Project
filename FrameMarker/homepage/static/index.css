@@ -17,30 +17,39 @@ body {
     transition: box-shadow 0.3s ease; /* 过渡效果 */
 }
 
-.upload-btn {
+.submit-btn {
     margin-top: 10px;
+    margin-left: 50px;
+    display: inline-block;
+    vertical-align: middle;
     padding: 10px 10px;
     font-size: 16px;
     border: none;
     cursor: pointer;
-    background-color: #0b4c77;
+    background-color: #08629f;
     color: white;
     border-radius: 5px;
     text-shadow: 3px 4px 6px rgba(234, 37, 37, 0.856); /* 添加阴影 */
+    box-shadow: 0 0 5px rgba(222, 36, 36, 0.4); /* 渐变发光效果 */
+    transition: box-shadow 0.3s ease; /* 过渡效果 */
 }
 
-.submit-btn {
-    margin-top: 5px;
-    padding: 5px 5px;
-    font-size: 10px;
+.upload-btn {
+    margin-top: 10px;
+    padding: 10px 10px;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
     border: none;
     cursor: pointer;
-    background-color: #1e76b1;
+    background-color: #08629f;
     color: white;
     border-radius: 5px;
     text-shadow: 3px 4px 6px rgba(234, 37, 37, 0.856); /* 添加阴影 */
+    box-shadow: 0 0 5px rgba(222, 36, 36, 0.4); /* 渐变发光效果 */
+    transition: box-shadow 0.3s ease; /* 过渡效果 */
 }
 
 .upload-btn:hover, .submit-btn:hover {
-    box-shadow: 0 0 15px rgba(222, 36, 36, 0.8); /* 渐变发光效果 */
+    box-shadow: 0 0 10px rgba(203, 222, 36, 0.8); /* 渐变发光效果 */
 }

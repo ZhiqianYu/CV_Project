@@ -1,17 +1,24 @@
+function handleUploadClick() {
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+        fileInput.click();
+    }
+}
+
 function showFileName(input) {
     const file = input.files[0];
     const fileNameArea = document.getElementById('fileNameArea');
     const chooseFileBtn = document.getElementById('chooseFileBtn');
-    const uploadButton = document.querySelector('button[type="button"]');
+    const UploadFileBtn = document.getElementById('uploadFileBtn');
 
     if (file) {
-        fileNameArea.textContent = 'Selected File: ' + file.name;
+        fileNameArea.textContent = 'File: ' + file.name;
         fileNameArea.style.display = 'block';
+        // 选择文件后，显示内容变更为更改文件, 显示上传按钮
         chooseFileBtn.textContent = 'Change File';
-        uploadButton.style.display = 'inline-block';
+        UploadFileBtn.style.display = '';
     }
 }
-
 
 function uploadFile() {
     var form = document.getElementById('uploadForm');
