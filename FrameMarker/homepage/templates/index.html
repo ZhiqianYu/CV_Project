@@ -63,6 +63,7 @@
         </div>
     
         <!-- 上传文件 -->
+        <!-- form 的 id 决定了调用form里面的哪个form，也决定了js里面处理哪个任务 -->
         <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data" id="UploadForm">
             {% csrf_token %}
             

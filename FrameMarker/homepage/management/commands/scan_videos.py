@@ -11,12 +11,22 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         video_dir = os.path.join(settings.MEDIA_ROOT, 'Video')
         try:
-            admin_user = User.objects.get(username='admin')
+            admin_user = User.objects.get(username='auto_scan')
         except User.DoesNotExist:
-            admin_user = User.objects.create_user('auto_scan', password='aut123,./')
-            self.stdout.write(self.style.WARNING('User admin does not exist, created a new one named auto_scan with password aut123,./'))
+            admin_user = User.objects.create_user('auto_scan')
+            self.stdout.write(self.style.WARNING('User admin does not exist, created a new one named auto_scan'))
+
+        # 获取数据库中所有视频条目的文件名称列表
+        existing_video_file_names = list(Video.objects.values_list('file_name', flat=True))
+
         for filename in os.listdir(video_dir):
             file_path = os.path.join(video_dir, filename)
-            if not Video.objects.filter(file_name=file_path).exists():
+            # 获取视频文件名
+            video_name = os.path.basename(file_path)
+
+            # 检查视频文件名是否在数据库条目名称列表中
+            if video_name not in existing_video_file_names:
                 create_video(file_path, username=admin_user)
                 self.stdout.write(self.style.SUCCESS(f'Successfully created Video object for {filename}'))
+            else:
+                self.stdout.write(self.style.WARNING(f'Video object for {filename} already exists'))
