@@ -1,67 +1,40 @@
-body {
+/* Reset some default margin */
+body, h1, h2, h3, h4, p {
     margin: 0;
+}
+
+body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: linear-gradient(to bottom, #d4dbe8 0%, #ffffff 20%, #a3c6e3 100%); /* 天空渐变色 */
+    min-height: 100vh; /* 修改为最小高度，使内容能够超过一屏 */
+    background: linear-gradient(to bottom, #d4dbe8 0%, #ffffff 20%, #a3c6e3 100%);
+    margin: 0; /* 重置页面默认的 margin */
 }
 
-.filter-container {
-    position: fixed;
-    left: 30px;
-    top: 20px;
-    z-index: 999; /* 保证其在其他内容之上 */
-    background-color: transparent; /* 可以根据您的设计需求更改背景色 */
-    margin-bottom: 20px;
+/* Video grid */
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px; /* 添加内边距 */
 }
 
-.video-container {
-    margin-top: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px; /* 视频框行之间的间距 */
+.video-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+    overflow: hidden;
+    background-color: #fff; /* 视频项背景色 */
 }
 
-
-.overlay {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    justify-content: space-between;
-    width: calc(100% - 20px);
-    color: white;
+.video-thumbnail img {
+    max-width: 100%;
+    height: auto;
+    transition: transform 0.3s ease; /* 添加过渡效果 */
 }
 
-.annotation-indicator {
-    background-color: rgb(51, 151, 222, 0.9);
-    padding: 5px;
-    box-shadow: 3px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+.video-item:hover .video-thumbnail img {
+    transform: scale(1.1); /* 鼠标悬停时放大预览图 */
 }
-
-.username-button {
-    background-color: rgb(51, 151, 222, 0.9);
-    padding: 5px;
-    box-shadow: 3px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-}
-
-.edit-button {
-    background-color: rgb(51, 151, 222, 0.9);
-    padding: 5px;
-    box-shadow: 3px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-}
-
-.details {
-    margin-top: 0px;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-/* 根据需要添加其他样式 */
-

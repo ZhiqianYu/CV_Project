@@ -11,11 +11,11 @@
     <link rel="stylesheet" href="{% static 'index.css' %}">
     <link rel="stylesheet" href="{% static 'search.css' %}">
     <link rel="stylesheet" href="{% static 'ripple.css' %}">
+    <link rel="stylesheet" href="{% static 'videos.css' %}">
 
     <!--js File loader-->
     <script src="{% static 'ripples.js' %}"></script>
     <script src="{% static 'search.js' %}"></script>
-    <script src="{% static 'videoData.js' %}"></script>
 
 
 </head>
@@ -46,36 +46,23 @@
     </div>
 
     <!-- 筛选功能 -->
-    <div class="filter-container">
-        <form action="{% url 'videopage' %}" method="get">
-            
-
-            <label for="upload-time">上传时间:</label>
-            <input type="date" id="upload-time" name="upload_time">
-
-            <label for="uploader">上传者:</label>
-            <input type="text" id="uploader" name="uploader">
-
-            <label for="started-annotation">是否开始标注:</label>
-            <input type="checkbox" id="started-annotation" name="started_annotation">
-
-            <label for="completed-annotation">是否完成标注:</label>
-            <input type="checkbox" id="completed-annotation" name="completed_annotation">
-
-            <label for="accepted-annotation">标注已审核:</label>
-            <input type="checkbox" id="accepted-annotation" name="accepted_annotation">
-
-            <label for="sort-by">排序方式:</label>
-            <select id="sort-by" name="sort_by">
-                <option value="upload_time">上传时间</option>
-                <option value="uploader">上传者</option>
-                <option value="started_annotation">是否开始标注</option>
-                <option value="completed_annotation">是否完成标注</option>
-                <option value="accepted_annotation">标注已审核</option>
-            </select>
-
-            <input type="submit" value="筛选">
-        </form>
+    
+    <!-- 视频列表 -->
+    <div class="video-grid">
+        {% for video in videos %}
+        <div class="video-item">
+            <div class="video-thumbnail">
+                <a href="{% url 'video_detail' video.id %}">
+                    <img src="{{ video.preview_image_path.url }}" alt="Video Preview">
+                </a>
+            </div>
+            <div class="video-info">
+                <p><strong>Title:</strong> {{ video.title }}</p>
+                <p><strong>Uploader:</strong> {{ video.uploader }}</p>
+                <p><strong>Annotated:</strong> {% if video.annotated %} Yes {% else %} No {% endif %}</p>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 
 </body>
