@@ -69,10 +69,7 @@ def upload_file(request):
                 username = 'default'
 
             # 创建一个新的 Video 实例并保存到数据库
-            now = datetime.now()
-            title = f'{now.strftime("%Y-%m-%d")}_{username}_{file_name}'
-            video = Video(file_name=file_name, title=title, uploader=username, upload_time=now, edited=False, approved=False)
-            video.save()
+            create_video(destination_path, username)
 
             return JsonResponse({'status': 'Upload Success'})
         else:
@@ -80,4 +77,13 @@ def upload_file(request):
     else:
         form = UploadForm()
     return render(request, 'index.html', {'form': form})
+
+def create_video(file_path, username):
+    # Get the file name
+    file_name = os.path.basename(file_path)
+    # 创建一个新的 Video 实例并保存到数据库
+    now = datetime.now()
+    title = f'{now.strftime("%Y-%m-%d")}_{username}_{file_name}'
+    video = Video(file_name=file_name, title=title, uploader=username, upload_time=now, edited=False, approved=False)
+    video.save()
 

@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.db import models
 
+# 视频模型，用来储存视频信息，并放入数据库
 class Video(models.Model):
     file_name = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
@@ -10,6 +12,13 @@ class Video(models.Model):
     edited = models.BooleanField(default=False)
     edit_time = models.DateTimeField(null=True, blank=True)
     approved = models.BooleanField(default=False)
+
+    video_file = models.FileField(upload_to='Video/')
+
+    # 当从数据库中删除
+    def delete(self, *args, **kwargs):
+        self.video_file.delete()
+        super().delete(*args, **kwargs)
     
 
     def save(self, *args, **kwargs):
