@@ -4,6 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+django = "*"
+django-debug-toolbar = "*"
+django-extensions = "*"
+pillow = "*"
+opencv-python = "*"
 
 [dev-packages]
 
