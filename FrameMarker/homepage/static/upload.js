@@ -36,8 +36,8 @@ function uploadFile() {
 }
 
 function handleUploadResponse(response) {
-    if (response.status === 'Upload Success' && response.message === 'Database exist file missing. File uploaded.') {
-        var uploadAnother = confirm('Database exist file missing. File uploaded. Do you want to upload another file?');
+    if (response.status === 'Upload Success' && response.message === 'File uploaded. Database and preview created..') {
+        var uploadAnother = confirm('File uploaded. Database and preview created. Do you want to upload another file?');
         if (uploadAnother) {
             // 清空文件输入框
             document.getElementById('fileInput').value = '';
@@ -50,11 +50,11 @@ function handleUploadResponse(response) {
         } else {
             window.location.href = 'videos';
         }
-    } else if (response.status === 'Upload Success' && response.message === 'File exists but not in database. Rebuild database success.') {
-        alert('File exists but not in the database. Database rebuilt successfully.');
+    } else if (response.status === 'Upload Success' && response.message === 'File exist, database updated, preview created.') {
+        alert('File exist, database updated, preview created.');
         window.location.href = '/';
-    } else if (response.status === 'Upload Success' && response.message === 'File and database exists. No need to upload.') {
-        alert('File and database exists, no need to upload.');
+    } else if (response.status === 'Upload Success' && response.message === 'Files exist, database updated.') {
+        alert('Files exist, database updated. No need to upload.');
         window.location.href = '/';
     } else if (response.status === 'Upload Success') {
         var uploadAnother = confirm('Upload Success! Do you want to upload another file?');
