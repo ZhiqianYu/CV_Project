@@ -16,6 +16,8 @@ from .forms import UploadForm
 from .models import Video
 
 import os
+import cv2
+from PIL import Image
 
 # 链接定向
 def homepage(request):
@@ -55,19 +57,24 @@ def upload_file(request):
             file = form.cleaned_data['file']
             file_name = file.name
             file_path = os.path.join('Video', file_name)
-            destination_path = os.path.join(settings.MEDIA_ROOT, 'Video', file_name)
+            video_path = os.path.join(settings.MEDIA_ROOT, 'Video', file_name)
+
+            file_extension = '.jpg'
+            preview_file_name = os.path.splitext(file_name)[0] + file_extension
+            preview_path = os.path.join(settings.MEDIA_ROOT, 'Preview', preview_file_name)
             
-            os.makedirs(os.path.dirname(destination_path), exist_ok=True)
+            os.makedirs(os.path.dirname(video_path), exist_ok=True)
+            os.makedirs(os.path.dirname(preview_path), exist_ok=True)
 
             if not os.path.exists(os.path.join(settings.MEDIA_ROOT, file_path)):
                 # 文件不存在于媒体目录, 进行上传
-                with open(destination_path, 'wb') as destination_file:
+                with open(video_path, 'wb') as destination_file:
                     for chunk in file.chunks():
                         destination_file.write(chunk)
                 
                 if not Video.objects.filter(file_name=file_name).exists():
                     # 文件不存在于数据库条目中，创建新的 Video 实例并保存到数据库
-                    create_video(destination_path, username)
+                    create_video(video_path, preview_path, username)
                     return JsonResponse({'status': 'Upload Success', 'message':'Do you want to upload another file?'})
                 else:
                     # 文件存在于数据库条目中
@@ -88,14 +95,36 @@ def upload_file(request):
     return render(request, 'index.html', {'form': form})
 
 
-def create_video(file_path, username):
+def create_video(video_path, preview_path, username):
     # Get the file name
-    file_name = os.path.basename(file_path)
+    file_name = os.path.basename(video_path)
     # 创建一个新的 Video 实例并保存到数据库
     now = datetime.now()
     title = f'{username},{now.strftime("%Y-%m-%d")},{file_name}'
-    video = Video(file_name=file_name, title=title, uploader=username, upload_time=now, annotated=False, approved=False, video_file=file_path)
+
+    # 生成预览图
+    generate_preview(video_path, preview_path)
+
+    # 更新数据库条目中的预览图路径
+    video = Video(file_name=file_name, title=title, uploader=username, upload_time=now, annotated=False, approved=False, video_file=video_path, preview_file=preview_path)
     video.save()
+
+
+def generate_preview(video_path, preview_path):
+    # 生成预览图
+    video = cv2.VideoCapture(video_path)
+    success, frame = video.read()
+
+    if success:
+        # 调整图像大小
+        frame = cv2.resize(frame, (320, 240))
+        # 转换为RGB图像
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        # 创建PIL图像对象
+        image = Image.fromarray(frame)
+        # 保存预览图
+        image.save(preview_path)
+    video.release()
 
 def scan_videos(username):
     video_dir = os.path.join(settings.MEDIA_ROOT, 'Video')
@@ -107,9 +136,10 @@ def scan_videos(username):
     # 检查每个文件是否在数据库条目名称列表中，如果不存在，则创建数据库条目
     for filename in all_files:
         file_path = os.path.join(video_dir, filename)
+        preview_path = os.path.join(settings.MEDIA_ROOT, 'Preview', filename)
         video_name = os.path.basename(file_path)
 
         if video_name not in existing_video_file_names:
-            create_video(file_path, username)
+            create_video(file_path, preview_path, username)
 
     return JsonResponse({'status': 'Database Updated', 'message': 'All files added to the database.'})
