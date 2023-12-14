@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import Video
 
 # Register your models here.
@@ -20,7 +21,7 @@ class VideoAdmin(admin.ModelAdmin):
 
     def preview_image(self, obj):
         if obj.preview_file:
-            return '<img src="{} style="max-height:200px; max-width:200px;"/>'.format(obj.preview_file.url)
+            return format_html('<img src="{}" style="max-height:200px; max-width:200px;"/>', obj.preview_file.url)
         else:
             return 'No Preview Available'
 

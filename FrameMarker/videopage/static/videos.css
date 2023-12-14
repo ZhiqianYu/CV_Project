@@ -12,29 +12,3 @@ body {
     background: linear-gradient(to bottom, #d4dbe8 0%, #ffffff 20%, #a3c6e3 100%);
     margin: 0; /* 重置页面默认的 margin */
 }
-
-/* Video grid */
-.video-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 20px; /* 添加内边距 */
-}
-
-.video-item {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: center;
-    overflow: hidden;
-    background-color: #fff; /* 视频项背景色 */
-}
-
-.video-thumbnail img {
-    max-width: 100%;
-    height: auto;
-    transition: transform 0.3s ease; /* 添加过渡效果 */
-}
-
-.video-item:hover .video-thumbnail img {
-    transform: scale(1.1); /* 鼠标悬停时放大预览图 */
-}

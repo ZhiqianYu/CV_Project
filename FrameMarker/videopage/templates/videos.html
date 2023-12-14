@@ -50,18 +50,22 @@
     <!-- 视频列表 -->
     <div class="video-grid">
         {% for video in videos %}
-        <div class="video-item">
-            <div class="video-thumbnail">
-                <a href="{% url 'video_detail' video.id %}">
-                    <img src="{{ video.preview_image_path.url }}" alt="Video Preview">
-                </a>
+            <div class="video_item">
+                <div class="video_preview" style="width: 330px;">
+                    <a href="{% url 'video_detail' video.id %}">
+                        <img src="{{ video.preview_image.url }}" alt="Video Preview" style="width: 320px; margin-top: 5px; margin-left: 5px;">
+                    </a>
+                </div>
+                <div class="video-info">
+                    <p><strong>Title:</strong> <a href="{% url 'video_detail' video.id %}">{{ video.file_name }}</a></p>
+                    <p><strong>Uploader:</strong> {{ video.uploader }}</p>
+                    <p><strong>Upload Time:</strong> {{ video.upload_time }}</p>
+                    <p><strong>Annotated:</strong> {% if video.annotated %} Yes {{video.annotation_time}} {% else %} No {% endif %}</p>
+                </div>
             </div>
-            <div class="video-info">
-                <p><strong>Title:</strong> {{ video.title }}</p>
-                <p><strong>Uploader:</strong> {{ video.uploader }}</p>
-                <p><strong>Annotated:</strong> {% if video.annotated %} Yes {% else %} No {% endif %}</p>
-            </div>
-        </div>
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                </div><div class="video-grid">
+            {% endif %}
         {% endfor %}
     </div>
 
