@@ -18,14 +18,12 @@ class Video(models.Model):
     preview_file = models.ImageField(upload_to='Preview/', null=True, blank=True)    
 
     def delete(self, *args, **kwargs):
-        if self.video_file and self.video_file.path and self.preview_file and self.preview_file.path:
+        if self.video_file and self.video_file.path and os.path.exists(self.video_file.path):
             os.remove(self.video_file.path)
+            
+        if self.preview_file and self.preview_file.path and os.path.exists(self.preview_file.path):
             os.remove(self.preview_file.path)
-        elif self.video_file and self.video_file.path:
-            os.remove(self.video_file.path)
-        elif self.preview_file and self.preview_file.path:
-            os.remove(self.preview_file.path)
-        pass
+            
         super().delete(*args, **kwargs)
         
     def save(self, *args, **kwargs):

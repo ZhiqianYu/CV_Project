@@ -56,7 +56,6 @@ def upload_file(request):
 
             file = form.cleaned_data['file']
             file_name = file.name
-            file_path = os.path.join('Video', file_name)
             video_path = os.path.join(settings.MEDIA_ROOT, 'Video', file_name)
 
             file_extension = '.jpg'
@@ -66,58 +65,52 @@ def upload_file(request):
             os.makedirs(os.path.dirname(video_path), exist_ok=True)
             os.makedirs(os.path.dirname(preview_path), exist_ok=True)
 
-            if not os.path.exists(os.path.join(settings.MEDIA_ROOT, file_path)):
-                # 文件不存在于媒体目录, 进行上传
+            video_exists = os.path.exists(video_path)
+            preview_exists = os.path.exists(preview_path)
+            database_exists = Video.objects.filter(file_name=file_name).exists()
+
+            if not video_exists and not preview_exists and not database_exists:
+                # 文件，预览图，数据库均不存在
                 with open(video_path, 'wb') as destination_file:
                     for chunk in file.chunks():
                         destination_file.write(chunk)
-                
-                if not Video.objects.filter(file_name=file_name).exists():
-                    # 文件不存在于数据库条目中，创建新的 Video 实例并保存到数据库
-                    create_video(video_path, preview_path, username)
-                    return JsonResponse({'status': 'Upload Success', 'message':'Do you want to upload another file?'})
-                else:
-                    # 文件存在于数据库条目中
-                    return JsonResponse({'status': 'Upload Success', 'message': 'Database exist file missing. File uploaded.'})
+                generate_preview(video_path, preview_path)
+                create_video(video_path, preview_path, username)
+                return JsonResponse({'status': 'Upload Success', 'message': 'File uploaded.'})
             else:
-                # 文件存在于媒体目录
-                if not Video.objects.filter(file_name=file_name).exists():
-                    # 数据库中没有文件条目，使用 scan_videos 更新数据库
-                    scan_videos(username)
-                    return JsonResponse({'status': 'Upload Success', 'message': 'File exists but not in database. Rebuild database success.'})
-                else:
-                    # 文件存在于媒体目录且数据库中已有文件条目，不需要上传
-                    return JsonResponse({'status': 'Upload Success', 'message': 'File and database exists. No need to upload.'})
+                # 文件已存在于媒体目录
+                create_video(video_path, preview_path, username)
+                return JsonResponse({'status': 'Upload Success', 'message': 'Files uploaded.'})
         else:
             return JsonResponse({'status': 'Upload Failed', 'message': 'Invalid form data'})
     else:
         form = UploadForm()
     return render(request, 'index.html', {'form': form})
 
-
+# 数据库操作
 def create_video(video_path, preview_path, username):
-    # Get the file name
-    file_name = os.path.basename(video_path)
-    # 创建一个新的 Video 实例并保存到数据库
     now = datetime.now()
-    title = f'{username},{now.strftime("%Y-%m-%d")},{file_name}'
 
-    # 生成预览图
-    generate_preview(video_path, preview_path)
+    file_name = os.path.basename(video_path)
+    title = f'{username},{now},{file_name}'
 
-    # 更新数据库条目中的预览图路径
     video = Video(file_name=file_name, title=title, uploader=username, upload_time=now, annotated=False, approved=False, video_file=video_path, preview_file=preview_path)
     video.save()
-
+    
 
 def generate_preview(video_path, preview_path):
     # 生成预览图
     video = cv2.VideoCapture(video_path)
     success, frame = video.read()
 
+    while success and cv2.mean(frame)[0] < 30:
+        # 跳过纯黑帧
+        success, frame = video.read()
+
     if success:
-        # 调整图像大小
-        frame = cv2.resize(frame, (320, 240))
+        width = 320
+        height = int(frame.shape[0] * (width / frame.shape[1]))  # 按比例调整高度
+        frame = cv2.resize(frame, (width, height))
         # 转换为RGB图像
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         # 创建PIL图像对象

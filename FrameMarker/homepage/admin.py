@@ -14,13 +14,21 @@ scan_videos.actions = None
 
 class VideoAdmin(admin.ModelAdmin):
     list_display = ('file_name', 'uploader', 'upload_time', 'annotated', 'annotation_time', 'approved')
-    readonly_fields = ('uploader', 'upload_time', 'annotated', 'annotation_time')
-    fields = ('file_name', 'video_file', 'uploader', 'upload_time', 'annotated', 'annotation_time', 'approved')
+    readonly_fields = ('file_name', 'uploader', 'upload_time', 'annotated', 'annotation_time', 'preview_image', 'video_file')
+    fields = ('file_name', 'upload_time', 'uploader', 'annotated', 'annotation_time', 'approved', 'preview_image', 'video_file')
     actions = [scan_videos]
 
-    # 目前还有一个漏洞，这个数据库条目删除的条件是：在数据库中删除条目，并且文件实际存在，若文件不存在则删除数据库失败，
+    def preview_image(self, obj):
+        if obj.preview_file:
+            return '<img src="{} style="max-height:200px; max-width:200px;"/>'.format(obj.preview_file.url)
+        else:
+            return 'No Preview Available'
+
+    preview_image.allow_tags = True
+    preview_image.short_description = 'Preview'
+
     def delete_queryset(self, request, queryset):
         for obj in queryset:
-            obj.delete()  # 调用模型实例的自定义 delete 方法，删除视频文件
+            obj.delete() # 使用model定义的delete方法，删除文件
 
 admin.site.register(Video, VideoAdmin)
