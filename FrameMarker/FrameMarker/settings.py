@@ -142,6 +142,6 @@ STATICFILES_DIRS += [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'Resources')
-MEDIA_URL = '/media/'
+MEDIA_URL = '/Resources/'
 
-LOGIN_REDIRECT_URL = 'homepage'
+LOGIN_REDIRECT_URL = 'index'

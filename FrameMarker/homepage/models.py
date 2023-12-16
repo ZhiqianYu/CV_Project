@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-import os   
-from PIL import Image
+import os
 
 # 视频模型，用来储存视频信息，并放入数据库
 class Video(models.Model):
@@ -37,3 +36,18 @@ class Video(models.Model):
     class Meta:
         verbose_name = 'Video'
         verbose_name_plural = 'Videos'
+
+class UserData(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    about = models.TextField()
+    profile_pic = models.ImageField(upload_to='pic/', default='pic/default.jpg')
+    subscribers = models.ManyToManyField(User, related_name='subscribers')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'User Data'
+        verbose_name_plural = 'User Data'
+
+

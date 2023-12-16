@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Video
+from .models import Video, UserData
 
 # Register your models here.
 from .models import Video
@@ -33,3 +33,4 @@ class VideoAdmin(admin.ModelAdmin):
             obj.delete() # 使用model定义的delete方法，删除文件
 
 admin.site.register(Video, VideoAdmin)
+admin.site.register(UserData)  

@@ -25,9 +25,9 @@
     <div class="navbar">
         <!-- Left section of the navbar -->
         <div class="navbar-left">
-            <a href="{% url 'homepage' %}" class="navbar-title">Frame Annotator</a>
-            <a href="{% url 'homepage' %}" class="navbar-l-link">Home</a>
-            <a href="{% url 'videopage' %}" class="navbar-l-link">Videos</a>
+            <a href="{% url 'index' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'index' %}" class="navbar-l-link">Home</a>
+            <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
             <a href="#exports" class="navbar-l-link">Exports</a>
         </div>
     
@@ -52,21 +52,16 @@
         {% for video in videos %}
             <div class="video_item">
                 <div class="video_preview" style="width: 330px;">
-                    <a href="{% url 'video_detail' video.title %}">
-                        <img src="{{ video.preview_file.url }}" alt="Video Preview" style="width: 320px; margin-top: 5px; margin-left: 5px;">
-                    </a>
+                        <img src="{{video.preview_file.url}}" alt="Video Preview" style="width: 320px; margin-top: 5px; margin-left: 5px;">
                 </div>
                 <div class="video-info">
-                    <p><strong>Title:</strong> <a href="{% url 'video.file_name' video.title %}">{{ video.file_name }}</a></p>
-                    <p><strong>Uploader:</strong> {{ video.uploader }}</p>
+                    <p><strong>Title:</strong>{{video.file_name}}</p>
+                    <list><strong>Uploader:</strong> {{video.uploader }}</list>
                     <p><strong>Upload Time:</strong> {{ video.upload_time }}</p>
-                    <p><strong>Annotated:</strong> {% if video.annotated %} Yes {{video.annotation_time}} {% else %} No {% endif %}</p>
+                    <p><strong>Annotated:</strong> {% if video.annotated %} Yes{% else %} No {% endif %}</p>
                 </div>
             </div>
         {% endfor %}
     </div>
-    <h1>Video List</h1>
-
 </body>
-
 </html>

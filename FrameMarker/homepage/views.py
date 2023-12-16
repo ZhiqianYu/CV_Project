@@ -1,30 +1,19 @@
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.conf import settings
-from datetime import datetime
 from django.urls import reverse
-
-
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
-
-from .forms import RegisterForm
-
-from django.views import View
-
-from .forms import UploadForm
+from datetime import datetime
+from .forms import RegisterForm, UploadForm
 from .models import Video
-
 import os
 import cv2
 from PIL import Image
 
 # 链接定向
-def homepage(request):
+def index(request):
     return render(request, 'index.html')
-
-def videopage(request):
-    return render(request, 'videos.html')
 
 # 用户注册
 def register_view(request):
