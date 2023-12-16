@@ -15,7 +15,7 @@ scan_videos.actions = None
 
 class VideoAdmin(admin.ModelAdmin):
     list_display = ('file_name', 'uploader', 'upload_time', 'annotated', 'annotation_time', 'approved')
-    readonly_fields = ('file_name', 'uploader', 'upload_time', 'annotated', 'annotation_time', 'preview_image', 'video_file')
+    readonly_fields = ('file_name', 'uploader', 'upload_time', 'annotation_time', 'preview_image', 'video_file')
     fields = ('file_name', 'upload_time', 'uploader', 'annotated', 'annotation_time', 'approved', 'preview_image', 'video_file')
     actions = [scan_videos]
 

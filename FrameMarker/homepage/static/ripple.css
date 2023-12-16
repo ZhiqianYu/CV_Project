@@ -5,7 +5,7 @@
     border-radius: 50%;
     background-color: rgba(51, 152, 253, 0.3);
     pointer-events: none;
-    animation: rippleEffect 500ms ease-out, glowEffect 1s linear infinite;
+    animation: rippleEffect 300ms ease-out, glowEffect 1s linear infinite;
 }
 
 @keyframes rippleEffect {
@@ -14,7 +14,7 @@
     opacity: 1;
     }
     100% {
-    transform: scale(2.5);
+    transform: scale(1.5);
     opacity: 0;
     }
 }

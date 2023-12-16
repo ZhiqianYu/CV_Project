@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'homepage',
     'videopage',
+    'annotation',
 ]
 
 MIDDLEWARE = [
@@ -133,6 +134,11 @@ STATICFILES_DIRS = [
 # 设置 videopage 应用程序的静态文件目录
 STATICFILES_DIRS += [
     os.path.join(BASE_DIR, 'videopage/static'),
+    # 其他 videopage 应用程序的静态文件目录...
+]
+
+STATICFILES_DIRS += [
+    os.path.join(BASE_DIR, 'annotation/static'),
     # 其他 videopage 应用程序的静态文件目录...
 ]
 

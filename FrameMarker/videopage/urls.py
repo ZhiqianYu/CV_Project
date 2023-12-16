@@ -6,11 +6,13 @@ from django.conf.urls.static import static
 
 from . import views
 from homepage import views as homepage_views
+from annotation import views as annotation_view
 
 urlpatterns = [
     path('', homepage_views.index, name='index'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
 
     path('videolist/', views.video_list, name='video_list'),
+    path('annotation/<int:video_id>/', annotation_view.annotation, name='annotation'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -5,27 +5,137 @@ body, h1, h2, h3, h4, p {
 
 body {
     font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh; /* 修改为最小高度，使内容能够超过一屏 */
+    min-height: 100vh;
     background: linear-gradient(to bottom, #d4dbe8 0%, #ffffff 20%, #a3c6e3 100%);
-    margin: 0; /* 重置页面默认的 margin */
+    margin: 0;
 }
 
+.filter-container {
+    position: fixed;
+    margin-top: 80px;
+    position: center;
+    width: 100%;
+    padding-left: 20px;
+    text-align: left;
+    z-index: 1;
+}
+
+/* 网格容器，行 */
 .video-grid {
+    margin-top: 120px;
+    margin-bottom: 80px;
+    margin-left: 50px;
+    margin-right: 50px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 1rem;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 1rem;
-    background-color: antiquewhite;
+    gap: 15px; 
+    grid-auto-rows: 325px; 
 }
 
-@media (max-width: 600px) {
-    .col-lg-3 {
-        flex: 0 0 50%;
-        max-width: 50%;
+/* 预览图框 + 文字框 */
+.video-item {
+    width: 340px; /* 视频项目的宽度 */
+    height: 310px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(85, 79, 200, 0.698); /* 发光的虚化的边缘 */
+    margin: 5px; /* 四周边距5px */
+    background-color: rgba(238, 230, 230, 0.6) /* 背景颜色 */;
+    position: relative;
+}
+
+.video-preview {
+    border-radius: 15px;
+    width: 320px;
+    height: 190px;
+    margin: 10px;
+    position: relative;
+    z-index: 0;
+    display: flex; /* 使用弹性盒子布局 */
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+}
+
+.video-preview img {
+    width: 320px;
+    border-radius: 15px;
+    border-color: rgb(74, 131, 230);
+    border-width: 2px;
+    box-shadow: 0 0 8px rgba(85, 79, 200, 0.75);  /* 发光的虚化的边缘 */
+    height: 190px;
+    object-fit: center; /* 图片填充整个容器 */
+}
+
+.annotation-overlay {
+    position: absolute; 
+    top: -2px; 
+    left: 0; 
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 5px;
+    z-index: 1; 
+    border-top-left-radius: 15px;
+    border-bottom-right-radius: 5px;
+}
+  
+.annotation-info {
+    opacity: 1; 
+    font-weight: bold;
+    z-index: 2; /* 确保在最上层 */
+}
+
+.video-description {
+    width: 300px;
+    height: 90px;
+    margin: 5px 10px 20px 20px;
+    overflow: hidden; /* 超出部分隐藏 */
+}
+
+.file {
+    font-size: 18px;
+    font-weight: bold;
+    height: 42px; /* 最多两行，超出隐藏 */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* 字体阴影 */
+    overflow: hidden; /* 超出部分隐藏 */
+}
+
+.upload, .annotation {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    font-size: 16px;
+    height: 18px; /* 最多两行，超出隐藏 */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* 字体阴影 */
+    overflow: hidden; /* 超出部分隐藏 */
+}
+
+.annotation-info:hover, .file:hover, .uploader a:hover {
+    color: rgb(226, 25, 25); /* Change the color to red */
+    font-weight: bold; /* Make the font bold */
+}
+
+@media (max-width: 450px) {
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 451px) and (max-width: 804px) {
+    .video-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 805px) and (max-width: 1165px) {
+    .video-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1166px) and (max-width: 1530px) {
+    .video-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (min-width: 1531px) {
+    .video-grid {
+        grid-template-columns: repeat(5, 1fr);
     }
 }

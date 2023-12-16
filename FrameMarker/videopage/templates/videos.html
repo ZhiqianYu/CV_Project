@@ -8,7 +8,6 @@
     
     <!--css File loader-->
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
-    <link rel="stylesheet" href="{% static 'index.css' %}">
     <link rel="stylesheet" href="{% static 'search.css' %}">
     <link rel="stylesheet" href="{% static 'ripple.css' %}">
     <link rel="stylesheet" href="{% static 'videos.css' %}">
@@ -46,22 +45,36 @@
     </div>
 
     <!-- 筛选功能 -->
-    
+    <div class="filter-container">
+
+    </div>
+
     <!-- 视频列表 -->
     <div class="video-grid">
         {% for video in videos %}
-            <div class="video_item">
-                <div class="video_preview" style="width: 330px;">
-                        <img src="{{video.preview_file.url}}" alt="Video Preview" style="width: 320px; margin-top: 5px; margin-left: 5px;">
-                </div>
-                <div class="video-info">
-                    <p><strong>Title:</strong>{{video.file_name}}</p>
-                    <list><strong>Uploader:</strong> {{video.uploader }}</list>
-                    <p><strong>Upload Time:</strong> {{ video.upload_time }}</p>
-                    <p><strong>Annotated:</strong> {% if video.annotated %} Yes{% else %} No {% endif %}</p>
+        <div class="video-item">
+            <div class="video-preview">
+                <a href="{{ video.video_file.url }}">
+                    <img src="{{ video.preview_file.url }}" alt="No Preview Image">
+                </a>
+                <div class="annotation-overlay">
+                    <a href="{% url 'annotation' video.id %}">
+                        <p class="annotation-info">{% if video.annotated %}Annotated{% else %}Not Annotated{% endif %}</p>
+                    </a>
                 </div>
             </div>
+            <div class="video-description">
+                <a href="{{ video.video_file.url }}">
+                    <p class="file">Title:{{ video.file_name }}</p>
+                </a>
+                <p class="uploader">Uploader: <a href="{{ video.uploader.url }}">{{ video.uploader }}</a>
+                <p class="upload-time">Upload Time: {{ video.upload_time }}</p>
+            </div>
+        </div>
         {% endfor %}
     </div>
+
+
+
 </body>
 </html>
