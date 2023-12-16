@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'homepage',
     'videopage',
+    'annotation',
 ]
 
 MIDDLEWARE = [
@@ -136,10 +137,17 @@ STATICFILES_DIRS += [
     # 其他 videopage 应用程序的静态文件目录...
 ]
 
+STATICFILES_DIRS += [
+    os.path.join(BASE_DIR, 'annotation/static'),
+    # 其他 videopage 应用程序的静态文件目录...
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'Resources')
-MEDIA_URL = '/media/'
+MEDIA_URL = '/Resources/'
+
+LOGIN_REDIRECT_URL = 'index'

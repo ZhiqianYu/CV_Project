@@ -12,6 +12,6 @@ document.addEventListener('mousemove', function (e) {
         document.body.appendChild(ripple);
         setTimeout(() => {
             ripple.remove();
-        }, 200);
+        }, 100);
     }
 });

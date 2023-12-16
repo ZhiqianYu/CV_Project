@@ -21,6 +21,7 @@
 
     <!-- 引入处理表单提交的JavaScript文件 -->
     <script src="{% static 'upload.js' %}"></script>
+    <script src="{% static 'user.js' %}"></script>
 
 </head>
 
@@ -30,16 +31,18 @@
     <div class="navbar">
         <!-- Left section of the navbar -->
         <div class="navbar-left">
-            <a href="{% url 'homepage' %}" class="navbar-title">Frame Annotator</a>
-            <a href="{% url 'homepage' %}" class="navbar-l-link">Home</a>
-            <a href="{% url 'videopage' %}" class="navbar-l-link">Videos</a>
+            <a href="{% url 'index' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'index' %}" class="navbar-l-link">Home</a>
+            <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
             <a href="export" class="navbar-l-link">Exports</a>
         </div>
         
     
         <!-- Right section of the navbar -->
         <div class="navbar-right">
-            <a href="#login" class="navbar-r-link">Login</a>
+            <a href="{% url 'login' %}" class="navbar-login">Login</a>
+            <span class="navbar-separator">|</span>
+            <a href="{% url 'register' %}" class="navbar-register">Register</a>
             <div class="search-container">
                 <input type="text" placeholder="Search...">
                 <div class="search-icon" onclick="performSearch()">
@@ -60,7 +63,8 @@
         </div>
     
         <!-- 上传文件 -->
-        <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data" id="uploadForm">
+        <!-- form 的 id 决定了调用form里面的哪个form，也决定了js里面处理哪个任务 -->
+        <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data" id="UploadForm">
             {% csrf_token %}
             
             <!-- 初始upload按钮，点击选文件，按钮变为changefile，旁边出现新upload按钮-->

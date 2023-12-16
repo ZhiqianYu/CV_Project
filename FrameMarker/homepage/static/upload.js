@@ -21,7 +21,7 @@ function showFileName(input) {
 }
 
 function uploadFile() {
-    var form = document.getElementById('uploadForm');
+    var form = document.getElementById('UploadForm');
     var formData = new FormData(form);
 
     fetch(form.action, {
@@ -35,10 +35,9 @@ function uploadFile() {
     });
 }
 
-// 处理response返回值
 function handleUploadResponse(response) {
-    if (response.status === 'Upload Success') {
-        var uploadAnother = confirm('视频成功上传，是否上传另一个视频？');
+    if (response.status === 'Upload Success' && response.message === 'File uploaded. Database and preview created..') {
+        var uploadAnother = confirm('File uploaded. Database and preview created. Do you want to upload another file?');
         if (uploadAnother) {
             // 清空文件输入框
             document.getElementById('fileInput').value = '';
@@ -49,9 +48,30 @@ function handleUploadResponse(response) {
             document.getElementById('chooseFileBtn').textContent = 'Choose File';
             document.querySelector('button[type="button"]').style.display = 'none';
         } else {
-            window.location.href = 'videos'; // 上传成功后跳转到videos页面, 与url的path相同
+            window.location.href = 'videos';
         }
-    } else if (response.status === 'Upload Failed') {
-        alert('文件上传失败：' + response.message);
+    } else if (response.status === 'Upload Success' && response.message === 'File exist, database updated, preview created.') {
+        alert('File exist, database updated, preview created.');
+        window.location.href = '/';
+    } else if (response.status === 'Upload Success' && response.message === 'Files exist, database updated.') {
+        alert('Files exist, database updated. No need to upload.');
+        window.location.href = '/';
+    } else if (response.status === 'Upload Success') {
+        var uploadAnother = confirm('Upload Success! Do you want to upload another file?');
+        if (uploadAnother) {
+            // 清空文件输入框
+            document.getElementById('fileInput').value = '';
+            // 清空文件名显示区域
+            document.getElementById('fileNameArea').textContent = '';
+            document.getElementById('fileNameArea').style.display = 'none';
+            // 恢复按钮状态
+            document.getElementById('chooseFileBtn').textContent = 'Choose File';
+            document.querySelector('button[type="button"]').style.display = 'none';
+        } else {
+            window.location.href = 'videos';
+        }
+    } else {
+        alert('Upload Failed: ' + response.message);
+        window.location.href = '/';
     }
 }

@@ -8,14 +8,13 @@
     
     <!--css File loader-->
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
-    <link rel="stylesheet" href="{% static 'index.css' %}">
     <link rel="stylesheet" href="{% static 'search.css' %}">
     <link rel="stylesheet" href="{% static 'ripple.css' %}">
+    <link rel="stylesheet" href="{% static 'videos.css' %}">
 
     <!--js File loader-->
     <script src="{% static 'ripples.js' %}"></script>
     <script src="{% static 'search.js' %}"></script>
-    <script src="{% static 'videoData.js' %}"></script>
 
 
 </head>
@@ -25,15 +24,17 @@
     <div class="navbar">
         <!-- Left section of the navbar -->
         <div class="navbar-left">
-            <a href="{% url 'homepage' %}" class="navbar-title">Frame Annotator</a>
-            <a href="{% url 'homepage' %}" class="navbar-l-link">Home</a>
-            <a href="{% url 'videopage' %}" class="navbar-l-link">Videos</a>
+            <a href="{% url 'index' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'index' %}" class="navbar-l-link">Home</a>
+            <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
             <a href="#exports" class="navbar-l-link">Exports</a>
         </div>
     
         <!-- Right section of the navbar -->
         <div class="navbar-right">
-            <a href="#login" class="navbar-r-link">Login</a>
+            <a href="{% url 'login' %}" class="navbar-login">Login</a>
+            <span class="navbar-separator">|</span>
+            <a href="{% url 'register' %}" class="navbar-register">Register</a>
             <div class="search-container">
                 <input type="text" placeholder="Search...">
                 <div class="search-icon" onclick="performSearch()">
@@ -44,33 +45,36 @@
     </div>
 
     <!-- 筛选功能 -->
-    <div class="filter-section">
-        <label for="uploader-filter">Filter by Uploader:</label>
-        <select id="uploader-filter">
-            <option value="all">All Uploaders</option>
-            <option value="uploader1">Uploader 1</option>
-            <option value="uploader2">Uploader 2</option>
-            <!-- Add more uploader options if needed -->
-        </select>
-
-        <label for="date-filter">Filter by Upload Date:</label>
-        <input type="date" id="date-filter">
-
-        <label for="completion-filter">Filter by Completion:</label>
-        <select id="completion-filter">
-            <option value="all">All Videos</option>
-            <option value="completed">Completed</option>
-            <option value="incomplete">Incomplete</option>
-        </select>
-
-        <button id="apply-filters-btn">Apply Filters</button>
-    </div>
-
-    <!-- 在筛选功能下方增加的视频主体内容部分 -->
-    <div class="video-container">
+    <div class="filter-container">
 
     </div>
+
+    <!-- 视频列表 -->
+    <div class="video-grid">
+        {% for video in videos %}
+        <div class="video-item">
+            <div class="video-preview">
+                <a href="{{ video.video_file.url }}">
+                    <img src="{{ video.preview_file.url }}" alt="No Preview Image">
+                </a>
+                <div class="annotation-overlay">
+                    <a href="{% url 'annotation' video.id %}">
+                        <p class="annotation-info">{% if video.annotated %}Annotated{% else %}Not Annotated{% endif %}</p>
+                    </a>
+                </div>
+            </div>
+            <div class="video-description">
+                <a href="{{ video.video_file.url }}">
+                    <p class="file">Title:{{ video.file_name }}</p>
+                </a>
+                <p class="uploader">Uploader: <a href="{{ video.uploader.url }}">{{ video.uploader }}</a>
+                <p class="upload-time">Upload Time: {{ video.upload_time }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
 
 </body>
-
 </html>

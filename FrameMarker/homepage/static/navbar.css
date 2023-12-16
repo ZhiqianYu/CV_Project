@@ -1,5 +1,6 @@
 /* 导航栏样式 */
 .navbar {
+    position: fixed;
     overflow: hidden;
     background-color: rgb(51, 151, 222, 0.8);
     position: fixed; /* Fix the navbar at the top */
@@ -43,19 +44,40 @@
 }
 
 /* Styles for the right section of the navbar */
-.navbar-right {
+.navbar-right{
     display: flex;
     font-weight: 200;
     vertical-align: middle;
     align-items: right;
 }
 
-.navbar-right a[href="#login"] {
+.navbar-right .navbar-login {
     color: rgb(227, 239, 223);
     font-size: 15px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     padding: 25px 20px;
     vertical-align: middle;
+    margin-right: 5px;
+    float: right;
+}
+
+.navbar-right .navbar-separator {
+    color: rgb(227, 239, 223);
+    margin: 0 0;
+    font-size: 15px;
+    padding: 25px 0px;
+    line-height: 1;
+    vertical-align: middle;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.navbar-right .navbar-register {
+    color: rgb(227, 239, 223);
+    font-size: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    padding: 25px 20px;
+    vertical-align: middle;
+    margin-left: 5px;
     float: right;
 }
 
@@ -84,7 +106,8 @@
 /* 悬浮效果 */
 .navbar-left .navbar-title:hover,
 .navbar-left .navbar-l-link:hover,
-.navbar a[href="#login"]:hover,
+.navbar-right .navbar-login:hover,
+.navbar-right .navbar-register:hover,
 .search-icon:hover {
     color: rgb(226, 25, 25); /* Change the color to red */
     font-weight: bold; /* Make the font bold */
