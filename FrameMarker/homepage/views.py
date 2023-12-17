@@ -13,7 +13,11 @@ from PIL import Image
 
 # 链接定向
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'introduction.html')
+
+def upload(request):
+    return render(request, 'upload.html')
+
 
 # 用户注册
 def register_view(request):

@@ -4,11 +4,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Frame Annotator</title>
+    <title>Frame Annotator - Upload</title>
     
     <!--css File loader-->
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
-    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'upload.css' %}">
     <link rel="stylesheet" href="{% static 'search.css' %}">
     <link rel="stylesheet" href="{% static 'ripple.css' %}">
 
@@ -31,9 +31,10 @@
     <div class="navbar">
         <!-- Left section of the navbar -->
         <div class="navbar-left">
-            <a href="{% url 'index' %}" class="navbar-title">Frame Annotator</a>
-            <a href="{% url 'index' %}" class="navbar-l-link">Home</a>
+            <a href="{% url 'introduction' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'upload' %}" class="navbar-l-link">Upload</a>
             <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
+            <p class="navbar-l-link">Annotation</p>
             <a href="export" class="navbar-l-link">Exports</a>
         </div>
         

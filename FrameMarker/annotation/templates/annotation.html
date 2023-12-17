@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Frame Annotator - Annotation</title>
+    
+    <!--css File loader-->
+    <link rel="stylesheet" href="{% static 'navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'search.css' %}">
+    <link rel="stylesheet" href="{% static 'ripple.css' %}">
+
+    <!--js File loader-->
+    <script src="{% static 'ripples.js' %}"></script>
+    <script src="{% static 'search.js' %}"></script>
+    
+    <!-- 引入 jQuery 库 -->
+    
+
+    <!-- 引入处理表单提交的JavaScript文件 -->
+    <script src="{% static 'upload.js' %}"></script>
+    <script src="{% static 'user.js' %}"></script>
+
+</head>
+
+<body>
+
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <!-- Left section of the navbar -->
+        <div class="navbar-left">
+            <a href="{% url 'introduction' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'upload' %}" class="navbar-l-link">Upload</a>
+            <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
+            <a href="{% url 'annotation' %}" class="navbar-l-link">Annotation</a>
+            <a href="export" class="navbar-l-link">Exports</a>
+        </div>
+        
+    
+        <!-- Right section of the navbar -->
+        <div class="navbar-right">
+            <a href="{% url 'login' %}" class="navbar-login">Login</a>
+            <span class="navbar-separator">|</span>
+            <a href="{% url 'register' %}" class="navbar-register">Register</a>
+            <div class="search-container">
+                <input type="text" placeholder="Search...">
+                <div class="search-icon" onclick="performSearch()">
+                    <span>&#128269;</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 页面内容 -->
+
+
+
+</body>
+
+</html>
