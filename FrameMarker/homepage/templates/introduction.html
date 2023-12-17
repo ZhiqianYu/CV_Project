@@ -4,22 +4,29 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Frame Annotator - Videos</title>
+    <title>Frame Annotator</title>
     
     <!--css File loader-->
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'upload.css' %}">
     <link rel="stylesheet" href="{% static 'search.css' %}">
     <link rel="stylesheet" href="{% static 'ripple.css' %}">
-    <link rel="stylesheet" href="{% static 'videos.css' %}">
 
     <!--js File loader-->
     <script src="{% static 'ripples.js' %}"></script>
     <script src="{% static 'search.js' %}"></script>
+    
+    <!-- 引入 jQuery 库 -->
+    
 
+    <!-- 引入处理表单提交的JavaScript文件 -->
+    <script src="{% static 'upload.js' %}"></script>
+    <script src="{% static 'user.js' %}"></script>
 
 </head>
 
 <body>
+
     <!-- 导航栏 -->
     <div class="navbar">
         <!-- Left section of the navbar -->
@@ -27,9 +34,10 @@
             <a href="{% url 'introduction' %}" class="navbar-title">Frame Annotator</a>
             <a href="{% url 'upload' %}" class="navbar-l-link">Upload</a>
             <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
-            <a class="navbar-l-link">Annotation</a>
-            <a href="#exports" class="navbar-l-link">Exports</a>
+            <p class="navbar-l-link">Annotation</p>
+            <a href="export" class="navbar-l-link">Exports</a>
         </div>
+        
     
         <!-- Right section of the navbar -->
         <div class="navbar-right">
@@ -44,38 +52,11 @@
             </div>
         </div>
     </div>
+    
 
-    <!-- 筛选功能 -->
-    <div class="filter-container">
-
-    </div>
-
-    <!-- 视频列表 -->
-    <div class="video-grid">
-        {% for video in videos %}
-        <div class="video-item">
-            <div class="video-preview">
-                <a href="{{ video.video_file.url }}">
-                    <img src="{{ video.preview_file.url }}" alt="No Preview Image">
-                </a>
-                <div class="annotation-overlay">
-                    <a href="{% url 'annotation' video.id %}">
-                        <p class="annotation-info">{% if video.annotated %}Annotated{% else %}Not Annotated{% endif %}</p>
-                    </a>
-                </div>
-            </div>
-            <div class="video-description">
-                <a href="{{ video.video_file.url }}">
-                    <p class="file">Title:{{ video.file_name }}</p>
-                </a>
-                <p class="uploader">Uploader: <a href="{{ video.uploader.url }}">{{ video.uploader }}</a>
-                <p class="upload-time">Upload Time: {{ video.upload_time }}</p>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
-
+    <!-- 页面内容 -->
+ 
 
 </body>
+
 </html>
