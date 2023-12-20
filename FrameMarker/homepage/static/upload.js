@@ -36,7 +36,7 @@ function uploadFile() {
 }
 
 function handleUploadResponse(response) {
-    if (response.status === 'Upload Success' && response.message === 'File uploaded. Database and preview created..') {
+    if (response.status === 'Upload Success' && response.message === 'File uploaded. Database and preview created.') {
         var uploadAnother = confirm('File uploaded. Database and preview created. Do you want to upload another file?');
         if (uploadAnother) {
             // 清空文件输入框
