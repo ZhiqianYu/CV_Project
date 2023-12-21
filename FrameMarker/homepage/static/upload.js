@@ -36,7 +36,7 @@ function uploadFile() {
 }
 
 function handleUploadResponse(response) {
-    if (response.status === 'Upload Success' && response.message === 'File uploaded. Database and preview created..') {
+    if (response.status === 'Upload Success' && response.message === 'File uploaded. Database and preview created.') {
         var uploadAnother = confirm('File uploaded. Database and preview created. Do you want to upload another file?');
         if (uploadAnother) {
             // 清空文件输入框
@@ -48,14 +48,14 @@ function handleUploadResponse(response) {
             document.getElementById('chooseFileBtn').textContent = 'Choose File';
             document.querySelector('button[type="button"]').style.display = 'none';
         } else {
-            window.location.href = 'videos';
+            window.location.href = 'videolist';
         }
     } else if (response.status === 'Upload Success' && response.message === 'File exist, database updated, preview created.') {
         alert('File exist, database updated, preview created.');
-        window.location.href = '/';
+        window.location.href = 'upload';
     } else if (response.status === 'Upload Success' && response.message === 'Files exist, database updated.') {
         alert('Files exist, database updated. No need to upload.');
-        window.location.href = '/';
+        window.location.href = 'upload';
     } else if (response.status === 'Upload Success') {
         var uploadAnother = confirm('Upload Success! Do you want to upload another file?');
         if (uploadAnother) {
@@ -68,10 +68,10 @@ function handleUploadResponse(response) {
             document.getElementById('chooseFileBtn').textContent = 'Choose File';
             document.querySelector('button[type="button"]').style.display = 'none';
         } else {
-            window.location.href = 'videos';
+            window.location.href = 'videolist';
         }
     } else {
         alert('Upload Failed: ' + response.message);
-        window.location.href = '/';
+        window.location.href = 'upload';
     }
 }

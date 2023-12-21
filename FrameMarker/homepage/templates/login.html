@@ -6,7 +6,7 @@
     <title>Login</title>
     
     <!--css File loader-->
-    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'login.css' %}">
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
 
     <!--js File loader-->
@@ -19,8 +19,8 @@
     <div class="navbar">
         <!-- Left section of the navbar -->
         <div class="navbar-left">
-            <a href="{% url 'index' %}" class="navbar-title">Frame Annotator</a>
-            <a href="{% url 'index' %}" class="navbar-l-link">Home</a>
+            <a href="{% url 'introduction' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'upload' %}" class="navbar-l-link">Upload</a>
             <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
             <a href="{% url 'annotation' %}" class="navbar-l-link">Annotation</a>
             <a href="export" class="navbar-l-link">Exports</a>

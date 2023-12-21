@@ -9,8 +9,8 @@ from homepage import views as homepage_views
 from annotation import views as annotation_view
 
 urlpatterns = [
-    path('', homepage_views.index, name='introduction'),
-    path('upload/', homepage_views.upload, name='upload'),
+    path('', homepage_views.introduction, name='introduction'),
+    path('uploadpage/', homepage_views.upload, name='upload'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
 
     path('videolist/', views.video_list, name='video_list'),

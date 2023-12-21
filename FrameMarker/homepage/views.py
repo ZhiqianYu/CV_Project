@@ -12,12 +12,11 @@ import cv2
 from PIL import Image
 
 # 链接定向
-def index(request):
+def introduction(request):
     return render(request, 'introduction.html')
 
 def upload(request):
     return render(request, 'upload.html')
-
 
 # 用户注册
 def register_view(request):
@@ -120,7 +119,7 @@ def upload_file(request):
             return JsonResponse({'status': 'Upload Failed', 'message': 'Invalid form data'})
     else:
         form = UploadForm()
-    return render(request, 'index.html', {'form': form})
+    return render(request, 'upload.html', {'form': form})
 
 # 数据库操作
 def create_video(video_path, preview_path, username):

@@ -8,8 +8,8 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('', homepage_views.index, name = 'introduction'),
-    path('upload/', homepage_views.upload, name = 'upload'),
+    path('', homepage_views.introduction, name = 'introduction'),
+    path('uploadpage/', homepage_views.upload, name = 'upload'),
     path('videolist/', videopage_views.video_list, name='video_list'),
     path('annotation/<int:video_id>/', views.annotation, name='annotation'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
