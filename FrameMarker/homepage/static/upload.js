@@ -52,10 +52,10 @@ function handleUploadResponse(response) {
         }
     } else if (response.status === 'Upload Success' && response.message === 'File exist, database updated, preview created.') {
         alert('File exist, database updated, preview created.');
-        window.location.href = 'upload';
+        window.location.href = '/uploadpage';
     } else if (response.status === 'Upload Success' && response.message === 'Files exist, database updated.') {
         alert('Files exist, database updated. No need to upload.');
-        window.location.href = 'upload';
+        window.location.href = '/uploadpage';
     } else if (response.status === 'Upload Success') {
         var uploadAnother = confirm('Upload Success! Do you want to upload another file?');
         if (uploadAnother) {
