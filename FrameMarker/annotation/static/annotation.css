@@ -9,3 +9,23 @@ body {
     background: linear-gradient(to bottom, #d4dbe8 0%, #ffffff 20%, #a3c6e3 100%);
     margin: 0;
 }
+
+/* playerbtns */
+.player-controls {
+    margin-top: 80px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+button {
+    padding: 10px;
+    margin-right: 10px;
+}
+
+/* 显示按钮操作状态样式 */
+#buttonStatus {
+    margin-top: 10px;
+}

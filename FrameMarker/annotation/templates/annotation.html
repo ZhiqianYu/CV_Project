@@ -15,6 +15,7 @@
     <!--js File loader-->
     <script src="{% static 'ripples.js' %}"></script>
     <script src="{% static 'search.js' %}"></script>
+    <script src="{% static 'annotation-navbar.js' %}"></script>
     
     <!-- 引入 jQuery 库 -->
     
@@ -32,10 +33,10 @@
         <!-- Left section of the navbar -->
         <div class="navbar-left">
             <a href="{% url 'introduction' %}" class="navbar-title">Frame Annotator</a>
-            <a href="{% url 'upload' %}" class="navbar-l-link">Upload</a>
-            <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
-            <a href="{% url 'annotation' %}" class="navbar-l-link">Annotation</a>
-            <a href="export" class="navbar-l-link">Exports</a>
+            <div class="navbar-left-fileinf">
+                <span class="file-name">Current Video: {{ filename }}</span>
+                <span class="uploader">Uploader: {{ uploader }}</span>
+            </div>
         </div>
         
     
@@ -44,17 +45,49 @@
             <a href="{% url 'login' %}" class="navbar-login">Login</a>
             <span class="navbar-separator">|</span>
             <a href="{% url 'register' %}" class="navbar-register">Register</a>
-            <div class="search-container">
-                <input type="text" placeholder="Search...">
-                <div class="search-icon" onclick="performSearch()">
-                    <span>&#128269;</span>
-                </div>
+        </div>
+    </div>
+    
+    <!-- Page Content -->
+    <!-- First Row -->
+    <div class="player-container">
+        <div class="player-controls">
+            <button id="playBtn">Play</button>
+            <button id="resumeBtn">Resume</button>
+            <button id="selectBtn">Select Video</button>
+            <button id="exportBtn">Export</button>
+            <div id="buttonStatus"></div>
+        </div>
+    
+        <!-- 进度条容器 -->
+        <div class="progress-container">
+            <!-- 进度条和当前位置显示 -->
+            <div class="progress-bar"></div>
+            <div class="current-position">Current Position: <span id="currentPosition">0s</span></div>
+            
+            <!-- 进度条下展开的预览图 -->
+            <div class="10x30f-small-preview">
+                <!-- 显示当前时间前后10s的视频预览图 -->
+                <!-- 每个小格子代表1s -->
             </div>
         </div>
     </div>
     
-    <!-- 页面内容 -->
-    
+    <!-- Second Row -->
+    <!-- 下方5个预览图 -->
+    <div class="5x30f-big-preview">
+        <!-- 预览图的放大版本 -->
+        <!-- 每个预览图上方的按钮：good, neutral, bad -->
+        <!-- 显示当前预览图代表的帧范围 -->
+    </div>
+
+    <!-- Third Row -->
+    <!-- 下方5个预览图 -->
+    <div class="6x5f-middle-preview">
+        <!-- 预览图的放大版本 -->
+        <!-- 每个预览图上方的按钮：good, neutral, bad -->
+        <!-- 显示当前预览图代表的帧范围 -->
+    </div>
 </body>
 
 </html>

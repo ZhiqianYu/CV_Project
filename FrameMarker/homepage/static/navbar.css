@@ -42,6 +42,31 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
+.navbar-left-fileinf {
+    margin-left: 10px; 
+    margin-right: 10px;
+}
+
+.navbar-left-fileinf .file-name{
+    color: rgb(227, 239, 223);
+    text-decoration: none;
+    padding: 25px 20px;
+    font-size: 18px;
+    font-weight: 200;
+    vertical-align: middle;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.navbar-left-fileinf .uploader{
+    color: rgb(227, 239, 223);
+    text-decoration: none;
+    padding: 25px 20px;
+    font-size: 18px;
+    font-weight: 200;
+    vertical-align: middle;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
 /* Styles for the right section of the navbar */
 .navbar-right{
     display: flex;
@@ -107,7 +132,8 @@
 .navbar-left .navbar-l-link:hover,
 .navbar-right .navbar-login:hover,
 .navbar-right .navbar-register:hover,
-.search-icon:hover {
+.search-icon:hover,
+.navbar-left-filename .file-name:hover {
     color: rgb(226, 25, 25); /* Change the color to red */
     font-weight: bold; /* Make the font bold */
 }
