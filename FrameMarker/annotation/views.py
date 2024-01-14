@@ -4,4 +4,6 @@ from homepage.models import Video
 # Create your views here.
 def annotation(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
-    return render(request, 'annotation.html', {'video': video})
+    filename = video.file_name
+    uploader = video.uploader
+    return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader})

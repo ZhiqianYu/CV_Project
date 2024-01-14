@@ -107,7 +107,9 @@
 .navbar-left .navbar-l-link:hover,
 .navbar-right .navbar-login:hover,
 .navbar-right .navbar-register:hover,
-.search-icon:hover {
+.search-icon:hover,
+.navbar-left-fileinf .file-name:hover,
+.navbar-left-fileinf .uploader:hover {
     color: rgb(226, 25, 25); /* Change the color to red */
     font-weight: bold; /* Make the font bold */
 }

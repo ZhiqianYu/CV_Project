@@ -1,0 +1,229 @@
+/* Reset some default margin */
+body, h1, h2, h3, h4, p {
+    margin: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #d4dbe8 0%, #ffffff 20%, #a3c6e3 100%);
+    margin: 0;
+}
+
+/* Video Info Styles */
+.video-info {
+    width: max-content;
+    margin-left: 1%; 
+    margin-right: 1%;
+    margin-top: 80px;
+    margin-bottom: 5px;
+
+    border-color: rgb(41, 187, 138);
+    border-style: solid;
+}
+
+.file-name, .uploader {
+    text-decoration: none;
+    color: #6492ed;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.separator {
+    margin: 0px 5px;
+    color: #6492ed;
+    padding: 0px 0px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.player-frames {
+    display: flex;
+    flex-direction: row;
+    width: 98%;
+    align-items: center;
+    margin-left: 1%;
+    margin-right: 1%;
+    
+    border-color: rgb(41, 187, 138);
+    border-style: solid;
+}
+
+/* Left side - player+btns */
+.player-btns {
+    display: flex;
+    flex-direction: column; /* Align vertically */
+    width: 720px; /* Adjust the width as needed */
+    border: 2px solid rgb(200, 59, 59); /* Black border for the player */
+}
+
+/* Style for Video Player */
+.video-player {
+    width: 720px;
+    height: 405px;
+    align-items: center;
+    background-color: #cce5ff; /* Blue background color */
+    border: 2px solid rgb(60, 128, 245); /* Black border for the player */
+}
+
+/* Style for Button Container */
+.btn-container {
+    width: max-content;
+    display: flex;
+    align-self: center;
+    flex-direction: column; /* Align vertically */
+    gap: 20px;
+
+    border: 2px solid rgb(106, 213, 106); /* Black border for the player */
+}
+
+.player-controls{
+    width: max-content;
+    display: flex;
+    align-items: center;
+    flex-direction: row; /* Align vertically */
+    gap: 20px;
+
+    border: 1px solid rgb(131, 100, 242); /* Black border for the player */
+}
+
+.frames-btns {
+    display: flex;
+    flex-direction: column; /* Align vertically */
+    width: calc(100% - 720px); /* Adjust the width as needed */
+
+    border: 2px solid rgb(40, 94, 188); /* Black border for the player */
+}
+
+/* Right side - Frames Container */
+.frames-container {
+    width: 100%; /* Adjust the width as needed */
+    height: 405px;
+    border: 2px solid rgb(218, 164, 36); /* Black border for the player */
+}
+
+/* Style for Frames Rows */
+.frames-row-1,
+.frames-row-2 {
+    width: calc(100% - 8px);
+    height: 50%;
+    margin-left: 4px;
+    margin-right: 4px;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    border: 1px dotted rgb(200, 59, 59);
+}
+
+/* Style for Individual Frame */
+.frame-60,
+.frame-120,
+.frame-180,
+.frame-240,
+.frame-300,
+.frame-360,
+.frame-420,
+.frame-480 {
+    width: 25%; /* 25% width for each frame with 10px gap */
+    height: 200px;
+    overflow: hidden;
+    background-color: #cce5ff; /* Blue background color */
+    border: 1px solid black; /* Black border for each frame */
+}
+
+.frame-60 img,
+.frame-120 img,
+.frame-180 img,
+.frame-240 img,
+.frame-300 img,
+.frame-360 img,
+.frame-420 img,
+.frame-480 img {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    object-fit: cover;
+}
+
+.frame-rank{
+    width: max-content;
+    display: flex;
+    align-self: center;
+    flex-direction: row;
+    margin-left: 0px;
+    gap: 20px;
+
+    border: 1px solid rgb(172, 40, 130); /* Black border for the player */
+}
+
+.choosed-frame{
+    margin-left: 40px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    border: 2px solid #5c9fe7;
+}
+
+/* Style for Progress Container */
+.progress-container {
+    width: 96%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-left: 2%;
+    margin-right: 2%;
+
+    border: 2px solid rgb(106, 213, 106);
+}
+
+/* Style for Progress Bar */
+.progress-bar {
+    width: 100%; /* Full width of the container */
+    height: 10px; /* Adjust the height as needed */
+    margin-top: 2px;
+    margin-bottom: 2px;
+    background-color: #e1caca;
+    position: relative;
+    cursor: pointer;
+
+    border: 1px solid rgb(213, 117, 73);
+}
+
+/* Style for Progress Indicator */
+.progress-indicator {
+    width: 10px; /* Adjust the width of the indicator */
+    height: 100%;
+    background-color: #24bc29; /* Green color for the indicator */
+    position: absolute;
+    border-radius: 4px;
+    top: 0;
+    left: 0;
+
+    border: 1px solid rgb(72, 139, 228);
+}
+
+/* Style for Frame and Time Indicator Container */
+.frame-time-indicator {
+    display: flex;
+    justify-content: space-between;
+    width: calc(100% - 20px);
+    margin-top: 0px;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    border: 1px solid rgb(72, 139, 228);
+}
+
+/* Style for Current Position and Current Time */
+.current-position,
+.current-time {
+    font-weight: bold;
+}
+
+/* Style for Frame and Time Display */
+#currentFrame,
+#totalFrames,
+#currentTime,
+#totalTime {
+    margin: 0 4px;
+}
+

@@ -13,7 +13,6 @@ body {
 .filter-container {
     position: fixed;
     margin-top: 80px;
-    position: center;
     width: 100%;
     padding-left: 20px;
     text-align: left;
@@ -24,11 +23,12 @@ body {
 .video-grid {
     margin-top: 120px;
     margin-bottom: 80px;
-    margin-left: 50px;
-    margin-right: 50px;
+    margin-left: 80px;
     display: grid;
     gap: 15px; 
     grid-auto-rows: 325px; 
+    justify-content: center;
+    align-items: center;
 }
 
 /* 预览图框 + 文字框 */
@@ -128,14 +128,8 @@ body {
     }
 }
 
-@media (min-width: 1166px) and (max-width: 1530px) {
+@media (min-width: 1166px) {
     .video-grid {
         grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-@media (min-width: 1531px) {
-    .video-grid {
-        grid-template-columns: repeat(5, 1fr);
     }
 }
