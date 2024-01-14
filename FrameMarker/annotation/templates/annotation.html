@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Frame Annotator - Annotation</title>
+    <title>Annotation Tool</title>
     
     <!--css File loader-->
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
@@ -15,7 +15,8 @@
     <!--js File loader-->
     <script src="{% static 'ripples.js' %}"></script>
     <script src="{% static 'search.js' %}"></script>
-    <script src="{% static 'annotation-navbar.js' %}"></script>
+
+    <script src="{% static 'videoplayer.js' %}"></script>
     
     <!-- 引入 jQuery 库 -->
     
@@ -33,13 +34,10 @@
         <!-- Left section of the navbar -->
         <div class="navbar-left">
             <a href="{% url 'introduction' %}" class="navbar-title">Frame Annotator</a>
-            <div class="navbar-left-fileinf">
-                <span class="file-name">Current Video: {{ filename }}</span>
-                <span class="uploader">Uploader: {{ uploader }}</span>
-            </div>
+            <a href="{% url 'upload' %}" class="navbar-l-link">Upload</a>
+            <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
         </div>
-        
-    
+
         <!-- Right section of the navbar -->
         <div class="navbar-right">
             <a href="{% url 'login' %}" class="navbar-login">Login</a>
@@ -49,41 +47,94 @@
     </div>
     
     <!-- Page Content -->
-    <!-- First Row -->
-    <div class="player-container">
-        <div class="player-controls">
-            <button id="playBtn">Play</button>
-            <button id="resumeBtn">Resume</button>
-            <button id="selectBtn">Select Video</button>
-            <button id="exportBtn">Export</button>
-            <div id="buttonStatus"></div>
+    <!-- Video Info -->
+    <div class="video-info">
+        <a href="{{ video.video_file.url }}" class="file-name">Current Video: {{ filename }}</a>
+        <span class="separator">|</span>
+        <a href="{{ video.uploader.url }}" class="uploader">Uploader: {{ uploader }}</a>
+    </div>
+
+    <!-- First Part -->
+    <!-- video player and frames -->
+    <div class="player-frames">
+        <div class="player-btns">
+            <div class="video-player">
+                <video id="video_{{ video.id }}" width="720" controls="false">
+                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="btn-container">
+                <div class="player-controls">
+                    <button id="playPauseBtn">Play</button>
+                    <button id="resumeBtn">Resume</button>
+                    <button id="selectBtn">Select Video</button>
+                    <button id="saveBtn">Save Annotation</button>
+                    <button id="exportBtn">Export</button>
+                    <div id="buttonStatus"></div>
+                </div>
+            </div>
         </div>
-    
-        <!-- 进度条容器 -->
-        <div class="progress-container">
-            <!-- 进度条和当前位置显示 -->
-            <div class="progress-bar"></div>
-            <div class="current-position">Current Position: <span id="currentPosition">0s</span></div>
-            
-            <!-- 进度条下展开的预览图 -->
-            <div class="10x30f-small-preview">
-                <!-- 显示当前时间前后10s的视频预览图 -->
-                <!-- 每个小格子代表1s -->
+        <div class="frames-btns">  
+            <div class="frames-container">
+                <div class="frames-row-1">
+                    <div class="frame-60" id="frame-60">
+                        <img src="{% static 'images-60.png' %}" alt="f60">
+                    </div>
+                    <div class="frame-120" id="frame-120">
+                        <img src="{% static 'images-120.png' %}" alt="f120">
+                    </div>
+                    <div class="frame-180" id="frame-180">
+                        <img src="{% static 'images-180.png' %}" alt="f180">
+                    </div>
+                    <div class="frame-240" id="frame-240">
+                        <img src="{% static 'images-240.png' %}" alt="f240">
+                    </div>
+                </div> 
+                <div class="frames-row-2">
+                    <div class="frame-300" id="frame-300">
+                        <img src="{% static 'images-300.png' %}" alt="f300">
+                    </div>
+                    <div class="frame-360" id="frame-360">
+                        <img src="{% static 'images-360.png' %}" alt="f360">
+                    </div>
+                    <div class="frame-420" id="frame-420">
+                        <img src="{% static 'images-420.png' %}" alt="f420">
+                    </div>
+                    <div class="frame-480" id="frame-480">
+                        <img src="{% static 'images-480.png' %}" alt="f480">
+                    </div>
+                </div>
+            </div>
+            <div class="btn-container">
+                <div class="frame-rank">
+                    <button id="rank0">Sehr schlecht</button>
+                    <button id="rank1">Schlecht</button>
+                    <button id="rank2">Durchschnittlich</button>
+                    <button id="rank3">Gut</button>
+                    <button id="rank4">Sehr gut</button>
+                    <button id="mainframeBtn">Frame Generation</button>
+                    <div id="buttonStatus"></div>
+                    <div class="choosed-frame">{{choosed_frame}} # frame</div>
+                </div>
+                
             </div>
         </div>
     </div>
-    
-    <!-- Second Row -->
-    <!-- 下方5个预览图 -->
-    <div class="5x30f-big-preview">
-        <!-- 预览图的放大版本 -->
-        <!-- 每个预览图上方的按钮：good, neutral, bad -->
-        <!-- 显示当前预览图代表的帧范围 -->
+
+    <!-- Progress Container -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar" onclick="updateProgressBar(event)">
+            <div class="progress-indicator" id="progressIndicator"></div>
+        </div>
+        <div class="frame-time-indicator">
+            <div class="current-position">Current Frame: <span id="currentFrame">0</span>/<span id="totalFrames">0</span></div>
+            <div class="current-time">Current Time: <span id="currentTime">0s</span>/<span id="totalTime">0s</span></div>
+        </div>
     </div>
 
-    <!-- Third Row -->
-    <!-- 下方5个预览图 -->
-    <div class="6x5f-middle-preview">
+    <!-- Second Part -->
+    <div class="5x30f-big-preview">
         <!-- 预览图的放大版本 -->
         <!-- 每个预览图上方的按钮：good, neutral, bad -->
         <!-- 显示当前预览图代表的帧范围 -->
