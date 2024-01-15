@@ -21,7 +21,7 @@ body {
 
 .file-name, .uploader {
     text-decoration: none;
-    color: #6492ed;
+    color: #1650c6;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -46,18 +46,30 @@ body {
 .player-btns {
     display: flex;
     flex-direction: column; /* Align vertically */
-    width: 720px; /* Adjust the width as needed */
+    width: 722px;
 }
 
 /* Style for Video Player */
 .video-player {
-    width: 720px;
+    width: auto;
     height: 405px;
-    align-items: center;
-    background-color: #cce5ff; /* Blue background color */
-    border: 1px solid rgb(65, 147, 240); /* Black border for each frame */
+    position: relative;
+    background-color: #cce5ff;
+    border: 1px solid rgb(65, 147, 240);
     border-radius: 10px;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#VideoLoaded {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: 405px;
+    object-fit: contain;
 }
 
 /* Style for Button Container */
@@ -81,23 +93,23 @@ body {
 .frames-btns {
     display: flex;
     flex-direction: column; /* Align vertically */
-    width: calc(100% - 720px); /* Adjust the width as needed */
     margin-left: 5px;
+    width: calc(100% - 727px);
 }
 
 /* Right side - Frames Container */
 .frames-container {
     width: 100%; /* Adjust the width as needed */
-    height: 405px;
+    height: 408px;
 }
 
 /* Style for Frames Rows */
 .frames-row-1,
 .frames-row-2 {
-    width: calc(100% - 8px);
+    width: calc(100% - 2px);
     height: 50%;
-    margin-left: 4px;
-    margin-right: 4px;
+    margin-left: 1px;
+    margin-right: 1px;
     align-items: center;
     display: flex;
     flex-direction: row;

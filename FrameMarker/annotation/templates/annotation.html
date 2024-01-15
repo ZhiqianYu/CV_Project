@@ -10,10 +10,8 @@
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
     <link rel="stylesheet" href="{% static 'annotation.css' %}">
     <link rel="stylesheet" href="{% static 'search.css' %}">
-    <link rel="stylesheet" href="{% static 'ripple.css' %}">
 
     <!--js File loader-->
-    <script src="{% static 'ripples.js' %}"></script>
     <script src="{% static 'search.js' %}"></script>
 
     <script src="{% static 'videoplayer.js' %}"></script>
@@ -59,16 +57,15 @@
     <div class="player-frames">
         <div class="player-btns">
             <div class="video-player">
-                <video id="video_{{ video.id }}" width="720" controls="false">
-                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                <video id="VideoLoaded" controls="false">
+                    <source src="{{ MEDIA_URL }}{{ video.video_file }}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>
             <div class="btn-container">
                 <div class="player-controls">
                     <button id="playPauseBtn">Play</button>
-                    <button id="resumeBtn">Resume</button>
-                    <button id="selectBtn">Select Video</button>
+                    <button id="mainframeBtn">Frame Generation x60</button>
                     <button id="saveBtn">Save Annotation</button>
                     <button id="exportBtn">Export</button>
                     <div id="buttonStatus"></div>
@@ -107,15 +104,18 @@
                 </div>
             </div>
             <div class="btn-container">
+                
                 <div class="frame-rank">
+                    <button id="prev">Previous</button>
+                    <button id="next">Next</button>
+                    <div class="choosed-frame">Choosed Frame: {{choosed_frame}} </div>
+                    <span class="separator">|</span>
                     <button id="rank0">Sehr schlecht</button>
                     <button id="rank1">Schlecht</button>
                     <button id="rank2">Durchschnittlich</button>
                     <button id="rank3">Gut</button>
                     <button id="rank4">Sehr gut</button>
-                    <button id="mainframeBtn">Frame Generation</button>
                     <div id="buttonStatus"></div>
-                    <div class="choosed-frame">{{choosed_frame}} # frame</div>
                 </div>
                 
             </div>
