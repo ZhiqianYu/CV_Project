@@ -78,7 +78,7 @@
             <div class="frames-container">
                     {% for frame_path in frame_paths_60 %}
                         <div class="frames-60">
-                            <img src="{{ frame_path }}" alt="frame">
+                            <img src="{{ MEDIA_URL }}{{ frame_path }}" alt="frame">
                         </div>
                     {% endfor %}
             </div>
