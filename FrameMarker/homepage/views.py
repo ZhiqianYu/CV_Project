@@ -36,6 +36,26 @@ def register_view(request):
     
     return render(request, 'register.html', {'form': form})
 
+# Login
+def login_user(request):
+    if not request.user.is_authenticated:
+
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+
+            check_user = authenticate(username = username, password = password)
+            if check_user is not None:
+                login(request, check_user)
+                return redirect('introduction')
+            else:
+                messages.waring(request, 'Invalid Username or Password.')
+                return redirect('register')
+        return redirect('introduction')
+    else:
+        return redirect('introduction')
+
+
 # 文件上传Form
 def upload_file(request):
     if request.method == 'POST':
