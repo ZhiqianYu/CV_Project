@@ -1,3 +1,4 @@
+# views.py
 import os
 import cv2
 from django.shortcuts import render, get_object_or_404
@@ -19,6 +20,8 @@ def generate_frames(request, video_id):
 
     print(f"Number of frames in the database: {video_frames.count()}")
 
+    total_frames = calculate_total_frames(video)
+
     if not (video_frames.filter(has_frames_60=True).exists() and video_frames.filter(has_frames_4=True).exists()):
         print("Frames not found or not all frames are generated. Generating frames...")
         uploadtime = video.upload_time.strftime('%Y%m%d%H%M%S') 
@@ -28,7 +31,14 @@ def generate_frames(request, video_id):
     else:
         print("Frames already exist and are generated.")
     
-    return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'success', 'total_frames': total_frames})
+
+def calculate_total_frames(video):
+    video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
+    cap = cv2.VideoCapture(video_file_path)
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    cap.release()
+    return total_frames
 
 def generate_frames_for_video(video, uploadtime):
     video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
