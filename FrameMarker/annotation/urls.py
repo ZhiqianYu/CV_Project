@@ -14,7 +14,7 @@ urlpatterns = [
     path('annotation/<int:video_id>/', views.annotation, name='annotation'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('register/', homepage_views.register_view, name = 'register'),
-
+    path('generate_frames/<int:video_id>/', views.generate_frames, name='generate_frames'),
 ] 
 
 if settings.DEBUG:

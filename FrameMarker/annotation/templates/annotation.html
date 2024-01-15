@@ -15,6 +15,7 @@
     <script src="{% static 'search.js' %}"></script>
 
     <script src="{% static 'videoplayer.js' %}"></script>
+    <script src="{% static 'framegeneration.js' %}"></script>
     
     <!-- 引入 jQuery 库 -->
     
@@ -65,7 +66,7 @@
             <div class="btn-container">
                 <div class="player-controls">
                     <button id="playPauseBtn">Play</button>
-                    <button id="mainframeBtn">Frame Generation x60</button>
+                    <button id="framegenerationBtn" onclick="generateFrames({{ video.id }})">Frame Generation</button>
                     <button id="saveBtn">Save Annotation</button>
                     <button id="exportBtn">Export</button>
                     <div id="buttonStatus"></div>
@@ -103,8 +104,7 @@
                     </div>
                 </div>
             </div>
-            <div class="btn-container">
-                
+            <div class="btn-container">  
                 <div class="frame-rank">
                     <button id="prev">Previous</button>
                     <button id="next">Next</button>
@@ -117,7 +117,6 @@
                     <button id="rank4">Sehr gut</button>
                     <div id="buttonStatus"></div>
                 </div>
-                
             </div>
         </div>
     </div>

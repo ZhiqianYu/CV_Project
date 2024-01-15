@@ -69,3 +69,29 @@ function updateProgressBar(event) {
     const newPosition = (percentage / 100) * videoPlayer.duration;
     videoPlayer.currentTime = newPosition;
 }
+
+// frame generation main
+document.getElementById('60frameBtn').addEventListener('click', function() {
+    // AJAX request to trigger frame generation
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '{% url "generate_frames" video.id %}', true);
+
+    xhr.onload = function() {
+        if (xhr.status == 200) {
+            // Refresh the frames container with new frames
+            updateFramesContainer();
+        } else {
+            console.error('Frame generation failed');
+        }
+    };
+
+    xhr.send();
+});
+
+function updateFramesContainer() {
+    // Implement your logic to update the frames container without a full page reload
+    // This could involve fetching the updated frames using another AJAX request
+    // and replacing the existing frames in the DOM
+    // For simplicity, you can reload the entire page for now
+    location.reload();
+}
