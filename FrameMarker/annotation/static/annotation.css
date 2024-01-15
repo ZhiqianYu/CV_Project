@@ -17,9 +17,6 @@ body {
     margin-right: 1%;
     margin-top: 80px;
     margin-bottom: 5px;
-
-    border-color: rgb(41, 187, 138);
-    border-style: solid;
 }
 
 .file-name, .uploader {
@@ -43,9 +40,6 @@ body {
     align-items: center;
     margin-left: 1%;
     margin-right: 1%;
-    
-    border-color: rgb(41, 187, 138);
-    border-style: solid;
 }
 
 /* Left side - player+btns */
@@ -53,7 +47,6 @@ body {
     display: flex;
     flex-direction: column; /* Align vertically */
     width: 720px; /* Adjust the width as needed */
-    border: 2px solid rgb(200, 59, 59); /* Black border for the player */
 }
 
 /* Style for Video Player */
@@ -62,18 +55,19 @@ body {
     height: 405px;
     align-items: center;
     background-color: #cce5ff; /* Blue background color */
-    border: 2px solid rgb(60, 128, 245); /* Black border for the player */
+    border: 1px solid rgb(65, 147, 240); /* Black border for each frame */
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 /* Style for Button Container */
 .btn-container {
+    margin-top: 10px;
     width: max-content;
     display: flex;
     align-self: center;
     flex-direction: column; /* Align vertically */
     gap: 20px;
-
-    border: 2px solid rgb(106, 213, 106); /* Black border for the player */
 }
 
 .player-controls{
@@ -82,23 +76,19 @@ body {
     align-items: center;
     flex-direction: row; /* Align vertically */
     gap: 20px;
-
-    border: 1px solid rgb(131, 100, 242); /* Black border for the player */
 }
 
 .frames-btns {
     display: flex;
     flex-direction: column; /* Align vertically */
     width: calc(100% - 720px); /* Adjust the width as needed */
-
-    border: 2px solid rgb(40, 94, 188); /* Black border for the player */
+    margin-left: 5px;
 }
 
 /* Right side - Frames Container */
 .frames-container {
     width: 100%; /* Adjust the width as needed */
     height: 405px;
-    border: 2px solid rgb(218, 164, 36); /* Black border for the player */
 }
 
 /* Style for Frames Rows */
@@ -112,7 +102,6 @@ body {
     display: flex;
     flex-direction: row;
     gap: 2px;
-    border: 1px dotted rgb(200, 59, 59);
 }
 
 /* Style for Individual Frame */
@@ -127,8 +116,9 @@ body {
     width: 25%; /* 25% width for each frame with 10px gap */
     height: 200px;
     overflow: hidden;
+    border-radius: 10px;
     background-color: #cce5ff; /* Blue background color */
-    border: 1px solid black; /* Black border for each frame */
+    border: 1px solid rgb(65, 147, 240); /* Black border for each frame */
 }
 
 .frame-60 img,
@@ -152,15 +142,12 @@ body {
     flex-direction: row;
     margin-left: 0px;
     gap: 20px;
-
-    border: 1px solid rgb(172, 40, 130); /* Black border for the player */
 }
 
 .choosed-frame{
     margin-left: 40px;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    border: 2px solid #5c9fe7;
 }
 
 /* Style for Progress Container */
@@ -171,8 +158,6 @@ body {
     margin-top: 10px;
     margin-left: 2%;
     margin-right: 2%;
-
-    border: 2px solid rgb(106, 213, 106);
 }
 
 /* Style for Progress Bar */
@@ -182,10 +167,9 @@ body {
     margin-top: 2px;
     margin-bottom: 2px;
     background-color: #e1caca;
+    border-radius: 5px;
     position: relative;
     cursor: pointer;
-
-    border: 1px solid rgb(213, 117, 73);
 }
 
 /* Style for Progress Indicator */
@@ -197,8 +181,6 @@ body {
     border-radius: 4px;
     top: 0;
     left: 0;
-
-    border: 1px solid rgb(72, 139, 228);
 }
 
 /* Style for Frame and Time Indicator Container */
@@ -209,8 +191,6 @@ body {
     margin-top: 0px;
     margin-left: 10px;
     margin-right: 10px;
-
-    border: 1px solid rgb(72, 139, 228);
 }
 
 /* Style for Current Position and Current Time */
