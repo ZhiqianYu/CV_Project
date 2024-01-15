@@ -16,6 +16,7 @@
 
     <script src="{% static 'videoplayer.js' %}"></script>
     <script src="{% static 'framegeneration.js' %}"></script>
+    <script src="{% static 'framedisplay.js' %}"></script>
     
     <!-- 引入 jQuery 库 -->
     
@@ -75,39 +76,14 @@
         </div>
         <div class="frames-btns">  
             <div class="frames-container">
-                <div class="frames-row-1">
-                    <div class="frame-60" id="frame-60">
-                        <img src="{% static 'images-60.png' %}" alt="f60">
-                    </div>
-                    <div class="frame-120" id="frame-120">
-                        <img src="{% static 'images-120.png' %}" alt="f120">
-                    </div>
-                    <div class="frame-180" id="frame-180">
-                        <img src="{% static 'images-180.png' %}" alt="f180">
-                    </div>
-                    <div class="frame-240" id="frame-240">
-                        <img src="{% static 'images-240.png' %}" alt="f240">
-                    </div>
-                </div> 
-                <div class="frames-row-2">
-                    <div class="frame-300" id="frame-300">
-                        <img src="{% static 'images-300.png' %}" alt="f300">
-                    </div>
-                    <div class="frame-360" id="frame-360">
-                        <img src="{% static 'images-360.png' %}" alt="f360">
-                    </div>
-                    <div class="frame-420" id="frame-420">
-                        <img src="{% static 'images-420.png' %}" alt="f420">
-                    </div>
-                    <div class="frame-480" id="frame-480">
-                        <img src="{% static 'images-480.png' %}" alt="f480">
-                    </div>
-                </div>
+                    {% for frame_path in frame_paths_60 %}
+                        <div class="frames-60">
+                            <img src="{{ frame_path }}" alt="frame">
+                        </div>
+                    {% endfor %}
             </div>
             <div class="btn-container">  
                 <div class="frame-rank">
-                    <button id="prev">Previous</button>
-                    <button id="next">Next</button>
                     <div class="choosed-frame">Choosed Frame: {{choosed_frame}} </div>
                     <span class="separator">|</span>
                     <button id="rank0">Sehr schlecht</button>

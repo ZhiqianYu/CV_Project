@@ -9,10 +9,16 @@ from django.http import JsonResponse
 
 def annotation(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
+    video_frames, created = VideoFrames.objects.get_or_create(video=video)
+
     filename = video.file_name
     uploader = video.uploader
 
-    return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader})
+    frame_folder_60 = video_frames.frame_folder_path_60
+    iternum_60 = video_frames.total_frames_60 * 60
+    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, iternum_60, 60)]
+
+    return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 'frame_paths_60': frame_paths_60})
 
 def generate_frames(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
