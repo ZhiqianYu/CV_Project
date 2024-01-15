@@ -119,7 +119,7 @@ body {
     margin-left: 4px;
     margin-top: 4px;
     box-sizing: border-box; /* Adjust for borders and padding */
-    border: 1px solid #4b46b7;
+    border: 2px solid #4b46b7;
     border-radius: 7px;
 }
 
@@ -127,8 +127,8 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover; /* Maintain aspect ratio while covering the box */
-    border: 1px solid #ccc;
     border-radius: 5px;
+    overflow: hidden;
 }
 
 .frame-rank{
@@ -203,3 +203,11 @@ body {
     margin: 0 4px;
 }
 
+.frames-60 {
+    cursor: pointer; /* 显示小手形状的鼠标 */
+    transition: box-shadow 0.3s ease-in-out; /* 添加过渡效果 */
+}
+
+.frames-60:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* 鼠标悬浮时添加发光边缘 */
+}
