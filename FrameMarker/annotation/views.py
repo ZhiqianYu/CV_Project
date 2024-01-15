@@ -28,8 +28,10 @@ def generate_frames(video, filename, uploadtime):
 
     folder_name = f"{filename[:10].replace(' ', '')}-{video.uploader.username}-{uploadtime}"
 
+    frame_folder = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name)
     frame_folder_4 = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name, '4')
     frame_folder_60 = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name, '60')
+    os.makedirs(frame_folder, exist_ok=True)
     os.makedirs(frame_folder_4, exist_ok=True)
     os.makedirs(frame_folder_60, exist_ok=True)
 
@@ -61,7 +63,9 @@ def generate_frames(video, filename, uploadtime):
     video_frames.total_frames_60 = total_frames_60
     video_frames.total_frames_4 = total_frames_4
     video_frames.video_frames_total = total_frames_60 + total_frames_4
-    video_frames.frame_folder_path = frame_folder_60  # or choose the appropriate folder
+    video_frames.frame_folder_path = frame_folder  # or choose the appropriate folder
+    video_frames.frame_folder_path_4 = frame_folder_4
+    video_frames.frame_folder_path_60 = frame_folder_60
     video_frames.save()
 
     cap.release()

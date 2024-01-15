@@ -9,7 +9,9 @@ class VideoFrames(models.Model):
     total_frames_4 = models.IntegerField(default=0)
     frame_number = models.IntegerField(default=0)
     video_frames_total = models.IntegerField(default=0)
-    frame_folder_path = models.CharField(max_length=255) 
+    frame_folder_path = models.CharField(max_length=255, default="") 
+    frame_folder_path_4 = models.CharField(max_length=255, default="")
+    frame_folder_path_60 = models.CharField(max_length=255, default="")
 
     def save(self, *args, **kwargs):
         self.video_frames_total = self.total_frames_60 + self.total_frames_4
