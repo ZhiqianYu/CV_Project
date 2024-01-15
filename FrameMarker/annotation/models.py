@@ -17,3 +17,6 @@ class VideoFrames(models.Model):
 
     def __str__(self):
         return f'{self.video.file_name} - {self.total_frames_60} - {self.total_frames_4}'
+    
+    class Meta:
+        verbose_name_plural = "Video Frames"

@@ -37,6 +37,8 @@ def generate_frames(video, filename, uploadtime):
     total_frames_60 = 0
     total_frames_4 = 0
 
+    video_frames, created = VideoFrames.objects.get_or_create(video=video)
+
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -45,40 +47,21 @@ def generate_frames(video, filename, uploadtime):
         if frame_number % 60 == 0:
             frame_path = os.path.join(frame_folder_60, f'frame_60_{frame_number}.png')
             cv2.imwrite(frame_path, frame)
-
-            video_frame = VideoFrames(
-                video=video,
-                has_frames_60=True,
-                frame_folder_path=frame_folder_60,
-                frame_number=frame_number,
-            )
-            video_frame.save()
             total_frames_60 += 1
 
         if frame_number % 4 == 0 and frame_number % 60 != 0:
             frame_path = os.path.join(frame_folder_4, f'frame_4_{frame_number}.png')
             cv2.imwrite(frame_path, frame)
-
-            video_frame = VideoFrames(
-                video=video,
-                has_frames_4=True,
-                frame_folder_path=frame_folder_4,
-                frame_number=frame_number,
-            )
-            video_frame.save()
             total_frames_4 += 1
 
         frame_number += 1
 
-    print(f"Total frames 60: {total_frames_60}")
-    print(f"Total frames 4: {total_frames_4}")
+    video_frames.has_frames_60 = total_frames_60 > 0
+    video_frames.has_frames_4 = total_frames_4 > 0
+    video_frames.total_frames_60 = total_frames_60
+    video_frames.total_frames_4 = total_frames_4
+    video_frames.video_frames_total = total_frames_60 + total_frames_4
+    video_frames.frame_folder_path = frame_folder_60  # or choose the appropriate folder
+    video_frames.save()
 
-    # Update total frames in the VideoFrames model
-    video_frames = VideoFrames.objects.filter(video=video)
-    if video_frames.exists():
-        video_frame = video_frames.first()
-        video_frame.total_frames_60 = total_frames_60
-        video_frame.total_frames_4 = total_frames_4
-        video_frame.save()
-        print(f"Updated total frames in the database: {video_frame.total_frames_60} (60 frames), {video_frame.total_frames_4} (4 frames)")
     cap.release()
