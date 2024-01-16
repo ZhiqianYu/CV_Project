@@ -102,19 +102,22 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateFramesContainer4(framePaths4) {
         // Clear the existing content in the 4-frames container
         framesContainer4.innerHTML = '';
-
+    
         // Append the fetched 4-frame paths to the 4-frames container
         for (const framePath4 of framePaths4) {
             const frameElement4 = document.createElement('div');
             frameElement4.classList.add('frames-4');
-
+    
             const imgElement4 = document.createElement('img');
             imgElement4.src = framePath4;
             imgElement4.alt = 'frame';
-
+    
             frameElement4.appendChild(imgElement4);
             framesContainer4.appendChild(frameElement4);
         }
+    
+        // Reattach event listeners for the 4 frames
+        attachedEventListenersTo4Frames();
     }
 
     // event listener for the 60 frames
@@ -130,13 +133,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // event listener for the 4 frames
-    frameElements4.forEach((frameElement4) => {
-        frameElement4.addEventListener('click', function () {
-            const framePath4 = frameElement4.src;
-            isFrameSelected = true;
-            displaySelectedFrame(framePath4);
+    function attachedEventListenersTo4Frames() {
+        // Get the updated frame elements after reattaching the HTML
+        const frameElements4Updated = document.querySelectorAll('.frames-4 img');
+    
+        // Event listener for the 4 frames
+        frameElements4Updated.forEach((frameElement4) => {
+            frameElement4.addEventListener('click', function () {
+                const framePath4 = frameElement4.src;
+                isFrameSelected = true;
+                displaySelectedFrame(framePath4);
+            });
         });
-    });
+    }
 
     // event listener to the video player container to handle clicks on blank space
     videoPlayerContainer.addEventListener('click', function () {
