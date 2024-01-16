@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.querySelector('.video-player');
-    const frameElements = document.querySelectorAll('.frames-60 img');
+    const frameElements60 = document.querySelectorAll('.frames-60 img');
     const frameElements4 = document.querySelectorAll('.frames-4 img');
     const choosedFrameNumberElement = document.getElementById('choosed-frame-number');
     const progressIndicator = document.getElementById('progressIndicator');
@@ -10,8 +10,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const playPauseBtn = document.getElementById('playPauseBtn');
     const scrollHeight60 = 404;
     const scrollHeight4 = 240;
-    const framesContainer = document.querySelector('.frames-container');
+    const framesContainer60 = document.querySelector('.frames-container');
     const framesContainer4 = document.querySelector('.frames-container-4');
+
 
 
     let totalFrames = parseInt(totalFramesElement.textContent);
@@ -73,12 +74,58 @@ document.addEventListener('DOMContentLoaded', function () {
         return 0;  // Default to 0 if no match
     }
 
+    function extract4PathFrom60Path(framePath) {
+        // Extract the base path for 4-frame paths from the 60-frame path
+        const basePath0 = framePath.substring(0, framePath.lastIndexOf('/'));
+        const basePath = framePath.substring(0, basePath0.lastIndexOf('/'));
+        return `${basePath}/4`;
+    }
+
+    function fetchAndLoad4Frames(selectedFrameIndex) {
+        // Simulate fetching 4-frame paths
+        const framePaths4 = simulateFetching4Frames(selectedFrameIndex);
+
+        // Update the HTML to include the fetched 4-frame paths dynamically
+        updateFramesContainer4(framePaths4);
+    }
+
+    function simulateFetching4Frames(selectedFrameIndex) {
+        // Fetching 4-frame paths from the server based on the selected 60-frame index
+        const framePaths4 = [];
+        for (let i = selectedFrameIndex + 4; i < selectedFrameIndex + 60; i += 4) {
+            const framePath4 = `${extract4PathFrom60Path(frameElements60[0].src)}/frame_4_${i}.png`;
+            framePaths4.push(framePath4);
+        }
+        return framePaths4;
+    }
+
+    function updateFramesContainer4(framePaths4) {
+        // Clear the existing content in the 4-frames container
+        framesContainer4.innerHTML = '';
+
+        // Append the fetched 4-frame paths to the 4-frames container
+        for (const framePath4 of framePaths4) {
+            const frameElement4 = document.createElement('div');
+            frameElement4.classList.add('frames-4');
+
+            const imgElement4 = document.createElement('img');
+            imgElement4.src = framePath4;
+            imgElement4.alt = 'frame';
+
+            frameElement4.appendChild(imgElement4);
+            framesContainer4.appendChild(frameElement4);
+        }
+    }
+
     // event listener for the 60 frames
-    frameElements.forEach((frameElement) => {
+    frameElements60.forEach((frameElement) => {
         frameElement.addEventListener('click', function () {
             const framePath = frameElement.src;
             isFrameSelected = true;
             displaySelectedFrame(framePath);
+
+            const selectedFrameIndex = extractFrameIndexFromPath(framePath);
+            fetchAndLoad4Frames(selectedFrameIndex);
         });
     });
 
@@ -122,15 +169,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // event listener to scroll height 60
-    framesContainer.addEventListener('wheel', function (event) {
+    framesContainer60.addEventListener('wheel', function (event) {
         // 禁止默认的滚动行为，防止页面整体滚动
         event.preventDefault();
     
         // 根据滚动方向调整滚动位置
         if (event.deltaY > 0) {
-            framesContainer.scrollTop += scrollHeight60;
+            framesContainer60.scrollTop += scrollHeight60;
         } else {
-            framesContainer.scrollTop -= scrollHeight60;
+            framesContainer60.scrollTop -= scrollHeight60;
         }
     });
 
