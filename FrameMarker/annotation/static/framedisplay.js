@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function simulateFetching4Frames(selectedFrameIndex) {
         // Fetching 4-frame paths from the server based on the selected 60-frame index
         const framePaths4 = [];
-        for (let i = selectedFrameIndex + 4; i < selectedFrameIndex + 60; i += 4) {
+        for (let i = selectedFrameIndex + 4; i < selectedFrameIndex + 60 && i < totalFrames; i += 4) {
             const framePath4 = `${extract4PathFrom60Path(frameElements60[0].src)}/frame_4_${i}.png`;
             framePaths4.push(framePath4);
         }
