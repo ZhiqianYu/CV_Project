@@ -14,12 +14,14 @@ def annotation(request, video_id):
     filename = video.file_name
     uploader = video.uploader
 
-    max_frame_number = video_frames.video_frames_total
+    max_frame_number = calculate_max_frame_number(video)
+    total_frame_files = video_frames.video_frames_total
+
     frame_folder_60 = video_frames.frame_folder_path_60
     iternum_60 = video_frames.total_frames_60 * 60
     frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, iternum_60, 60)]
 
-    return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 'frame_paths_60': frame_paths_60, 'max_frame_number': max_frame_number})
+    return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 'frame_paths_60': frame_paths_60, 'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number})
 
 def generate_frames(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
@@ -27,7 +29,7 @@ def generate_frames(request, video_id):
 
     print(f"Number of frames in the database: {video_frames.count()}")
 
-    total_frames = calculate_total_frames(video)
+    total_frames = calculate_max_frame_number(video)
 
     if not (video_frames.filter(has_frames_60=True).exists() and video_frames.filter(has_frames_4=True).exists()):
         print("Frames not found or not all frames are generated. Generating frames...")
@@ -40,12 +42,12 @@ def generate_frames(request, video_id):
     
     return JsonResponse({'status': 'success', 'total_frames': total_frames})
 
-def calculate_total_frames(video):
+def calculate_max_frame_number(video):
     video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
     cap = cv2.VideoCapture(video_file_path)
-    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    max_frame_number = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     cap.release()
-    return total_frames
+    return max_frame_number
 
 def generate_frames_for_video(video, uploadtime):
     video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))

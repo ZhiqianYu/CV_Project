@@ -59,14 +59,10 @@
     <div class="player-frames">
         <div class="player-btns">
             <div class="video-player">
-                {% if choosed_frame %}
-                    <img src="{{ MEDIA_URL }}{{ choosed_frame }}" alt="choosed-frame">
-                {% else %}
-                    <video id="VideoLoaded" controls="false">
-                        <source src="{{ MEDIA_URL }}{{ video.video_file }}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                {% endif %}
+                <video id="VideoLoaded" controls="false">
+                    <source src="{{ MEDIA_URL }}{{ video.video_file }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
             <div class="btn-container">
                 <div class="player-controls">
@@ -81,11 +77,9 @@
         <div class="frames-btns">  
             <div class="frames-container">
                     {% for frame_path in frame_paths_60 %}
-                    <div class="frames-60" 
-                    onclick="displaySelectedFrame('{{ MEDIA_URL }}{{ frame_path }}', {{ forloop.counter0 }}, {{ max_frame_number }})" 
-                    onmouseover="updateProgressBar(event, {{ forloop.counter0 }}, {{ max_frame_number }})">
-                    <img src="{{ MEDIA_URL }}{{ frame_path }}" alt="frame">
-                </div>
+                        <div class="frames-60" >
+                            <img src="{{ MEDIA_URL }}{{ frame_path }}" alt="frame">
+                        </div>
                     {% endfor %}
             </div>
             <div class="btn-container">  
@@ -105,11 +99,11 @@
 
     <!-- Progress Container -->
     <div class="progress-container">
-        <div class="progress-bar" id="progressBar" onclick="updateProgressBar(event)">
+        <div class="progress-bar" id="progressBar">
             <div class="progress-indicator" id="progressIndicator"></div>
         </div>
         <div class="frame-time-indicator">
-            <div class="current-position">Current Frame: <span id="currentFrame">{{ choosed_frame_number }}</span>/<span id="totalFrames">{{max_frame_number}}</span></div>
+            <div class="current-position">Current Frame: <span id="current-Frame">{{ choosed_frame_number }}</span>/<span id="max_frame_number">{{ max_frame_number }}</span></div>
         </div>
     </div>
 

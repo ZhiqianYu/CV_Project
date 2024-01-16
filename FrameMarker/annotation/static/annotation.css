@@ -102,7 +102,7 @@ body {
     width: 100%; /* Adjust the width as needed */
     height: 408px;
 
-    overflow-y:scroll;
+    overflow-y: scroll;
     overflow-x: hidden;
 
     display: flex;
