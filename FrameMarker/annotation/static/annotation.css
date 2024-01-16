@@ -63,6 +63,15 @@ body {
     align-items: center;
 }
 
+.video-player img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio while covering the box */
+    border-radius: 5px;
+    overflow: hidden;
+
+}
+
 
 #VideoLoaded {
     max-width: 100%;

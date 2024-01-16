@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const videoPlayer = document.getElementById('VideoLoaded');
+    const videoPlayerContainer = document.querySelector('.video-player');
     const frameElements = document.querySelectorAll('.frames-60 img');
     const choosedFrameNumberElement = document.getElementById('choosed-frame-number');
     const progressIndicator = document.getElementById('progressIndicator');
@@ -24,11 +24,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateVideoPlayer(framePath) {
-        videoPlayer.style.display = 'none';
-        videoPlayer.pause();
-        videoPlayer.src = framePath;
-        videoPlayer.load();
-        videoPlayer.style.display = 'block';
+        // Create a new img element
+        const imgElement = document.createElement('img');
+        imgElement.src = framePath;
+        imgElement.alt = 'choosed-frame';
+
+        // Clear the contents of the video player container
+        videoPlayerContainer.innerHTML = '';
+
+        // Append the img element to the video player container
+        videoPlayerContainer.appendChild(imgElement);
     }
 
     function extractFrameIndexFromPath(framePath) {
