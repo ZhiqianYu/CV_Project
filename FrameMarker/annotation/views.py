@@ -21,7 +21,14 @@ def annotation(request, video_id):
     iternum_60 = video_frames.total_frames_60 * 60
     frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, iternum_60, 60)]
 
-    return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 'frame_paths_60': frame_paths_60, 'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number})
+    frame_folder_4 = video_frames.frame_folder_path_4
+    iternum_4 = video_frames.total_frames_4 * 4
+    frame_paths_4 = [os.path.join(frame_folder_4, f'frame_4_{i}.png') for i in range(4, iternum_4, 4) if i % 60 != 0]
+
+    return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 
+                                            'frame_paths_4': frame_paths_4, 'frame_folder_4': frame_folder_4,
+                                            'frame_paths_60': frame_paths_60, 'frame_folder_60': frame_folder_60,
+                                            'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number})
 
 def generate_frames(request, video_id):
     video = get_object_or_404(Video, pk=video_id)

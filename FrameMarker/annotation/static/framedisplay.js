@@ -1,12 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.querySelector('.video-player');
     const frameElements = document.querySelectorAll('.frames-60 img');
+    const frameElements4 = document.querySelectorAll('.frames-4 img');
     const choosedFrameNumberElement = document.getElementById('choosed-frame-number');
     const progressIndicator = document.getElementById('progressIndicator');
     const currentFrameElement = document.getElementById('current-Frame');
     const totalFramesElement = document.getElementById('max_frame_number');
     const video = document.getElementById('VideoLoaded');
     const playPauseBtn = document.getElementById('playPauseBtn');
+    const scrollHeight60 = 404;
+    const scrollHeight4 = 240;
+    const framesContainer = document.querySelector('.frames-container');
+    const framesContainer4 = document.querySelector('.frames-container-4');
+
 
     let totalFrames = parseInt(totalFramesElement.textContent);
     let selectedFrameNumber = null;
@@ -67,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return 0;  // Default to 0 if no match
     }
 
+    // event listener for the 60 frames
     frameElements.forEach((frameElement) => {
         frameElement.addEventListener('click', function () {
             const framePath = frameElement.src;
@@ -75,7 +82,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Add an event listener to the video player container to handle clicks on blank space
+    // event listener for the 4 frames
+    frameElements4.forEach((frameElement4) => {
+        frameElement4.addEventListener('click', function () {
+            const framePath4 = frameElement4.src;
+            isFrameSelected = true;
+            displaySelectedFrame(framePath4);
+        });
+    });
+
+    // event listener to the video player container to handle clicks on blank space
     videoPlayerContainer.addEventListener('click', function () {
         isFrameSelected = false;
         selectedFrameNumber = null;
@@ -84,6 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateVideoPlayer();
     });
 
+    // event listener to the video player container to handle clicks on blank space
     playPauseBtn.addEventListener('click', function () {
         // Check if videoPlayerContainer contains an img element (frame image)
         const containsFrameImage = videoPlayerContainer.querySelector('img') !== null;
@@ -101,6 +118,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 video.pause();
                 playPauseBtn.innerText = 'Play';
             }
+        }
+    });
+
+    // event listener to scroll height 60
+    framesContainer.addEventListener('wheel', function (event) {
+        // 禁止默认的滚动行为，防止页面整体滚动
+        event.preventDefault();
+    
+        // 根据滚动方向调整滚动位置
+        if (event.deltaY > 0) {
+            framesContainer.scrollTop += scrollHeight60;
+        } else {
+            framesContainer.scrollTop -= scrollHeight60;
+        }
+    });
+
+    // event listener to scroll height 4
+    framesContainer4.addEventListener('wheel', function (event) {
+        // 禁止默认的滚动行为，防止页面整体滚动
+        event.preventDefault();
+    
+        // 根据滚动方向调整滚动位置
+        if (event.deltaY > 0) {
+            framesContainer4.scrollTop += scrollHeight4;
+        } else {
+            framesContainer4.scrollTop -= scrollHeight4;
         }
     });
 });
