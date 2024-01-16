@@ -32,9 +32,13 @@
     
         <!-- Right section of the navbar -->
         <div class="navbar-right">
+            {% if user.is_authenticated  %}
+            <a href="{% url 'login' %}" class='login-inf'>Welcome, {{ user.username }}!</a>
+            {% else  %}
             <a href="{% url 'login' %}" class="navbar-login">Login</a>
             <span class="navbar-separator">|</span>
             <a href="{% url 'register' %}" class="navbar-register">Register</a>
+            {% endif  %}
             <div class="search-container">
                 <input type="text" placeholder="Search...">
                 <div class="search-icon" onclick="performSearch()">
