@@ -3,7 +3,7 @@ import os
 import cv2
 from django.shortcuts import render, get_object_or_404
 from homepage.models import Video
-from .models import VideoFrames
+from .models import VideoFrames, FrameAnnotations
 from django.conf import settings
 from django.http import JsonResponse
 
@@ -102,3 +102,21 @@ def generate_frames_for_video(video, uploadtime):
     video_frames.frame_folder_path_60 = frame_folder_60
     video_frames.save()
     cap.release()
+
+def annotate_frames(request, video_id, frame_type, frame_number, rank):
+    video = get_object_or_404(Video, pk=video_id)
+    video_frames = VideoFrames.objects.get(video=video)
+
+    frame_type = frame_type
+    frame_number = frame_number
+    rank = rank
+
+    frame_annotation, created = FrameAnnotations.objects.get_or_create(video=video, frame_type=frame_type, frame_number=frame_number, rank=rank)
+
+    if created:
+        frame_annotation.is_annotated = True
+        frame_annotation.annotator = request.user.username
+        frame_annotation.save()
+        return JsonResponse({'status': 'success'})
+    else:
+        return JsonResponse({'status': 'failure'})

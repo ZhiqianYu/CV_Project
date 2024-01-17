@@ -15,6 +15,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('register/', homepage_views.register_view, name = 'register'),
     path('generate_frames/<int:video_id>/', views.generate_frames, name='generate_frames'),
+    path('annotate_frames/<int:video_id>/<str:frame_type>/<int:frame_number>/<str:rank>', views.annotate_frames, name='annotate_frames'),
 ] 
 
 if settings.DEBUG:

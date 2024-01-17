@@ -26,6 +26,12 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.rank-notif {
+    color: #1650c6;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(39, 98, 215, 0.511);
+}
+
 .separator {
     margin: 0px 5px;
     color: #6492ed;
@@ -80,11 +86,18 @@ body {
 }
 
 /* Style for Button Container */
-.btn-container {
+.btn-container-player {
     margin-top: 10px;
     width: max-content;
     display: flex;
     align-self: center;
+    flex-direction: column; /* Align vertically */
+    gap: 20px;
+}
+
+.btn-container-rank {
+    width: 51%;
+    display: flex;
     flex-direction: column; /* Align vertically */
     gap: 20px;
 }
@@ -130,7 +143,7 @@ body {
     display: flex;
     flex-wrap: wrap;
 
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 10px;
     margin-right: 10px;
 
@@ -148,10 +161,18 @@ body {
     border-radius: 7px;
 }
 
+.inf-btns {
+    display: flex;
+    flex-direction: row;
+    margin-left: 5px;
+    margin-top: 10px;
+}
+
 .noti-info {
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: larger;
@@ -190,7 +211,7 @@ body {
     overflow: hidden;
 }
 
-.frame-rank{
+.frame-rank {
     width: max-content;
     display: flex;
     align-self: center;
@@ -199,8 +220,18 @@ body {
     gap: 20px;
 }
 
-.choosed-frame{
-    margin-left: 10px;
+.frame-rank-inf {
+    width: 48%;
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+    margin-left: 0px;
+    gap: 15%;
+}
+
+.choosed-frame, 
+.choosed-rank {
+    margin-left: 0px;
     font-weight: bold;
     text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
 }
@@ -240,27 +271,29 @@ body {
 
 /* Style for Frame and Time Indicator Container */
 .frame-time-indicator {
-    display: flex;
     justify-content: space-between;
-    width: calc(100% - 20px);
+    display: flex;
+    width: 100%;
     margin-top: 0px;
     margin-left: 0px;
     margin-right: 10px;
+}
 
+.reuseRankBtn {
+    margin-top: 5px;
+    text-align: right;
+    margin-right: 0%;
 }
 
 /* Style for Current Position and Current Time */
-.current-position,
-.current-time {
+.current-position {
     font-weight: bold;
     text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Style for Frame and Time Display */
 #currentFrame,
-#totalFrames,
-#currentTime,
-#totalTime {
+#totalFrames {
     margin: 0 4px;
 }
 
