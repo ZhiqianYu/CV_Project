@@ -37,7 +37,7 @@ def register_view(request):
     return render(request, 'register.html', {'form': form})
 
 # Login
- def login_user(request):
+def login_user(request):
      if not request.user.is_authenticated:
          if request.method == 'POST':
              username = request.POST['username']
