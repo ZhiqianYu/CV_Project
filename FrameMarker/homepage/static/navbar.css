@@ -70,6 +70,16 @@
     float: right;
 }
 
+.navbar-right .navbar-logout {
+    color: rgb(227, 239, 223);
+    font-size: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    padding: 25px 20px;
+    vertical-align: middle;
+    margin-right: 5px;
+    float: right;
+}
+
 .navbar-right .navbar-separator {
     color: rgb(227, 239, 223);
     margin: 0 0;
