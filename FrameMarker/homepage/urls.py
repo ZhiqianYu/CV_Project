@@ -12,7 +12,7 @@ urlpatterns = [
     path('upload/', views.upload_file, name = 'upload_file'),
     path('uploadpage/videolist/', videopage_views.video_list, name='video_list'),
     path('annotation/', annotation_view.annotation, name='annotation'),
-
+    path('logout/', views.logout_user, name='logout'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('register/', views.register_view, name = 'register'),
 ]
