@@ -17,14 +17,11 @@ body {
     margin-right: 1%;
     margin-top: 80px;
     margin-bottom: 5px;
-
-    border-color: rgb(41, 187, 138);
-    border-style: solid;
 }
 
 .file-name, .uploader {
     text-decoration: none;
-    color: #6492ed;
+    color: #1650c6;
     font-weight: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -43,37 +40,53 @@ body {
     align-items: center;
     margin-left: 1%;
     margin-right: 1%;
-    
-    border-color: rgb(41, 187, 138);
-    border-style: solid;
 }
 
 /* Left side - player+btns */
 .player-btns {
     display: flex;
     flex-direction: column; /* Align vertically */
-    width: 720px; /* Adjust the width as needed */
-    border: 2px solid rgb(200, 59, 59); /* Black border for the player */
+    width: 722px;
 }
 
 /* Style for Video Player */
 .video-player {
-    width: 720px;
+    width: auto;
     height: 405px;
+    position: relative;
+    background-color: #cce5ff;
+    border: 1px solid rgb(65, 147, 240);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    background-color: #cce5ff; /* Blue background color */
-    border: 2px solid rgb(60, 128, 245); /* Black border for the player */
+}
+
+.video-player img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Maintain aspect ratio while covering the box */
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+#VideoLoaded {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: 405px;
+    object-fit: contain;
 }
 
 /* Style for Button Container */
 .btn-container {
+    margin-top: 10px;
     width: max-content;
     display: flex;
     align-self: center;
     flex-direction: column; /* Align vertically */
     gap: 20px;
-
-    border: 2px solid rgb(106, 213, 106); /* Black border for the player */
 }
 
 .player-controls{
@@ -82,67 +95,85 @@ body {
     align-items: center;
     flex-direction: row; /* Align vertically */
     gap: 20px;
-
-    border: 1px solid rgb(131, 100, 242); /* Black border for the player */
 }
 
 .frames-btns {
     display: flex;
     flex-direction: column; /* Align vertically */
-    width: calc(100% - 720px); /* Adjust the width as needed */
-
-    border: 2px solid rgb(40, 94, 188); /* Black border for the player */
+    margin-left: 5px;
+    width: calc(100% - 727px);
 }
 
 /* Right side - Frames Container */
 .frames-container {
     width: 100%; /* Adjust the width as needed */
-    height: 405px;
-    border: 2px solid rgb(218, 164, 36); /* Black border for the player */
-}
+    height: 408px;
 
-/* Style for Frames Rows */
-.frames-row-1,
-.frames-row-2 {
-    width: calc(100% - 8px);
-    height: 50%;
-    margin-left: 4px;
-    margin-right: 4px;
-    align-items: center;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
     display: flex;
-    flex-direction: row;
-    gap: 2px;
-    border: 1px dotted rgb(200, 59, 59);
+    flex-wrap: wrap;
+    gap: 0px;
+
+    border-radius: 10px;
+    border: 1px solid rgb(65, 147, 240);
 }
 
-/* Style for Individual Frame */
-.frame-60,
-.frame-120,
-.frame-180,
-.frame-240,
-.frame-300,
-.frame-360,
-.frame-420,
-.frame-480 {
-    width: 25%; /* 25% width for each frame with 10px gap */
-    height: 200px;
-    overflow: hidden;
-    background-color: #cce5ff; /* Blue background color */
-    border: 1px solid black; /* Black border for each frame */
+.frames-container-4 {
+    width: calc(100% - 20px); /* Adjust the width as needed */
+    height: 242px;
+
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    border-radius: 10px;
+    border: 1px solid rgb(65, 147, 240);
 }
 
-.frame-60 img,
-.frame-120 img,
-.frame-180 img,
-.frame-240 img,
-.frame-300 img,
-.frame-360 img,
-.frame-420 img,
-.frame-480 img {
+.frames-60 {
+    width: calc(25% - 4px);
+    height: 198px;
+    margin-left: 4px;
+    margin-top: 4px;
+    box-sizing: border-box; /* Adjust for borders and padding */
+    border: 1px solid #6f68e6;
+    border-radius: 7px;
+}
+
+.frames-4 {
+    width: calc(25% - 4px);
+    height: 237px;
+
+    margin-left: 3px;
+    margin-top: 3px;
+
+    box-sizing: border-box; /* Adjust for borders and padding */
+    border: 1px solid #8883e5;
+    border-radius: 7px;
+}
+
+.frames-60 img {
     width: 100%;
     height: 100%;
-    align-items: center;
-    object-fit: cover;
+    object-fit: cover; /* Maintain aspect ratio while covering the box */
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.frames-4 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio while covering the box */
+    border-radius: 5px;
+    overflow: hidden;
 }
 
 .frame-rank{
@@ -152,15 +183,12 @@ body {
     flex-direction: row;
     margin-left: 0px;
     gap: 20px;
-
-    border: 1px solid rgb(172, 40, 130); /* Black border for the player */
 }
 
 .choosed-frame{
-    margin-left: 40px;
+    margin-left: 10px;
     font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-    border: 2px solid #5c9fe7;
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Style for Progress Container */
@@ -168,11 +196,9 @@ body {
     width: 96%;
     display: flex;
     flex-direction: column;
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 2%;
     margin-right: 2%;
-
-    border: 2px solid rgb(106, 213, 106);
 }
 
 /* Style for Progress Bar */
@@ -182,10 +208,9 @@ body {
     margin-top: 2px;
     margin-bottom: 2px;
     background-color: #e1caca;
+    border-radius: 5px;
     position: relative;
     cursor: pointer;
-
-    border: 1px solid rgb(213, 117, 73);
 }
 
 /* Style for Progress Indicator */
@@ -197,8 +222,6 @@ body {
     border-radius: 4px;
     top: 0;
     left: 0;
-
-    border: 1px solid rgb(72, 139, 228);
 }
 
 /* Style for Frame and Time Indicator Container */
@@ -207,16 +230,16 @@ body {
     justify-content: space-between;
     width: calc(100% - 20px);
     margin-top: 0px;
-    margin-left: 10px;
+    margin-left: 0px;
     margin-right: 10px;
 
-    border: 1px solid rgb(72, 139, 228);
 }
 
 /* Style for Current Position and Current Time */
 .current-position,
 .current-time {
     font-weight: bold;
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Style for Frame and Time Display */
@@ -227,3 +250,19 @@ body {
     margin: 0 4px;
 }
 
+.frames-60 {
+    cursor: pointer; /* 显示小手形状的鼠标 */
+    transition: box-shadow; /* 添加过渡效果 */
+}
+
+.frames-4 {
+    cursor: pointer; /* 显示小手形状的鼠标 */
+    transition: box-shadow; /* 添加过渡效果 */
+}
+
+.frames-60:hover, .frames-4:hover {
+    border-radius: 10px;
+    border: 3px solid #ed1c1c;
+    box-shadow: 0 0 8px rgba(196, 63, 18, 0.8); /* 发光的虚化的边缘 */
+    overflow: hidden;
+}
