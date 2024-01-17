@@ -1,0 +1,55 @@
+.username{
+    text-shadow: 2px rgb(80, 137, 230);
+    align-self: flex-start;
+}
+
+.helptext{
+    visibility: hidden;
+    font-size: 0px;
+}
+
+#RegisterForm{
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#RegisterForm p {
+    margin-bottom: 15px;
+}
+
+#RegisterForm label{
+    display: inline-block;
+    width: 150px;
+    text-align: right;
+    margin-right: 15px;
+}
+
+#RegisterForm input{
+    width: calc(100% - 180px);
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+
+
+#RegisterForm button{
+    width: 22%;
+    padding: 7px;
+}
+
+.content {
+    width: 22%;
+    align-self: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.content h2{
+    color: rgb(9, 95, 138);
+    text-decoration: none;
+    padding: 25px 25px;
+    font-size: 25px;
+    font-weight: 200;
+    vertical-align: middle;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}

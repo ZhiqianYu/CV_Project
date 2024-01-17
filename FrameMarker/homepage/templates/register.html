@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'login.css' %}">
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
     <link rel="stylesheet" href="{% static 'user.css' %}">
+    <link rel="stylesheet" href="{% static 'register.css' %}">
 
     <script src="{% static 'user.js' %}"></script>
 
@@ -34,13 +35,35 @@
     
     
 
-    <div class="content" style="padding-top: 20px;">
+    <div class="content">
         <h2>Register</h2>
+        <!-- Replace the form rendering with custom HTML structure -->
         <form method="post" id="RegisterForm">
-            {% csrf_token %}
-            {{ form.as_p }}
+            {% csrf_token %}    
+            <p>
+                <label class="username" for="id_username">Benutzername:</label>
+                <input type="text" name="username" maxlength="150" required="" aria-describedby="id_username_helptext" id="id_username">
+                <span class="helptext" id="id_username_helptext">Erforderlich. 150 Zeichen oder weniger. Nur Buchstaben, Ziffern und @/./+/-/_.</span>
+            </p>
+
+            <p>
+                <label for="id_password">Password:</label>
+                <input type="password" name="password" required="" id="id_password">
+            </p>
+
+            <p>
+                <label for="id_confirm_password">Confirm password:</label>
+                <input type="password" name="confirm_password" required="" id="id_confirm_password">
+            </p>
+
+            <p>
+                <label for="id_email">E-Mail-Adresse:</label>
+                <input type="email" name="email" maxlength="254" id="id_email">
+            </p>
+
             <button type="submit">Register</button>
         </form>
+
 
         <!-- 显示错误信息 -->
         {% if error_message %}
@@ -49,3 +72,15 @@
     </div>
 </body>
 </html>
+
+<!--
+    div classes in the form used
+    {% if error_message %}
+            <p class="error-message">{{ error_message }}</p>
+    {% endif %}
+
+
+
+            
+        
+-->

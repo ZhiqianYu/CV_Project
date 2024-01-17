@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.conf import settings
@@ -30,7 +31,11 @@ def register_view(request):
             new_user = User.objects.create_user(username=username, email=email, password=password)
             new_user.save()
             # 注册成功后重定向到某个页面，比如登录页面
-            return redirect('login')  
+            messages.success(request, 'Account has been created successfully.')
+            return JsonResponse({'status': 'success', 'username': username})  
+        else:
+            errors = form.errors.as_json()
+            return JsonResponse({'status': 'error', 'errors': errors})  
     else:
         form = RegisterForm()
     
