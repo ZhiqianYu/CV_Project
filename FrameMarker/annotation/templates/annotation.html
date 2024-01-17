@@ -82,9 +82,13 @@
         <div class="frames-btns">  
             <div class="frames-container">
                     {% for frame_path in frame_paths_60 %}
+                        {% if frame_folder_60 %}
                         <div class="frames-60" >
                             <img src="{{ MEDIA_URL }}{{ frame_path }}" alt="frame">
                         </div>
+                        {% else %}
+                        <div class="noti-info"> Frame not exist. Please first generate the frame and refresh the page </div>
+                        {% endif %}
                     {% endfor %}
             </div>
             <div class="btn-container">  
@@ -115,6 +119,11 @@
     <!-- Second Part -->
     
     <div class="frames-container-4">
+        {% if frame_folder_4 %}
+            <div class="noti-info"> Frame not loaded yet. Choose frame above to load relevant detailed frames here. </div>
+        {% else %}
+            <div class="noti-info"> Frame not exist. Please first generate the frame and refresh the page </div>
+        {% endif %}
         <!-- load per js
         {% for frame_path4 in frame_paths_4 %}
             <div class="frames-4" >
