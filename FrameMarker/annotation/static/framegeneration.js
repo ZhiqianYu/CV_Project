@@ -1,6 +1,6 @@
 function generateFrames(videoId) {
     // 弹出提示框
-    var confirmation = confirm("Generate frames for the whole video?");
+    var confirmation = confirm("Generate frames for the whole video? You will need to wait till another notification pops up. This may take a while.");
 
     // 处理用户的选择
     if (confirmation) {
