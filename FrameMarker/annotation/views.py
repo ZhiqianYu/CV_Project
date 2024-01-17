@@ -32,7 +32,7 @@ def generate_frames(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     video_frames = VideoFrames.objects.filter(video=video)
 
-    print(f"Number of frames in the database: {video_frames.count()}")
+    print(f"Number of video need to generate frames: {video_frames.count()}")
 
     total_frames = calculate_max_frame_number(video)
 
@@ -67,6 +67,7 @@ def generate_frames_for_video(video, uploadtime):
     os.makedirs(frame_folder_4, exist_ok=True)
     os.makedirs(frame_folder_60, exist_ok=True)
 
+    max_frame_number = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_number = 0
     total_frames_60 = 0
     total_frames_4 = 0
@@ -89,6 +90,7 @@ def generate_frames_for_video(video, uploadtime):
             total_frames_4 += 1
 
         frame_number += 1
+        print(f"Frame {frame_number} of {max_frame_number} generated")
 
     video_frames.has_frames_60 = total_frames_60 > 0
     video_frames.has_frames_4 = total_frames_4 > 0
