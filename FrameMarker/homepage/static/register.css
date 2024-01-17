@@ -25,12 +25,11 @@
 }
 
 #RegisterForm input{
-    width: calc(100% - 180px);
-    padding: 8px;
+    width: 180px;
+    height: 16px;
+    padding: 9px;
     box-sizing: border-box;
 }
-
-
 
 #RegisterForm button{
     width: 22%;
@@ -38,7 +37,8 @@
 }
 
 .content {
-    width: 22%;
+    width: 418.45px;
+    height: 332px;
     align-self: center;
     align-items: center;
     overflow: hidden;
