@@ -41,6 +41,7 @@
         <div class="navbar-right">
             {% if user.is_authenticated  %}
             <a href="{% url 'login' %}" class='login-inf'>Welcome, {{ user.username }}!</a>
+            <a href="{% url 'logout' %}" class='navbar-logout'>Logout</a>
             {% else  %}
             <a href="{% url 'login' %}" class="navbar-login">Login</a>
             <span class="navbar-separator">|</span>
