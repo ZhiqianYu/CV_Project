@@ -111,7 +111,12 @@ def annotate_frames(request, video_id, frame_type, frame_number, rank):
     frame_number = frame_number
     rank = rank
 
-    frame_annotation, created = FrameAnnotations.objects.get_or_create(video=video, frame_type=frame_type, frame_number=frame_number, rank=rank)
+    frame_annotation, created = FrameAnnotations.objects.get_or_create(
+        video=video,
+        frame_type=frame_type,
+        frame_number=frame_number,
+        rank=rank
+    )
 
     if created:
         frame_annotation.is_annotated = True
@@ -120,3 +125,4 @@ def annotate_frames(request, video_id, frame_type, frame_number, rank):
         return JsonResponse({'status': 'success'})
     else:
         return JsonResponse({'status': 'failure'})
+
