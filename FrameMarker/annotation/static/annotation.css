@@ -336,7 +336,7 @@ body {
     transition: box-shadow; /* 添加过渡效果 */
 }
 
-.frames-60:hover, .frames-4:hover {
+.frames-60:hover, .frames-4:hover, .frame-clicked {
     border-radius: 10px;
     border: 3px solid #ed1c1c;
     box-shadow: 0 0 8px rgba(196, 63, 18, 0.8); /* 发光的虚化的边缘 */

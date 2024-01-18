@@ -2,6 +2,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.querySelector('.video-player');
     const frameElements60 = document.querySelectorAll('.frames-60 img');
     const frameElements4 = document.querySelectorAll('.frames-4 img');
+    
+    // 鼠标悬浮状态保持
+    const frameContainers60 = document.querySelectorAll('.frames-60');
+    const frameContainers4 = document.querySelectorAll('.frames-4');
 
     // 所选帧的信息更新到页面
     const choosedFrameNumberElement = document.getElementById('choosed-frame-number');
@@ -37,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedFrameTyp = frameType;
         choosedFrameNumberElement.textContent = selectedFrameNumber;
         choosedFrameTypElement.textContent = selectedFrameTyp;
-
 
         // Save frame type to a custom attribute in an element
         updateProgressBar();
@@ -167,8 +170,25 @@ document.addEventListener('DOMContentLoaded', function () {
             frameElement4.addEventListener('click', function () {
                 const framePath4 = frameElement4.src;
                 isFrameSelected = true;
+
+                removeClickedClassFrom60Frames();
+                removeClickedClassFrom4Frames();
                 displaySelectedFrame(framePath4);
+                frameElement4.parentElement.classList.add('frame-clicked');
             });
+        });
+    }
+
+    function removeClickedClassFrom60Frames() {
+        frameContainers60.forEach(function (container) {
+            container.classList.remove('frame-clicked');
+        });
+    }
+
+    function removeClickedClassFrom4Frames() {
+        const allFrames4 = document.querySelectorAll('.frames-4');
+        allFrames4.forEach(function (container) {
+            container.classList.remove('frame-clicked');
         });
     }
 
@@ -226,5 +246,13 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             framesContainer4.scrollTop -= scrollHeight4;
         }
+    });
+
+    // 为每个元素添加点击事件监听器
+    frameContainers60.forEach(function (container) {
+        container.addEventListener('click', function () {
+            removeClickedClassFrom60Frames();
+            container.classList.add('frame-clicked');
+        });
     });
 });
