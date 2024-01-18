@@ -4,6 +4,9 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+
     <title>Video List</title>
     
     <!--css File loader-->
@@ -32,9 +35,14 @@
     
         <!-- Right section of the navbar -->
         <div class="navbar-right">
+            {% if user.is_authenticated  %}
+            <a href="{% url 'login' %}" class='login-inf'>Welcome, {{ user.username }}!</a>
+            <a href="{% url 'logout' %}" class='navbar-logout'>Logout</a>
+            {% else  %}
             <a href="{% url 'login' %}" class="navbar-login">Login</a>
             <span class="navbar-separator">|</span>
             <a href="{% url 'register' %}" class="navbar-register">Register</a>
+            {% endif  %}
             <div class="search-container">
                 <input type="text" placeholder="Search...">
                 <div class="search-icon" onclick="performSearch()">
@@ -52,29 +60,27 @@
     <!-- 视频列表 -->
     <div class="video-grid">
         {% for video in videos %}
-        <div class="video-item">
-            <div class="video-preview">
-                <a href="{{ video.video_file.url }}">
-                    <img src="{{ video.preview_file.url }}" alt="No Preview Image">
-                </a>
-                <div class="annotation-overlay">
-                    <a href="{% url 'annotation' video.id %}">
-                        <p class="annotation-info">{% if video.annotated %}Annotated{% else %}Not Annotated{% endif %}</p>
+            <div class="video-item">
+                <div class="video-preview">
+                    <a href="{{ MEDIA_URL }}{{ video.video_file_relative_path }}">
+                        <img src="{{ MEDIA_URL }}{{ video.preview_file_relative_path }}" alt="No Preview Image">
                     </a>
+                    <div class="annotation-overlay">
+                        <a href="{% url 'annotation' video.id %}">
+                            <p class="annotation-info">{% if video.annotated %}Annotated{% else %}Not Annotated{% endif %}</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="video-description">
+                    <a href="{{ MEDIA_URL }}{{ video.video_file_relative_path }}">
+                        <p class="file">Title:{{ video.file_name }}</p>
+                    </a>
+                    <p class="uploader">Uploader: <a href="{{ video.uploader.url }}">{{ video.uploader }}</a></p>
+                    <p class="upload-time">Upload Time: {{ video.upload_time }}</p>
                 </div>
             </div>
-            <div class="video-description">
-                <a href="{{ video.video_file.url }}">
-                    <p class="file">Title:{{ video.file_name }}</p>
-                </a>
-                <p class="uploader">Uploader: <a href="{{ video.uploader.url }}">{{ video.uploader }}</a>
-                <p class="upload-time">Upload Time: {{ video.upload_time }}</p>
-            </div>
-        </div>
         {% endfor %}
     </div>
-
-
-
+    
 </body>
 </html>

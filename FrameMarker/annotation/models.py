@@ -19,6 +19,20 @@ class VideoFrames(models.Model):
 
     def __str__(self):
         return f'{self.video.file_name} - {self.total_frames_60} - {self.total_frames_4}'
-    
+
     class Meta:
         verbose_name_plural = "Video Frames"
+
+class FrameAnnotations(models.Model):
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
+    frame_type = models.CharField(max_length=10, default="")
+    frame_number = models.IntegerField(default=0)
+    rank = models.CharField(max_length=20, default="")
+    is_annotated = models.BooleanField(default=False)
+    annotator = models.CharField(max_length=255, default="")
+
+    def __str__(self):
+        return f'{self.video.file_name} - {self.frame_type} - {self.frame_number} - {self.rank} - {self.is_annotated} - {self.annotator}' 
+    
+    class Meta:
+        verbose_name_plural = "Frame Annotations"
