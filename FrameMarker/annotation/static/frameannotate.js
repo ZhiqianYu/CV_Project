@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function rateFrame(rating) {
         // 更新当前选择的评级和视频id
-        currentRating = rating === 'Clear' ? '' : rating;
+        currentRating = rating;
         currentVideoId = videoIdContainer.getAttribute('data-video-id');
         
         // 从页面中提取当前帧的类型和帧号
