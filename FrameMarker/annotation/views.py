@@ -3,9 +3,9 @@ import os
 import cv2
 from django.shortcuts import render, get_object_or_404
 from homepage.models import Video
-from .models import VideoFrames
+from .models import VideoFrames, FrameAnnotations
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 
 def annotation(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
@@ -32,7 +32,7 @@ def generate_frames(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     video_frames = VideoFrames.objects.filter(video=video)
 
-    print(f"Number of frames in the database: {video_frames.count()}")
+    print(f"Number of video need to generate frames: {video_frames.count()}")
 
     total_frames = calculate_max_frame_number(video)
 
@@ -67,6 +67,7 @@ def generate_frames_for_video(video, uploadtime):
     os.makedirs(frame_folder_4, exist_ok=True)
     os.makedirs(frame_folder_60, exist_ok=True)
 
+    max_frame_number = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_number = 0
     total_frames_60 = 0
     total_frames_4 = 0
@@ -89,6 +90,7 @@ def generate_frames_for_video(video, uploadtime):
             total_frames_4 += 1
 
         frame_number += 1
+        print(f"Frame {frame_number} of {max_frame_number} generated")
 
     video_frames.has_frames_60 = total_frames_60 > 0
     video_frames.has_frames_4 = total_frames_4 > 0
@@ -100,3 +102,59 @@ def generate_frames_for_video(video, uploadtime):
     video_frames.frame_folder_path_60 = frame_folder_60
     video_frames.save()
     cap.release()
+
+def annotate_frames(request, video_id, frame_type, frame_number, rank):
+    video = get_object_or_404(Video, pk=video_id)
+    video_frames = VideoFrames.objects.get(video=video)
+
+    frame_type = frame_type
+    frame_number = frame_number
+    rank = rank
+
+    if rank == 'Clear':
+        # If rank is empty, delete the corresponding FrameAnnotations entry
+        try:
+            frame_annotation = FrameAnnotations.objects.get(
+                video=video,
+                frame_type=frame_type,
+                frame_number=frame_number
+            )
+            frame_annotation.delete()
+            return JsonResponse({'status': 'success'})
+        except FrameAnnotations.DoesNotExist:
+            # If the entry does not exist, return success as well
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            # Handle other potential exceptions (e.g., database errors) appropriately
+            return HttpResponseBadRequest(f'Error: {str(e)}')
+    else:
+        # If rank is not empty, update or create the FrameAnnotations entry
+        try:
+            frame_annotation = FrameAnnotations.objects.get(
+                video=video,
+                frame_type=frame_type,
+                frame_number=frame_number
+            )
+
+            # If the entry exists, update the rank information
+            frame_annotation.rank = rank
+            frame_annotation.is_annotated = True
+            frame_annotation.annotator = request.user.username
+            frame_annotation.save()
+
+            return JsonResponse({'status': 'success'})
+        except FrameAnnotations.DoesNotExist:
+            # If the entry does not exist, create a new one
+            frame_annotation = FrameAnnotations.objects.create(
+                video=video,
+                frame_type=frame_type,
+                frame_number=frame_number,
+                rank=rank,
+                is_annotated=True,
+                annotator=request.user.username
+            )
+
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            # Handle other potential exceptions (e.g., database errors) appropriately
+            return HttpResponseBadRequest(f'Error: {str(e)}')

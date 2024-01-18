@@ -80,7 +80,7 @@ body {
 }
 
 /* Style for Button Container */
-.btn-container {
+.btn-container-player {
     margin-top: 10px;
     width: max-content;
     display: flex;
@@ -130,7 +130,7 @@ body {
     display: flex;
     flex-wrap: wrap;
 
-    margin-top: 10px;
+    margin-top: 5px;
     margin-left: 10px;
     margin-right: 10px;
 
@@ -146,6 +146,29 @@ body {
     box-sizing: border-box; /* Adjust for borders and padding */
     border: 1px solid #6f68e6;
     border-radius: 7px;
+}
+
+.inf-btns {
+    display: flex;
+    flex-direction: row;
+    margin-left: 5px;
+    margin-top: 10px;
+
+}
+
+.noti-info {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: larger;
+    
+    border: 1px solid #6f68e6;
+    border-radius: 7px;
+    background-color: cornflowerblue;
+
 }
 
 .frames-4 {
@@ -176,18 +199,69 @@ body {
     overflow: hidden;
 }
 
-.frame-rank{
-    width: max-content;
+.btn-container-rank {
+    width: 55%;
     display: flex;
-    align-self: center;
-    flex-direction: row;
-    margin-left: 0px;
-    gap: 20px;
+    flex-direction: row; /* Align vertically */
+    gap: 5px;
+    justify-content: right;
 }
 
-.choosed-frame{
-    margin-left: 10px;
+.rank-notif{
+    color: rgb(227, 239, 223);
+    width: max-content;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 400;
+    vertical-align: middle;
+    margin-top: 2px;
+    margin-bottom: 1px;
+    margin-right: 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(127, 135, 140, 0.8);
+    background-color: rgb(51, 151, 222, 0.8);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.frame-rank-btns {
+    width: calc(88% - 5px);
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.frame-rank-inf {
+    width: 45%;
+    align-self: center;
+    display: flex;
+    flex-direction: row;
+
+}
+
+.choosed-frame-typ {
+    width: 21%;
+    margin-left: 0px;
+    display: flex;
+    flex-direction: row;
     font-weight: bold;
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+}
+
+.choosed-frame-num {
+    width: 31%;
+    margin-left: 0px;
+    display: flex;
+    flex-direction: row;
+    font-weight: bold;
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+}
+
+.choosed-rank {
+    width: 48%;
+    margin-left: 0px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: row;
     text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -226,27 +300,29 @@ body {
 
 /* Style for Frame and Time Indicator Container */
 .frame-time-indicator {
-    display: flex;
     justify-content: space-between;
-    width: calc(100% - 20px);
+    display: flex;
+    width: 100%;
     margin-top: 0px;
     margin-left: 0px;
     margin-right: 10px;
+}
 
+.reuseRankBtn {
+    margin-top: 5px;
+    text-align: right;
+    margin-right: 0%;
 }
 
 /* Style for Current Position and Current Time */
-.current-position,
-.current-time {
+.current-position {
     font-weight: bold;
     text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Style for Frame and Time Display */
 #currentFrame,
-#totalFrames,
-#currentTime,
-#totalTime {
+#totalFrames {
     margin: 0 4px;
 }
 
@@ -260,7 +336,7 @@ body {
     transition: box-shadow; /* 添加过渡效果 */
 }
 
-.frames-60:hover, .frames-4:hover {
+.frames-60:hover, .frames-4:hover, .frame-clicked {
     border-radius: 10px;
     border: 3px solid #ed1c1c;
     box-shadow: 0 0 8px rgba(196, 63, 18, 0.8); /* 发光的虚化的边缘 */

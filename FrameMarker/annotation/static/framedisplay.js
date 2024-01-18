@@ -2,27 +2,47 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.querySelector('.video-player');
     const frameElements60 = document.querySelectorAll('.frames-60 img');
     const frameElements4 = document.querySelectorAll('.frames-4 img');
+    
+    // 鼠标悬浮状态保持
+    const frameContainers60 = document.querySelectorAll('.frames-60');
+    const frameContainers4 = document.querySelectorAll('.frames-4');
+
+    // 所选帧的信息更新到页面
     const choosedFrameNumberElement = document.getElementById('choosed-frame-number');
+    const choosedFrameTypElement = document.getElementById('choosed-frame-type');
+    const choosedFrameElement = document.querySelector('.choosed-frame');
+    
+    // 进度条更新到页面
     const progressIndicator = document.getElementById('progressIndicator');
     const currentFrameElement = document.getElementById('current-Frame');
     const totalFramesElement = document.getElementById('max_frame_number');
+
+    // 视频播放器按钮
     const video = document.getElementById('VideoLoaded');
     const playPauseBtn = document.getElementById('playPauseBtn');
-    const scrollHeight60 = 404;
-    const scrollHeight4 = 240;
+
     const framesContainer60 = document.querySelector('.frames-container');
     const framesContainer4 = document.querySelector('.frames-container-4');
 
-
+    // 帧图像窗口滚动控制
+    const scrollHeight60 = 404;
+    const scrollHeight4 = 240;
+    
 
     let totalFrames = parseInt(totalFramesElement.textContent);
     let selectedFrameNumber = null;
+    let selectedFrameTyp = null;
     let isFrameSelected = false;
 
     function displaySelectedFrame(framePath) {
         const frameIndex = extractFrameIndexFromPath(framePath);
+        const frameType = extractFrameTypeFromPath(framePath);
         selectedFrameNumber = frameIndex;
+        selectedFrameTyp = frameType;
         choosedFrameNumberElement.textContent = selectedFrameNumber;
+        choosedFrameTypElement.textContent = selectedFrameTyp;
+
+        // Save frame type to a custom attribute in an element
         updateProgressBar();
         updateVideoPlayer(framePath);
     }
@@ -72,6 +92,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return parseInt(matches[1]);
         }
         return 0;  // Default to 0 if no match
+    }
+
+    function extractFrameTypeFromPath(framePath) {
+        const matches = framePath.match(/\/(\d+)\/frame_(\w+)_\d+(_\d+)?\.png/);
+        if (matches && matches[2]) {
+            return matches[2];
+        }
+        return '';  // Default to empty string if no match
     }
 
     function extract4PathFrom60Path(framePath) {
@@ -142,8 +170,25 @@ document.addEventListener('DOMContentLoaded', function () {
             frameElement4.addEventListener('click', function () {
                 const framePath4 = frameElement4.src;
                 isFrameSelected = true;
+
+                removeClickedClassFrom60Frames();
+                removeClickedClassFrom4Frames();
                 displaySelectedFrame(framePath4);
+                frameElement4.parentElement.classList.add('frame-clicked');
             });
+        });
+    }
+
+    function removeClickedClassFrom60Frames() {
+        frameContainers60.forEach(function (container) {
+            container.classList.remove('frame-clicked');
+        });
+    }
+
+    function removeClickedClassFrom4Frames() {
+        const allFrames4 = document.querySelectorAll('.frames-4');
+        allFrames4.forEach(function (container) {
+            container.classList.remove('frame-clicked');
         });
     }
 
@@ -201,5 +246,13 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             framesContainer4.scrollTop -= scrollHeight4;
         }
+    });
+
+    // 为每个元素添加点击事件监听器
+    frameContainers60.forEach(function (container) {
+        container.addEventListener('click', function () {
+            removeClickedClassFrom60Frames();
+            container.classList.add('frame-clicked');
+        });
     });
 });

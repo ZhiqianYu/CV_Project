@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -35,6 +35,29 @@ def register_view(request):
         form = RegisterForm()
     
     return render(request, 'register.html', {'form': form})
+
+# Login
+def login_user(request):
+     if not request.user.is_authenticated:
+         if request.method == 'POST':
+             username = request.POST['username']
+             password = request.POST['password']
+             check_user = authenticate(username = username, password = password)
+             if check_user is not None:
+                 login(request, check_user)
+                 return redirect('introduction')
+             else:
+                 messages.waring(request, 'Invalid Username or Password.')
+                 return redirect('register')
+         return redirect('introduction')
+     else:
+         return redirect('introduction')
+
+#Logout
+def logout_user(request):
+    request.session.flush()
+    logout(request)
+    return redirect('introduction')
 
 # 文件上传Form
 def upload_file(request):
