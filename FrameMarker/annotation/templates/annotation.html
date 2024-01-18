@@ -75,7 +75,6 @@
                 <div class="player-controls">
                     <button id="playPauseBtn">Play</button>
                     <button id="framegenerationBtn" onclick="generateFrames({{ video.id }})">Frame Generation</button>
-                    <button id="saveBtn">Save Annotation</button>
                     <button id="exportBtn">Export</button>
                     <div id="buttonStatus"></div>
                 </div>
@@ -127,7 +126,7 @@
         </div>
         <div class="frame-time-indicator">
             <div class="current-position">Frame Position: <span id="current-Frame">{{ choosed_frame_number }}</span>/<span id="max_frame_number">{{ max_frame_number }}</span></div>
-            <div class="reuseRankBtn"><button id="setSameRankBtn" onclick="(setSameRnkForSubframes)">Set Same Rank For Subframes</button></div>
+            <div class="reuseRankBtn"><button id="set-Same-Rank-Btn" onclick="setSameRankForSubframes({{ choosed_rank }})">Set Same Rank For Subframes</button></div>
         </div>
     </div>
 
