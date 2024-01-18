@@ -64,6 +64,28 @@ def logout_user(request):
     logout(request)
     return redirect('introduction')
 
+#Search
+def search(request):
+    query = request.GET.get('search_query', '')
+
+    user_obj = User.objects.filter(username__icontains=query)
+
+    if not user_obj.exists():
+        user_obj = User.objects.none()
+
+    params = {
+        'user_obj': user_obj,
+        'query': query,
+
+    }
+
+    return render(request, 'introduction.html', params)
+
+
+
+
+
+
 # 文件上传Form
 def upload_file(request):
     if request.method == 'POST':
