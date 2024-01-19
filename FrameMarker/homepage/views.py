@@ -129,6 +129,7 @@ def upload_file(request):
                         with open(video_path, 'wb') as destination_file:
                             for chunk in file.chunks():
                                 destination_file.write(chunk)
+                        video_path = video_format_transform(video_path)
                         generate_preview(video_path, preview_path)
                         Video.objects.filter(file_name=file_name).update(video_file=video_path, preview_file=preview_path)
                         return JsonResponse({'status': 'Upload Success', 'message': 'File uploaded, database updated, preview created.'})
