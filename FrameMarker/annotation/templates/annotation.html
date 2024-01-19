@@ -16,7 +16,7 @@
 
     <!--js File loader-->
     <script src="{% static 'search.js' %}"></script>
-
+    <script src="{% static 'frameannotate.js' %}"></script>
     <script src="{% static 'framegeneration.js' %}"></script>
     <script src="{% static 'framedisplay.js' %}"></script>
     
@@ -71,11 +71,10 @@
                     Your browser does not support the video tag.
                 </video>
             </div>
-            <div class="btn-container">
+            <div class="btn-container-player">
                 <div class="player-controls">
                     <button id="playPauseBtn">Play</button>
                     <button id="framegenerationBtn" onclick="generateFrames({{ video.id }})">Frame Generation</button>
-                    <button id="saveBtn">Save Annotation</button>
                     <button id="exportBtn">Export</button>
                     <div id="buttonStatus"></div>
                 </div>
@@ -93,16 +92,28 @@
                         {% endif %}
                     {% endfor %}
             </div>
-            <div class="btn-container">  
-                <div class="frame-rank">
-                    <div class="choosed-frame">Choosed Frame: <span id="choosed-frame-number">{{ choosed_frame_number }}</span></div>
-                    <span class="separator">|</span>
-                    <button id="rank0">Sehr schlecht</button>
-                    <button id="rank1">Schlecht</button>
-                    <button id="rank2">Durchschnittlich</button>
-                    <button id="rank3">Gut</button>
-                    <button id="rank4">Sehr gut</button>
-                    <div id="buttonStatus"></div>
+
+            <div class="inf-btns">
+                <div class="frame-rank-inf">
+                    <div class="choosed-frame-typ">Typ: <span id="choosed-frame-type">
+                        {{ choosed_frame_typ }}</span>
+                    </div>
+                    <div class="choosed-frame-num">Frame: <span id="choosed-frame-number">
+                        {{ choosed_frame_number }}</span>
+                    </div>
+                    <div class="choosed-rank">Rating:<span id="choosed-rank">{{ choosed_rank }}</span></div>
+                </div>
+                <div class="btn-container-rank">  
+                    <div class="rank-notif" id="rank-notif" style="display: none;">Saved</div>
+                    <div class="frame-rank-btns">
+                        <div id="video-id-container" data-video-id="{{ video.id }}" style="display: none;"></div>
+                        <button class="rank-btns" id="rank0" onclick="rateFrame('clear')">Clear</button>
+                        <button class="rank-btns" id="rank1" onclick="rateFrame('Sehr schlecht')">Sehr schlecht</button>
+                        <button class="rank-btns" id="rank2" onclick="rateFrame('Schlecht')">Schlecht</button>
+                        <button class="rank-btns" id="rank3" onclick="rateFrame('Durchschnittlich')">Durchschnittlich</button>
+                        <button class="rank-btns" id="rank4" onclick="rateFrame('Gut')">Gut</button>
+                        <button class="rank-btns" id="rank5" onclick="rateFrame('Sehr gut')">Sehr gut</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,26 +126,20 @@
         </div>
         <div class="frame-time-indicator">
             <div class="current-position">Frame Position: <span id="current-Frame">{{ choosed_frame_number }}</span>/<span id="max_frame_number">{{ max_frame_number }}</span></div>
+            <div class="reuseRankBtn"><button id="set-Same-Rank-Btn" onclick="setSameRankForSubframes({{ choosed_rank }})">Set Same Rank For Subframes</button></div>
         </div>
     </div>
 
     <!-- Second Part -->
-    
-    <div class="frames-container-4">
-        {% if frame_folder_4 %}
-            <div class="noti-info"> Frame not loaded yet. Choose frame above to load relevant detailed frames here. </div>
-        {% else %}
-            <div class="noti-info"> Frame not exist. Please first generate the frame and refresh the page </div>
-        {% endif %}
-        <!-- load per js
-        {% for frame_path4 in frame_paths_4 %}
-            <div class="frames-4" >
-                <img src="{{ MEDIA_URL }}{{ frame_path4 }}" alt="frame">
-            </div>
-        {% endfor %}
-        -->
+    <div class=""frames-container-4-btns>
+        <div class="frames-container-4">
+            {% if frame_folder_4 %}
+                <div class="noti-info"> Frame not loaded yet. Choose frame above to load relevant detailed frames here. </div>
+            {% else %}
+                <div class="noti-info"> Frame not exist. Please first generate the frame and refresh the page </div>
+            {% endif %}
+        </div>
     </div>
-    
 </body>
 
 </html>
