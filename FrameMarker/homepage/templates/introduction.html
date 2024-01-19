@@ -49,16 +49,24 @@
             <a href="{% url 'register' %}" class="navbar-register">Register</a>
             {% endif %}
             <div class="search-container">
-                <input type="text" placeholder="Search...">
-                <div class="search-icon" onclick="performSearch()">
-                    <span>&#128269;</span>
-                </div>
+                <form method="get" action="{% url 'search' %}">
+                    <input type="text" name="search_query" placeholder="Search..." value="{{ query }}">
+                    <button type="submit" class="search-icon">&#128269;</button>
+                </form>
             </div>
         </div>
     </div>
     
 
-    <!-- 页面内容 -->
+    <!-- 
+        <div class="search-container">
+                <input type="text" placeholder="Search...">
+                <div class="search-icon" onclick="performSearch()">
+                    <span>&#128269;</span>
+                </div>
+            </div>
+        
+        页面内容 -->
  
 
 </body>
