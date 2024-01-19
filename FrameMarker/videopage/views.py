@@ -5,6 +5,7 @@ import os
 from django.conf import settings
 from django.shortcuts import render
 from .models import Video
+from django.http import JsonResponse
 
 def video_list(request):
     try:
@@ -44,6 +45,13 @@ def video_list(request):
         'uploader_filter': uploader_filter,
         'order_by': order_by,    
     }
+
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest'
+    
+    if is_ajax:
+           
+        videos_html = render(request, 'videos.html', context).content.decode('utf-8')
+        return JsonResponse({'videos_html': videos_html})
 
     return render(request, 'videos.html', context)
     # return render(request, 'videos.html', {'videos': videos})
