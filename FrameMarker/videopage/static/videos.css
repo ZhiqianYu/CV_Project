@@ -11,12 +11,12 @@ body {
 }
 
 .filter-container {
-    margin-top: 50px;
+    margin-top: 80px;
     width: 100%;
-    padding: 30px;
     text-align: left;
     z-index: 1;
     margin-right: auto;
+    margin-left: 60px;
 }
 
 #filterForm {
@@ -28,6 +28,8 @@ body {
 
 #filterForm div {
     margin-bottom: 10px;
+    width: max-content;
+    height: 15px;
 }
 
 #filterForm label {
@@ -39,6 +41,7 @@ body {
 #filterForm select {
     width: 100%;
     padding: 5px;
+    font-size: 15px;
     box-sizing: border-box;
     text-align: left;
 }
@@ -69,7 +72,7 @@ body {
 
 /* 网格容器，行 */
 .video-grid {
-    margin-top: 120px;
+    margin-top: 20px;
     margin-bottom: 80px;
     margin-left: 50px;
     margin-right: 50px;
