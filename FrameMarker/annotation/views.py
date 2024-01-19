@@ -18,10 +18,24 @@ def annotation(request, video_id):
     total_frame_files = video_frames.video_frames_total
 
     frame_folder_60 = video_frames.frame_folder_path_60
-    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 60)]
+    frame_paths_60_orig = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 60)]
 
     frame_folder_4 = video_frames.frame_folder_path_4
     frame_paths_4 = [os.path.join(frame_folder_4, f'frame_4_{i}.png') for i in range(4, max_frame_number, 4) if i % 60 != 0]
+
+    base_media_path = os.path.join(settings.MEDIA_ROOT)
+    frame_paths_60 = []
+
+    for frame_path_60 in frame_paths_60_orig:
+        frame_path_60_rel = os.path.relpath(frame_path_60, base_media_path)
+        frame_path_60 = frame_path_60_rel
+        frame_paths_60 = frame_paths_60 + [frame_path_60]
+    
+
+    frame_folder_60_rel = os.path.relpath(frame_folder_60, base_media_path)
+    frame_folder_60 = frame_folder_60_rel
+
+    video.video_file_rel_path = os.path.relpath (video.video_file.path, base_media_path)
 
     return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 
                                             'frame_paths_4': frame_paths_4, 'frame_folder_4': frame_folder_4,
