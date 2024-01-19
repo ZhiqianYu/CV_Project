@@ -18,7 +18,7 @@
     <!--js File loader-->
     <script src="{% static 'ripples.js' %}"></script>
     <script src="{% static 'search.js' %}"></script>
-
+    <script src="{% static 'filter.js' %}"></script>
 
 </head>
 
@@ -54,7 +54,27 @@
 
     <!-- 筛选功能 -->
     <div class="filter-container">
+        <form id="filterForm" method="get" action="{% url 'video_list' %}">
+            <div>
+                <label for="uploader">Uploader:</label>
+                <input type="text" name="uploader" value="" value="{{ uploader_filter }}">
+            </div>
 
+            <div>
+                <label for="order_by">Order by:</label>
+                <select name="order_by" class="filter-select" id="order-by-select">
+                    <option value="---">---</option>
+                    <option value="filename" {% if order_by == 'filename' %}selected{% endif %}>Filename</option>
+                    <option value="upload_time" {% if order_by == 'upload_time' %}selected{% endif %}>Upload Time</option>
+                    <option value="is_annotated" {% if order_by == 'is_annotated' %}selected{% endif %}>Annotated</option>
+                    <option value="not_annotated" {% if order_by == 'not_annotated' %}selected{% endif %}>Not Annotated</option> 
+                </select>
+            </div>
+
+            <div>
+                <button type="button" onclick="submitForm()">Apply Filters</button>
+            </div>
+        </form>
     </div>
 
     <!-- 视频列表 -->
