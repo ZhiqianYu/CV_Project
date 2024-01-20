@@ -129,8 +129,6 @@ body {
 
     display: flex;
     flex-wrap: wrap;
-
-    margin-top: 5px;
     margin-left: 10px;
     margin-right: 10px;
 
@@ -200,10 +198,10 @@ body {
 }
 
 .btn-container-rank {
-    width: 55%;
+    width: 61%;
     display: flex;
     flex-direction: row; /* Align vertically */
-    gap: 5px;
+    gap: 2px;
     justify-content: right;
 }
 
@@ -224,22 +222,24 @@ body {
 }
 
 .frame-rank-btns {
-    width: calc(88% - 5px);
+    width: 85%;
     display: flex;
     flex-direction: row;
-    gap: 15px;
+    gap: 9px;
+    justify-content: right;
 }
 
 .frame-rank-inf {
-    width: 45%;
+    width: 39%;
     align-self: center;
     display: flex;
     flex-direction: row;
+    overflow: hidden;
 
 }
 
 .choosed-frame-typ {
-    width: 21%;
+    width: 17%;
     margin-left: 0px;
     display: flex;
     flex-direction: row;
@@ -248,7 +248,7 @@ body {
 }
 
 .choosed-frame-num {
-    width: 31%;
+    width: 28%;
     margin-left: 0px;
     display: flex;
     flex-direction: row;
@@ -257,7 +257,7 @@ body {
 }
 
 .choosed-rank {
-    width: 48%;
+    width: 50%;
     margin-left: 0px;
     font-weight: bold;
     display: flex;
@@ -273,6 +273,7 @@ body {
     margin-top: 5px;
     margin-left: 2%;
     margin-right: 2%;
+    margin-bottom: 5px;
 }
 
 /* Style for Progress Bar */

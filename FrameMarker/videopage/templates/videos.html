@@ -18,7 +18,7 @@
     <!--js File loader-->
     <script src="{% static 'ripples.js' %}"></script>
     <script src="{% static 'search.js' %}"></script>
-
+    <script src="{% static 'filter.js' %}"></script>
 
 </head>
 
@@ -54,8 +54,38 @@
 
     <!-- 筛选功能 -->
     <div class="filter-container">
+        <form method="get" action="">
+            <label for="sort_by">Sort by:</label>
+            <select name="sort_by">
+                <option value="file_name" {% if request.GET.sort_by == 'file_name' %}selected{% endif %}>Filename</option>
+                <option value="uploader" {% if request.GET.sort_by == 'uploader' %}selected{% endif %}>Uploader</option>
+            </select>
 
+            <label for="order">Order:</label>
+            <select name="order">
+                <option value="asc" {% if request.GET.order_by == 'asc' %}selected{% endif %}>Ascending</option>
+                <option value="dsc" {% if request.GET.order_by == 'dsc' %}selected{% endif %}>Descending</option>
+            </select>
+
+            <label for="uploader">Uploader:</label>
+            <select name="uploader">
+                <option value="">All</option>
+                {% for user in all_uploaders %}
+                    <option value="{{ user.username }}" {% if request.GET.uploader == user.username %}selected{% endif %}>{{ user.username }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="annotated">Annotated:</label>
+            <select name="annotated">
+                <option value="">All</option>
+                <option value="true" {% if request.GET.annotated == 'true' %}selected{% endif %}>Yes</option>
+                <option value="false" {% if request.GET.annotated == 'false' %}selected{% endif %}>No</option>
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
     </div>
+
 
     <!-- 视频列表 -->
     <div class="video-grid">
