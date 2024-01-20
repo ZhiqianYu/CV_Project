@@ -1,6 +1,19 @@
+function toggleCurrentPositionGenVisibility(show) {
+    const currentPositionElement = document.querySelector('.current-position-gen');
+    currentPositionElement.style.display = show ? 'block' : 'none';
+}
+
+function updateGenerationProgress(currentFrames, maxFrames) {
+    const currentFrameElementGen = document.getElementById('current-Frame-gen');
+    const maxFrameElementGen = document.getElementById('max_frame_number-gen');
+
+    currentFrameElementGen.textContent = currentFrames;
+    maxFrameElementGen.textContent = maxFrames;
+}
+
 function generateFrames(videoId) {
     // 弹出提示框
-    var confirmation = confirm("Generate frames for the whole video? You will need to wait till another notification pops up. This may take a while.");
+    var confirmation = confirm("Generate frames for the whole video?");
 
     // 处理用户的选择
     if (confirmation) {
@@ -16,6 +29,7 @@ function generateFrames(videoId) {
                 if (xhr.status == 200) {
                     // Frame generation succeeded
                     alert("Frame generation succeeded.");
+                    window.location.reload();
                 } else {
                     console.error("Frame generation failed", xhr.statusText);
                 }

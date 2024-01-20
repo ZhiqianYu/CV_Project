@@ -11,6 +11,7 @@ from .models import Video
 import os
 import cv2
 import ffmpeg
+from concurrent.futures import ThreadPoolExecutor
 from PIL import Image
 
 # 链接定向
@@ -124,6 +125,7 @@ def upload_file(request):
                         with open(video_path, 'wb') as destination_file:
                             for chunk in file.chunks():
                                 destination_file.write(chunk)
+                        video_path = video_format_transform(video_path)
                         generate_preview(video_path, preview_path)
                         Video.objects.filter(file_name=file_name).update(video_file=video_path, preview_file=preview_path)
                         return JsonResponse({'status': 'Upload Success', 'message': 'File uploaded, database updated, preview created.'})
@@ -179,6 +181,7 @@ def create_video(video_path, preview_path, username):
     title = f'{username},{now},{file_name}'
 
     base_media_path = os.path.join(settings.MEDIA_ROOT)
+
     video_path = os.path.relpath(video_path, base_media_path)
     preview_path = os.path.relpath(preview_path, base_media_path)
 
