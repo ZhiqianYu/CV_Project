@@ -69,7 +69,6 @@ def generate_frames_for_video(video, uploadtime, num_threads=4):
     os.makedirs(frame_folder_4, exist_ok=True)
     os.makedirs(frame_folder_60, exist_ok=True)
 
-    max_frame_number = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_number = 0
     total_frames_60 = 0
     total_frames_4 = 0
@@ -96,9 +95,8 @@ def generate_frames_for_video(video, uploadtime, num_threads=4):
 
             executor.submit(process_frame, frame_number, frame, frame_folder_4, frame_folder_60)
             frame_number += 1
-            print(f"Frame {frame_number} of {max_frame_number} generated")
-            print(f"Total frames 4: {total_frames_4}")
-            print(f"Total frames 60: {total_frames_60}")
+            print(f"Total frames 4 saved: {total_frames_4}.\nTotal frames 60 saved: {total_frames_60}.\nTotal frames generated: {frame_number}.")
+            
 
     base_media_path = os.path.join(settings.MEDIA_ROOT)
     frame_folder_rel = os.path.relpath(frame_folder, base_media_path)
