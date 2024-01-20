@@ -34,6 +34,13 @@ document.addEventListener('DOMContentLoaded', function () {
     let selectedFrameTyp = null;
     let isFrameSelected = false;
 
+    function toggleCurrentPositionReuseBtnVisibility(show) {
+        const currentPositionElement = document.querySelector('.current-position');
+        const reuseRankBtnElement = document.querySelector('.reuseRankBtn');
+        currentPositionElement.style.display = show ? 'block' : 'none';
+        reuseRankBtnElement.style.display = show ? 'block' : 'none';
+    }
+
     function displaySelectedFrame(framePath) {
         const frameIndex = extractFrameIndexFromPath(framePath);
         const frameType = extractFrameTypeFromPath(framePath);
@@ -52,9 +59,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const percentage = (selectedFrameNumber / totalFrames) * 100;
             progressIndicator.style.width = percentage + '%';
             currentFrameElement.textContent = selectedFrameNumber;
+            // Show the current-position element
+            toggleCurrentPositionReuseBtnVisibility(true);
         } else {
             progressIndicator.style.width = '0%';
-            currentFrameElement.textContent = '0';
+            currentFrameElement.textContent = 'Not selected';
+            // Hide the current-position element
+            toggleCurrentPositionReuseBtnVisibility(false);
         }
     }
 

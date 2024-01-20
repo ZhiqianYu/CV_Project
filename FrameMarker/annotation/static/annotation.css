@@ -129,8 +129,6 @@ body {
 
     display: flex;
     flex-wrap: wrap;
-
-    margin-top: 5px;
     margin-left: 10px;
     margin-right: 10px;
 
@@ -275,6 +273,7 @@ body {
     margin-top: 5px;
     margin-left: 2%;
     margin-right: 2%;
+    margin-bottom: 5px;
 }
 
 /* Style for Progress Bar */
