@@ -82,11 +82,6 @@ def search(request):
 
     return render(request, 'introduction.html', params)
 
-
-
-
-
-
 # 文件上传Form
 def upload_file(request):
     if request.method == 'POST':
@@ -182,6 +177,10 @@ def create_video(video_path, preview_path, username):
 
     file_name = os.path.basename(video_path)
     title = f'{username},{now},{file_name}'
+
+    base_media_path = os.path.join(settings.MEDIA_ROOT)
+    video_path = os.path.relpath(video_path, base_media_path)
+    preview_path = os.path.relpath(preview_path, base_media_path)
 
     video = Video(file_name=file_name, title=title, uploader=username, upload_time=now, annotated=False, approved=False, video_file=video_path, preview_file=preview_path)
     video.save()
