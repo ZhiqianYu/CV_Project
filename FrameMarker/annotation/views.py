@@ -6,6 +6,7 @@ from homepage.models import Video
 from .models import VideoFrames, FrameAnnotations
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
+from concurrent.futures import ThreadPoolExecutor
 
 def annotation(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
@@ -54,7 +55,8 @@ def calculate_max_frame_number(video):
     cap.release()
     return max_frame_number
 
-def generate_frames_for_video(video, uploadtime):
+def generate_frames_for_video(video, uploadtime, num_threads=4):
+
     video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
     cap = cv2.VideoCapture(video_file_path)
 
@@ -74,11 +76,8 @@ def generate_frames_for_video(video, uploadtime):
 
     video_frames, created = VideoFrames.objects.get_or_create(video=video)
 
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-
+    def process_frame(frame_number, frame, frame_folder_4, frame_folder_60):
+        nonlocal total_frames_60, total_frames_4
         if frame_number % 60 == 0:
             frame_path = os.path.join(frame_folder_60, f'frame_60_{frame_number}.png')
             cv2.imwrite(frame_path, frame)
@@ -89,17 +88,31 @@ def generate_frames_for_video(video, uploadtime):
             cv2.imwrite(frame_path, frame)
             total_frames_4 += 1
 
-        frame_number += 1
-        print(f"Frame {frame_number} of {max_frame_number} generated")
+    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            executor.submit(process_frame, frame_number, frame, frame_folder_4, frame_folder_60)
+            frame_number += 1
+            print(f"Frame {frame_number} of {max_frame_number} generated")
+            print(f"Total frames 4: {total_frames_4}")
+            print(f"Total frames 60: {total_frames_60}")
+
+    base_media_path = os.path.join(settings.MEDIA_ROOT)
+    frame_folder_rel = os.path.relpath(frame_folder, base_media_path)
+    frame_folder_4_rel = os.path.relpath(frame_folder_4, base_media_path)
+    frame_folder_60_rel = os.path.relpath(frame_folder_60, base_media_path)
 
     video_frames.has_frames_60 = total_frames_60 > 0
     video_frames.has_frames_4 = total_frames_4 > 0
     video_frames.total_frames_60 = total_frames_60
     video_frames.total_frames_4 = total_frames_4
     video_frames.video_frames_total = total_frames_60 + total_frames_4
-    video_frames.frame_folder_path = frame_folder
-    video_frames.frame_folder_path_4 = frame_folder_4
-    video_frames.frame_folder_path_60 = frame_folder_60
+    video_frames.frame_folder_path = frame_folder_rel
+    video_frames.frame_folder_path_4 = frame_folder_4_rel
+    video_frames.frame_folder_path_60 = frame_folder_60_rel
     video_frames.save()
     cap.release()
 
