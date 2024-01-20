@@ -11,6 +11,7 @@ from .models import Video
 import os
 import cv2
 import ffmpeg
+from concurrent.futures import ThreadPoolExecutor
 from PIL import Image
 
 # 链接定向
@@ -81,11 +82,6 @@ def search(request):
     }
 
     return render(request, 'introduction.html', params)
-
-
-
-
-
 
 # 文件上传Form
 def upload_file(request):
@@ -187,30 +183,48 @@ def create_video(video_path, preview_path, username):
     video = Video(file_name=file_name, title=title, uploader=username, upload_time=now, annotated=False, approved=False, video_file=video_path, preview_file=preview_path)
     video.save()
 
+def max_frame_number(video_path):
+    cap = cv2.VideoCapture(video_path)
+    max_frame_number = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    cap.release()
+    return max_frame_number
+
 def video_format_transform(video_path):
-    # 转换视频格式
+    def convert_video(input_path, output_path, start_frame, end_frame):
+        try:
+            ffmpeg.input(input_path, ss=start_frame, to=end_frame).output(output_path).run()
+            print(f'Video format converted: {input_path} (frames {start_frame}-{end_frame}) -> {output_path}')
+        except ffmpeg.Error as e:
+            print(f'Error during ffmpeg conversion: {e.stderr}')
+
     file_name = os.path.basename(video_path)
     file_extension = os.path.splitext(file_name)[1]
+
     if file_extension != '.mp4':
         new_file_name = os.path.splitext(file_name)[0] + '.mp4'
         new_video_path = os.path.join(settings.MEDIA_ROOT, 'Video', new_file_name)
-        print ('New File Name is:', new_file_name)
-        print ('New Video Path is:', new_video_path)
-        
-        try:
-            ffmpeg.input(video_path).output(new_video_path).run()
-            print('Video format converted.')
-            print ('New File Name is:', new_file_name)
-            print ('New Video Path is:', new_video_path)
-        except ffmpeg.Error as e:
-            print(f'Error during ffmpeg conversion: {e.stderr}')
-            return video_path
 
-        # 移动原始文件到old_Video目录
+        # Divide the video into four segments
+        segment_size = max_frame_number(video_path) // 4
+        segments = [(i * segment_size + 1, (i + 1) * segment_size) for i in range(4)]
+
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            # Submit multiple conversion tasks to the ThreadPoolExecutor
+            futures = [
+                executor.submit(convert_video, video_path, new_video_path, start_frame, end_frame)
+                for start_frame, end_frame in segments
+            ]
+
+            # Wait for all tasks to complete
+            for future in futures:
+                future.result()
+
+        # Move the original file to the 'old_Video' directory
         old_video_dir = os.path.join(settings.MEDIA_ROOT, 'old_Video')
         os.makedirs(old_video_dir, exist_ok=True)
         old_video_path = os.path.join(old_video_dir, file_name)
         os.rename(video_path, old_video_path)
+
         return new_video_path
     else:
         return video_path
