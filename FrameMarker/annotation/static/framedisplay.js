@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
             videoPlayer.controls = 'false';
 
             const sourceElement = document.createElement('source');
-            sourceElement.src = '{{ MEDIA_URL }}{{ video.video_file }}';
+            sourceElement.src = '{{ MEDIA_URL }}{{ video.video_file_path }}';
             sourceElement.type = 'video/mp4';
 
             videoPlayer.appendChild(sourceElement);
