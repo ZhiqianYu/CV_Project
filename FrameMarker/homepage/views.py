@@ -70,16 +70,10 @@ def logout_user(request):
 def search(request):
     query = request.GET.get('search_query', '')
 
-    user_obj = User.objects.filter(username__icontains=query)
+    video_results = Video.objects.filter(title__icontains=query)
+    user_results = UserData.objects.filter(user__username__icontains=query)
 
-    if not user_obj.exists():
-        user_obj = User.objects.none()
-
-    params = {
-        'user_obj': user_obj,
-        'query': query,
-
-    }
+    params = {'query': query, 'video_results': video_results, 'user_results': user_results}
 
     return render(request, 'introduction.html', params)
 
