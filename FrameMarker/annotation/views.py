@@ -40,14 +40,14 @@ def annotation(request, video_id):
     print('base_media_path:', base_media_path)
     print('frame_paths_60:', frame_path_60)
 
-    #frame_folder_60_rel = os.path.relpath(frame_folder_60, base_media_path)
+    frame_folder_60_rel = os.path.relpath(frame_folder_60, base_media_path)
     frame_folder_60 = frame_folder_60_rel
 
     video.video_file_rel_path = os.path.relpath(video.video_file.path, base_media_path)
 
     return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 
                                             'frame_paths_4': frame_paths_4, 'frame_folder_4': frame_folder_4,
-                                            'frame_paths_60': frame_paths_60, 'frame_folder_60': frame_folder_60,
+                                            'frame_paths_60': frame_paths_60, 'frame_folder_60': frame_folder_60_rel,
                                             'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number})
 
 def generate_frames(request, video_id):
