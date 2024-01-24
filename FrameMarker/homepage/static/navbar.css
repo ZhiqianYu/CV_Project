@@ -106,14 +106,16 @@
 .navbar-right .search-icon {
     width: 30px;
     height: 30px;
-    border-radius: 50%; /* 将图标变为圆形 */
+    border-radius: 50%;
     background-color: #fff;
     display: flex;
     align-items: center;
     cursor: pointer;
     position: absolute;
     top: 30px;
-    right: 20px; /* 距离右侧的距离 */
+    right: 20px;
+    margin-left: 10px;
+    margin-bottom: 5px;
     transform: translateY(-47%);
 }
 

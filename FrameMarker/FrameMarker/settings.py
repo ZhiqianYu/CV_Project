@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'homepage',
     'videopage',
     'annotation',
+    'exportpage',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +63,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'homepage/templates'), 
                  os.path.join(BASE_DIR, 'videopage/templates'),
-                 os.path.join(BASE_DIR, 'annotation/templates')],
+                 os.path.join(BASE_DIR, 'annotation/templates'),
+                 os.path.join(BASE_DIR, 'exportpage/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,25 +130,10 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-    
-]
-
-# 设置 homepage 应用程序的静态文件目录
-STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'homepage/static'),
-    
-]
-
-# 设置 videopage 应用程序的静态文件目录
-STATICFILES_DIRS += [
     os.path.join(BASE_DIR, 'videopage/static'),
-    # 其他 videopage 应用程序的静态文件目录...
-]
-
-STATICFILES_DIRS += [
     os.path.join(BASE_DIR, 'annotation/static'),
-    # 其他 videopage 应用程序的静态文件目录...
+    os.path.join(BASE_DIR, 'exportpage/static'),
 ]
 
 # Default primary key field type
