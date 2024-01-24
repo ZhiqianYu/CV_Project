@@ -110,12 +110,11 @@
     background-color: #fff;
     display: flex;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
     position: absolute;
-    top: 30px;
+    top: 28px;
     right: 20px;
-    margin-left: 10px;
-    margin-bottom: 5px;
     transform: translateY(-47%);
 }
 

@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+
+    <title>Export</title>
+    
+    <!--css File loader-->
+    <link rel="stylesheet" href="{% static 'navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'export.css' %}">
+
+    <!--js File loader-->
+    <script src="{% static 'search.js' %}"></script>
+    
+    <!-- 引入处理表单提交的JavaScript文件 -->
+    <script src="{% static 'user.js' %}"></script>
+
+</head>
+
+<body>
+    <div class="navbar">
+        <!-- Left section of the navbar -->
+        <div class="navbar-left">
+            <a href="{% url 'introduction' %}" class="navbar-title">Frame Annotator</a>
+            <a href="{% url 'upload' %}" class="navbar-l-link">Upload</a>
+            <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
+        </div>
+
+       <!-- Right section of the navbar -->
+       <div class="navbar-right">
+        {% if user.is_authenticated  %}
+        <a href="{% url 'login' %}" class='login-inf'>Welcome, {{ user.username }}!</a>
+        <span class="navbar-separator">|</span>
+        <a href="{% url 'logout' %}" class='navbar-logout'>Logout</a>
+        {% else  %}
+        <a href="{% url 'login' %}" class="navbar-login">Login</a>
+        <span class="navbar-separator">|</span>
+        <a href="{% url 'register' %}" class="navbar-register">Register</a>
+        {% endif  %}
+        </div> 
+    </div>
+    
+    <div class="pagecontent">
+        <!-- Video Selection Form -->
+        <a href="{{ video.video_file.url }}" class="file-name">Current Video: {{ filename }}</a>
+        <span class="separator">|</span>
+        <a href="{{ video.uploader.url }}" class="uploader">Uploader: {{ uploader }}</a>
+
+        <form id="videoSelectionForm">
+            <label for="videoSelect">Select Video:</label>
+            <select id="videoSelect" name="video">
+                <option value="{{ video.id }}">{{ video.title }}</option>
+            </select>
+            <button type="button" onclick="loadVideoAnnotations()">Load Annotations</button>
+        </form>
+        
+        <!-- Display Video Annotations -->
+        <div id="annotationList">
+            <!-- Annotations will be displayed here -->
+        </div>
+        
+        <!-- Download Link -->
+        <div id="downloadLink" style="display: none;">
+            <a id="downloadBtn" download>Download Annotations (CSV)</a>
+        </div>
+    </div>
+
+</body>
+
+</html>

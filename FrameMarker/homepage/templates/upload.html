@@ -36,7 +36,7 @@
             <a href="{% url 'introduction' %}" class="navbar-title">Frame Annotator</a>
             <a href="{% url 'upload' %}" class="navbar-l-link">Upload</a>
             <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
-            <a href="#exports" class="navbar-l-link">Exports</a>
+            <a href="{% url 'export' %}" class="navbar-l-link">Exports</a>
         </div>
         
     
@@ -51,12 +51,6 @@
             <span class="navbar-separator">|</span>
             <a href="{% url 'register' %}" class="navbar-register">Register</a>
             {% endif  %}
-            <div class="search-container">
-                <input type="text" placeholder="Search...">
-                <div class="search-icon" onclick="performSearch()">
-                    <span>&#128269;</span>
-                </div>
-            </div>
         </div>
     </div>
     
