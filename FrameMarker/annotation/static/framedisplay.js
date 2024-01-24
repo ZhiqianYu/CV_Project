@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var videoId = match ? match[1] : null;
 
         // 构建导航路径，传递 videoId 参数
-        var exportPageUrl = '/exportpage/' + videoId + '/';
+        var exportPageUrl = '/exportpage/anno/' + videoId + '/';
 
         // 通过浏览器跳转到 exportpage 页面
         window.location.href = exportPageUrl;

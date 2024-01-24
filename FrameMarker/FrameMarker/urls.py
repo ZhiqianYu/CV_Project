@@ -29,5 +29,6 @@ urlpatterns = [
     path('', include('homepage.urls')),
     path('', include('videopage.urls')),
     path('', include('annotation.urls')),
+    path('', include('exportpage.urls')),
     
 ] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
