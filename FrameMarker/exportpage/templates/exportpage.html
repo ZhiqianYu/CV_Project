@@ -15,12 +15,12 @@
 
     <!--js File loader-->
     <script src="{% static 'search.js' %}"></script>
-    <script src="{% static 'export.js' %}"></script>
     <script src="{% static 'loaddata.js' %}"></script>
-    
-    <!-- 引入处理表单提交的JavaScript文件 -->
-    <script src="{% static 'user.js' %}"></script>
-
+    <script src="{% static 'export.js' %}"></script>
+    <script>
+        // 定义全局 JavaScript 变量并将 frame_annotations_json 赋值给它
+        var frameAnnotationsJson = "{{ frame_annotations_json|safe|escapejs }}";
+    </script>
 </head>
 
 <body>
@@ -75,7 +75,7 @@
             <label class="formatL" for="jsonCheckbox">
                 <input type="checkbox" id="jsonCheckbox" name="format" value="json"> JSON
             </label>
-            <button class="formatB" type="button" onclick="exportAnnotations()">Export</button>
+            <button id="exportBtn" class="formatB" type="button" onclick="exportAnnotations()">Export</button>
         </div>
     </div>
 
@@ -147,8 +147,6 @@
             {% endif %}
         </div>
     </div>
-    
-    
 </body>
 
 </html>
