@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // 视频播放器按钮
     const video = document.getElementById('VideoLoaded');
     const playPauseBtn = document.getElementById('playPauseBtn');
+    var exportBtn = document.getElementById('exportBtn');
 
     const framesContainer60 = document.querySelector('.frames-container');
     const framesContainer4 = document.querySelector('.frames-container-4');
@@ -265,5 +266,19 @@ document.addEventListener('DOMContentLoaded', function () {
             removeClickedClassFrom60Frames();
             container.classList.add('frame-clicked');
         });
+    });
+
+    exportBtn.addEventListener('click', function() {
+        var currentUrl = window.location.href;
+
+        // 通过正则表达式从 URL 中提取视频 ID
+        var match = currentUrl.match(/\/annotation\/(\d+)\//);
+        var videoId = match ? match[1] : null;
+
+        // 构建导航路径，传递 videoId 参数
+        var exportPageUrl = '/exportpage/' + videoId + '/';
+
+        // 通过浏览器跳转到 exportpage 页面
+        window.location.href = exportPageUrl;
     });
 });

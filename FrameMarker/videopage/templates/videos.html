@@ -11,7 +11,6 @@
     
     <!--css File loader-->
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
-    <link rel="stylesheet" href="{% static 'search.css' %}">
     <link rel="stylesheet" href="{% static 'ripple.css' %}">
     <link rel="stylesheet" href="{% static 'videos.css' %}">
 
@@ -30,13 +29,14 @@
             <a href="{% url 'introduction' %}" class="navbar-title">Frame Annotator</a>
             <a href="{% url 'upload' %}" class="navbar-l-link">Upload</a>
             <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
-            <a href="#exports" class="navbar-l-link">Exports</a>
+            <a href="{% url 'export' %}" class="navbar-l-link">Exports</a>
         </div>
     
         <!-- Right section of the navbar -->
         <div class="navbar-right">
             {% if user.is_authenticated  %}
             <a href="{% url 'login' %}" class='login-inf'>Welcome, {{ user.username }}!</a>
+            <span class="navbar-separator">|</span>
             <a href="{% url 'logout' %}" class='navbar-logout'>Logout</a>
             {% else  %}
             <a href="{% url 'login' %}" class="navbar-login">Login</a>

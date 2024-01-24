@@ -12,7 +12,6 @@
     <!--css File loader-->
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
     <link rel="stylesheet" href="{% static 'annotation.css' %}">
-    <link rel="stylesheet" href="{% static 'search.css' %}">
 
     <!--js File loader-->
     <script src="{% static 'search.js' %}"></script>
@@ -75,7 +74,7 @@
                 <div class="player-controls">
                     <button id="playPauseBtn">Play</button>
                     <button id="framegenerationBtn" onclick="generateFrames({{ video.id }})">Frame Generation</button>
-                    <button id="exportBtn">Export</button>
+                    <button id="exportBtn" onclick="exportData({{ video.id }})">Export</button>
                     <div id="buttonStatus"></div>
                 </div>
             </div>
