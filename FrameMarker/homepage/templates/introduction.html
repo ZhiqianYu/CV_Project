@@ -56,8 +56,83 @@
             </div>
         </div>
     </div>
- 
 
+    <!--页面内容 -->
+    <div class="introduction-content">
+        <nav role="navigation">
+            <ul class="outline">
+             <li class="chapter active" data-level="1.1">
+                <a href="#section-1">
+                    Introduction
+                </a>
+             </li>
+             <ul class="articles"> 
+                <li class="chapter" data-level="1.2.1">
+                    <a href="#section-2">
+                        Upload
+                    </a>
+                </li>
+                <li class="chapter" data-level="1.2.2">
+                    <a href="#section-3">
+                        Videos
+                    </a>
+                </li>
+                <li class="chapter" data-level="1.2.3">
+                    <a href="#section-4">
+                        Exports
+                    </a>
+                </li>
+            </ul>
+            </ul>
+        </nav>  
+    </div>
+
+    <div class="outline-body">
+        <div class="body-inner">
+            <div class="page-wrapper" tabindex="-1" role="main">
+                <div class="page-inner">
+                    <section id="section-1" class="normal markdown-section">
+                        <h1>Introduction</h1>
+                        <p>Frame Annotator is designed for capturing and annotating information for each frame of a video.</p>
+                    </section>
+                    <section id="section-2" class="normal markdown-section">
+                        <h2>Upload</h2>
+                        <p>The video upload process consists of three steps:</p>
+                        <ol>
+                            <li>Users need to register for a personal account and log in.</li>
+                            <li>After logging in, return to the upload video interface to upload your video. 
+                                Note: there are no restrictions on the video file format; All uploaded videos are automatically converted to the .mp4 format in the background.</li>
+                            <li>Upon successful upload, an information box will confirm the successful upload. Finally, you can click on the 'videos' interface to proceed with editing.</li>
+                        </ol>
+                    </section>
+                    <section id="section-3" class="normal markdown-section">
+                        <h2>Videos</h2>
+                        <h3>Video List Display:</h3>
+                        <ul>
+                            <li>Displays a list of uploaded videos, including those uploaded by the user and others.</li>
+                            <li>Each video provides detailed information such as the file name, uploader, and upload time.</li>
+                            <li>Features a filtering option for quick access to desired videos based on criteria such as file name, uploader, and whether the video has been annotated.</li>
+                        </ul>
+                        <h3>Frame Annotation:</h3>
+                        <p>Located in the top left of the video, there is a 'Not Annotated' label that can be clicked to enter the frame annotation interface.</p>
+                        <p>The annotation page consists of three parts:</p>
+                        <ol>
+                            <li><strong>Play Video</strong></li>
+                            <li><strong>Frame Generation:</strong> Click the 'Frame Generation' button to obtain all frames of the video. Note: This process may take some time! Once all frames are loaded, a notification will appear, and the interface needs to be refreshed.</li>
+                            <li><strong>Image Selection:</strong> The right side of the video player displays all images representing the total duration of the video. By randomly selecting an image, you can obtain four frames within 1 second below the video player. The selected image is also displayed in the player.</li>
+                        </ol>
+                        <p>Users can annotate the selected images, indicating attributes such as 'good' or 'bad.' The annotations are automatically saved.</p>
+                    </section>
+                    <section id="section-4" class="normal markdown-section">
+                        <h4>Exports</h4>
+                        <p>The "Exports" interface serves as a dedicated export page with the primary purpose of facilitating the filtering of frame annotation information based on specific users and videos. This feature enables users to tailor their exports according to their criteria, enhancing flexibility in data retrieval.</p>
+                        <p>One key functionality of this interface is the ability to export the filtered frame annotation data from the database. The exported data is formatted in CSV (Comma-Separated Values) file format, ensuring compatibility and ease of use for further analysis or integration with other tools.</p>
+                        <p>The exported information encompasses several crucial details associated with each frame annotation. This includes the video file name, providing a reference to the source material. Additionally, details about the uploader, upload time, frame type, frame number, and frame rating are included, offering a comprehensive set of information for analytical or archival purposes. The "Exports" interface thus streamlines the process of obtaining specific frame annotation data based on user-defined parameters.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
