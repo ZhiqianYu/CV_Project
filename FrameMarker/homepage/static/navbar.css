@@ -9,7 +9,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
     height: 60px;
     
 }
@@ -46,80 +45,76 @@
 .navbar-right{
     display: flex;
     font-weight: 200;
-    vertical-align: middle;
-    align-items: right;
+    align-items: center;
 }
 
 .navbar-right .navbar-login {
     color: rgb(227, 239, 223);
-    font-size: 15px;
+    font-size: 17px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    padding: 25px 20px;
-    vertical-align: middle;
-    margin-right: 5px;
     float: right;
 }
 
 .navbar-right .login-inf {
     color: rgb(227, 239, 223);
-    font-size: 15px;
+    font-size: 17px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    padding: 25px 20px;
-    vertical-align: middle;
-    margin-right: 5px;
     float: right;
 }
 
 .navbar-right .navbar-logout {
     color: rgb(227, 239, 223);
-    font-size: 15px;
+    font-size: 17px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    padding: 25px 20px;
-    vertical-align: middle;
-    margin-right: 5px;
+    padding: 25px 0px;
+    margin-right: 25px;
     float: right;
 }
 
 .navbar-right .navbar-separator {
     color: rgb(227, 239, 223);
-    margin: 0 0;
-    font-size: 15px;
-    padding: 25px 0px;
+    font-size: 17px;
+    padding: 0px 20px;
     line-height: 1;
-    vertical-align: middle;
+    transform: translateY(-8%);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .navbar-right .navbar-register {
     color: rgb(227, 239, 223);
-    font-size: 15px;
+    font-size: 17px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
-    padding: 25px 20px;
-    vertical-align: middle;
-    margin-left: 5px;
+    margin-right: 20px;
     float: right;
 }
 
-.navbar-right .search-container {
-    margin-right: 5px;
+/* 搜索容器样式 */
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-right: 60px;
 }
 
 .navbar-right input[type="text"] {
-    padding: 5px;
-    font-size: 17px;
+    padding: 6px;
+    font-size: 16px;
     border: none;
+    padding-right: 10px;
     border-radius: 7px;
 }
 
 .navbar-right .search-icon {
     width: 30px;
     height: 30px;
-    border-radius: 50%;
+    border-radius: 50%; /* 将图标变为圆形 */
     background-color: #fff;
     display: flex;
-    justify-content: center;
     align-items: center;
     cursor: pointer;
+    position: absolute;
+    top: 30px;
+    right: 20px; /* 距离右侧的距离 */
+    transform: translateY(-47%);
 }
 
 /* 悬浮效果 */
