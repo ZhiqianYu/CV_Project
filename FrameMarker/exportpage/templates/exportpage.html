@@ -15,6 +15,7 @@
 
     <!--js File loader-->
     <script src="{% static 'search.js' %}"></script>
+    <script src="{% static 'export.js' %}"></script>
     
     <!-- 引入处理表单提交的JavaScript文件 -->
     <script src="{% static 'user.js' %}"></script>
@@ -28,6 +29,7 @@
             <a href="{% url 'introduction' %}" class="navbar-title">Frame Annotator</a>
             <a href="{% url 'upload' %}" class="navbar-l-link">Upload</a>
             <a href="{% url 'video_list' %}" class="navbar-l-link">Videos</a>
+            <a href="{% url 'export' %}" class="navbar-l-link">Exports</a>
         </div>
 
        <!-- Right section of the navbar -->
@@ -44,31 +46,101 @@
         </div> 
     </div>
     
-    <div class="pagecontent">
-        <!-- Video Selection Form -->
-        <a href="{{ video.video_file.url }}" class="file-name">Current Video: {{ filename }}</a>
-        <span class="separator">|</span>
-        <a href="{{ video.uploader.url }}" class="uploader">Uploader: {{ uploader }}</a>
 
-        <form id="videoSelectionForm">
-            <label for="videoSelect">Select Video:</label>
-            <select id="videoSelect" name="video">
-                <option value="{{ video.id }}">{{ video.title }}</option>
-            </select>
-            <button type="button" onclick="loadVideoAnnotations()">Load Annotations</button>
+    <!-- Video Selection Form -->
+    <div class="video-format-selector">
+        <form class="videoSelection" id="videoSelectionForm">
+            {% if videos %}
+                <label for="videoSelect">Select Video:</label>
+                <select id="videoSelect" name="video">
+                    {% for video in videos %}
+                        <option value="{{ video.id }}">{{ video.file_name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" onclick="loadVideoAnnotations()">Load Data</button>
+            {% else %}
+                <label for="videoSelect">Loaded Video:</label>
+                <select id="videoSelect" name="video">
+                    <option value="{{ video.id }}">{{ video.file_name }}</option>
+                </select>
+            {% endif %}
         </form>
-        
-        <!-- Display Video Annotations -->
-        <div id="annotationList">
-            <!-- Annotations will be displayed here -->
-        </div>
-        
-        <!-- Download Link -->
-        <div id="downloadLink" style="display: none;">
-            <a id="downloadBtn" download>Download Annotations (CSV)</a>
+    
+        <div class="formatSelection">
+            <p class="formatP">Format:</p>
+            <label class="formatL" for="csvCheckbox">
+                <input type="checkbox" id="csvCheckbox" name="format" value="csv"> CSV
+            </label>
+            <label class="formatL" for="jsonCheckbox">
+                <input type="checkbox" id="jsonCheckbox" name="format" value="json"> JSON
+            </label>
+            <label class="formatL" for="csbCheckbox">
+                <input type="checkbox" id="csbCheckbox" name="format" value="csb"> CSB
+            </label>
+            <button class="formatB" type="button" onclick="exportAnnotations()">Export</button>
         </div>
     </div>
 
+    <div class="info-player-data">
+        <div class="info-player">
+            <div class="videoplayer">
+                <video id="VideoLoaded" controls="false">
+                    <source src="{{ MEDIA_URL }}{{ video.video_file }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="videoinfo-container">
+                <div class="infos">
+                    <p>Video Name: {{ video.file_name }}</p>
+                    <p>Video Uploader: {{ video.uploader }}</p>
+                    <p>Upload Time: {{ video.upload_time }}</p>
+                    <p>Annotated: {{ video.annotated }}</p>
+                    {% if frame_annotations %}
+                        {% with first_annotation=frame_annotations.0 %}
+                            <p>Annotator: {{ first_annotation.annotator }}</p>
+                        {% endwith %}
+                    {% else %}
+                        <p>Annotator: None</p>
+                    {% endif %}
+                    <p>Annotation Progress: {{ video.progress }}</p>
+                    <p>Total Frames: {{ video_frames.video_frames_total }}</p>
+                    <a href="{{ MEDIA_URL }}{{ video.video_file.url }}" class="video-list-link" download>Download Video File</a>
+                </div>
+            </div>
+        </div>
+        <div class="data">
+            {% if frame_annotations %}
+        <table class="annotation-table">
+            <thead>
+                <tr>
+                    <th class="sortable" data-column="frame-type">Frame Type</th>
+                    <th class="sortable" data-column="frame-number">Frame Number</th>
+                    <th class="sortable" data-column="rating">Rating</th>
+                    <th class="sortable" data-column="annotated">Annotated</th>
+                    <th class="sortable" data-column="annotator">Annotator</th>
+                    <!-- Add other columns as needed -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for annotation in frame_annotations %}
+                    <tr>
+                        <td>{{ annotation.frame_type }}</td>
+                        <td>{{ annotation.frame_number }}</td>
+                        <td>{{ annotation.rank }}</td>
+                        <td>{{ annotation.is_annotated }}</td>
+                        <td>{{ annotation.annotator }}</td>
+                        <!-- Add other columns as needed -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+            {% else %}
+                <p class="noti-info">No frame annotations available</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    
 </body>
 
 </html>

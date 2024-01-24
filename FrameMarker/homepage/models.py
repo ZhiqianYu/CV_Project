@@ -10,6 +10,7 @@ class Video(models.Model):
     upload_time = models.DateTimeField(auto_now_add=True)
     uploader = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     annotated = models.BooleanField(default=False)
+    progress = models.IntegerField(default=0)
     annotation_time = models.DateTimeField(null=True, blank=True)
     approved = models.BooleanField(default=False)
     video_file = models.FileField(upload_to='Video/') 
