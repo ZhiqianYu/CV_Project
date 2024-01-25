@@ -126,7 +126,34 @@ html {
     line-height: 1.5;
 }
 
+.normal.markdown-section h5 {
+    font-size: 18px; 
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
 .normal.markdown-section p {
     margin-bottom: 15px;
     line-height: 1.5;
+}
+
+.small-image1 {
+    width: 650px;
+    height: 300px;
+}
+
+
+.small-image2 {
+    width: 650px;
+    height: 300px;
+}
+
+.small-image3 {
+    width: 650px;
+    height: 300px;
+}
+
+.small-image4 {
+    width: 650px;
+    height: 290px;
 }
