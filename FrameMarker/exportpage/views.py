@@ -47,13 +47,7 @@ def exportpagefromannotation(request, video_id):
 
 def export_format(request, format, video_id):
     selected_columns = request.GET.get('columns').split(',')
-    print(format)
-    print(selected_columns)
 
-    # Use format and selected_columns to generate the file
-    # You can call the appropriate export function based on the 'format'
-
-    # For example:
     if format == 'json':
         return exportjson(request, video_id, selected_columns)
     elif format == 'csv':
