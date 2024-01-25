@@ -1,75 +1,37 @@
-document.addEventListener('DOMContentLoaded', function () {
-    let isAsc = true;
+document.addEventListener("DOMContentLoaded", function () {
+    var exportButton = document.getElementById("exportBtn");
+    var videoId = document.getElementById("videoSelect").value;
 
-    function sortTable(column) {
-        const tbody = document.querySelector('.annotation-table tbody');
-
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-
-        rows.sort((a, b) => {
-            const aValue = a.dataset[column];
-            const bValue = b.dataset[column];
-
-            if (aValue < bValue) return isAsc ? -1 : 1;
-            if (aValue > bValue) return isAsc ? 1 : -1;
-            return 0;
+    if (exportButton) {
+        exportButton.addEventListener("click", function() {
+            exportAnnotations(videoId);
         });
-
-        rows.forEach(row => tbody.appendChild(row));
-
-        isAsc = !isAsc;
     }
 
-    document.querySelector('.annotation-table').addEventListener('click', function (event) {
-        if (event.target.classList.contains('sortable')) {
-            const column = event.target.dataset.column;
+    function exportAnnotations(videoId) {
+        var selectedFormats = document.querySelectorAll('input[name="format"]:checked');
+        var selectedColumns = document.querySelectorAll('.column-checkbox:checked');
 
-            document.querySelectorAll('.sortable').forEach(header => header.classList.remove('sorted-asc', 'sorted-desc'));
-            event.target.classList.add(isAsc ? 'sorted-asc' : 'sorted-desc');
-
-            sortTable(column);
-        }
-    });
-
-    function exportData(format) {
-        const tbody = document.querySelector('.annotation-table tbody');
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-
-        const data = [];
-
-        rows.forEach(row => {
-            const rowData = {};
-            Array.from(row.cells).forEach((cell, index) => {
-                const header = document.querySelector(`.annotation-table th:nth-child(${index + 1})`).textContent.trim();
-                rowData[header] = cell.textContent.trim();
+        selectedFormats.forEach(function (format) {
+            // Combine selected columns into a single array
+            var selectedColumnsArray = Array.from(selectedColumns).map(function (column) {
+                return column.value;
             });
-            data.push(rowData);
-        });
 
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            // Assuming you have the video_id available in your HTML, replace 'your_video_id' with the actual value
+            var videoID = videoId;
 
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `export.${format}`;
+            // Form the URL based on the selected format and columns
+            var url = `/export/${format.value}/${videoID}?columns=${selectedColumnsArray.join(',')}`;
 
-        document.body.appendChild(link);
-        link.click();
-
-        document.body.removeChild(link);
-    }
-
-    function exportAnnotations() {
-        const selectedFormats = [];
-        const checkboxes = document.querySelectorAll('.formatSelection input[name="format"]:checked');
-        checkboxes.forEach(checkbox => selectedFormats.push(checkbox.value));
-
-        if (selectedFormats.length === 0) {
-            alert('Please select at least one format for export.');
-            return;
-        }
-
-        selectedFormats.forEach(format => {
-            exportData(format);
+            // Create a hidden link element and trigger a click event to download the file
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = `${format.value}_${videoID}.${format.value === 'json' ? 'json' : 'csv'}`;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
     }
 });

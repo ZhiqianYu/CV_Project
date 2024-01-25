@@ -15,11 +15,8 @@
 
     <!--js File loader-->
     <script src="{% static 'search.js' %}"></script>
+    <script src="{% static 'loaddata.js' %}"></script>
     <script src="{% static 'export.js' %}"></script>
-    
-    <!-- 引入处理表单提交的JavaScript文件 -->
-    <script src="{% static 'user.js' %}"></script>
-
 </head>
 
 <body>
@@ -74,10 +71,7 @@
             <label class="formatL" for="jsonCheckbox">
                 <input type="checkbox" id="jsonCheckbox" name="format" value="json"> JSON
             </label>
-            <label class="formatL" for="csbCheckbox">
-                <input type="checkbox" id="csbCheckbox" name="format" value="csb"> CSB
-            </label>
-            <button class="formatB" type="button" onclick="exportAnnotations()">Export</button>
+            <button id="exportBtn" class="formatB" type="button" onclick="exportAnnotations()">Export</button>
         </div>
     </div>
 
@@ -113,11 +107,21 @@
         <table class="annotation-table">
             <thead>
                 <tr>
-                    <th class="sortable" data-column="frame-type">Frame Type</th>
-                    <th class="sortable" data-column="frame-number">Frame Number</th>
-                    <th class="sortable" data-column="rating">Rating</th>
-                    <th class="sortable" data-column="annotated">Annotated</th>
-                    <th class="sortable" data-column="annotator">Annotator</th>
+                    <th class="sortable" data-column="frame-type">
+                        <label><input type="checkbox" class="column-checkbox" value="frame_type" checked>Type</label>
+                    </th>
+                    <th class="sortable" data-column="frame-number">
+                        <label><input type="checkbox" class="column-checkbox" value="frame_number" checked>Number</label>
+                    </th>
+                    <th class="sortable" data-column="rating">
+                        <label><input type="checkbox" class="column-checkbox" value="rank" checked>Rating</label>
+                    </th>
+                    <th class="sortable" data-column="annotated">
+                        <label><input type="checkbox" class="column-checkbox" value="is_annotated" checked>Annotated</label>
+                    </th>
+                    <th class="sortable" data-column="annotator">
+                        <label><input type="checkbox" class="column-checkbox" value="annotator" checked> Annotator</label>
+                    </th>
                     <!-- Add other columns as needed -->
                 </tr>
             </thead>
@@ -139,8 +143,6 @@
             {% endif %}
         </div>
     </div>
-    
-    
 </body>
 
 </html>

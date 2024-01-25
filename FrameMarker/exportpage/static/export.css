@@ -130,15 +130,14 @@ button {
 }
 
 .videoplayer {
-    width: 100%;
+    width: calc(100% - 20px);
     height: 60%;
     max-height: 70%;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    overflow: hidden;
-    border-radius: 10px;
+    border-radius: 30px;
 }
 
 #VideoLoaded {
@@ -146,6 +145,9 @@ button {
     max-height: 100%;
     border-radius: 10px;
     object-fit: scale-down;
+
+    box-shadow: 0 0 15px rgba(222, 36, 36, 0.5); /* 渐变发光效果 */
+    transition: box-shadow 0.3s ease; /* 过渡效果 */
 }
 
 .videoinfo-container {
@@ -155,12 +157,16 @@ button {
     margin-left: 10%;
     margin-right: 10%;
     margin-bottom: 20px;
-    background-color: #a3c6e3;
+    
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
+    border-radius: 30px;
     overflow: hidden;
     position: relative;
+
+    box-shadow: 0 0 15px rgba(222, 36, 36, 0.4); /* 渐变发光效果 */
+    transition: box-shadow 0.3s ease; /* 过渡效果 */
+    
 }
 
 .infos {
@@ -192,6 +198,8 @@ button {
     padding-right: 2px;
     box-sizing: border-box;
     border: 2px solid #2f7ee6;
+    box-shadow: 0 0 15px rgba(222, 36, 36, 0.4); /* 渐变发光效果 */
+    transition: box-shadow 0.3s ease; /* 过渡效果 */
 }
 
 
