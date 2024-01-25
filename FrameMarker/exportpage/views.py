@@ -30,7 +30,8 @@ def exportfromselection(request, video_id):
 def exportfromannotation(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     frame_annotations = FrameAnnotations.objects.filter(video=video).order_by('frame_number', 'frame_type')
-    frame_annotations_json = json.dumps(frame_annotations)
+    frame_annotations_list = list(frame_annotations.values())
+    frame_annotations_json = json.dumps(frame_annotations_list)
     video_frames = VideoFrames.objects.filter(video=video).first()
 
     context = {
