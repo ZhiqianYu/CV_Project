@@ -1,67 +1,37 @@
 document.addEventListener("DOMContentLoaded", function () {
     var exportButton = document.getElementById("exportBtn");
-    console.log("frameAnnotationsJson:", frameAnnotationsJson);
+    var videoId = document.getElementById("videoSelect").value;
 
     if (exportButton) {
-        exportButton.addEventListener("click", exportAnnotations);
-    }
-
-    function exportAnnotations() {
-        var selectedFormats = [];
-
-        // Check if JSON format is selected
-        if (document.getElementById("jsonCheckbox").checked) {
-            selectedFormats.push("json");
-        }
-
-        // Check if CSV format is selected
-        if (document.getElementById("csvCheckbox").checked) {
-            selectedFormats.push("csv");
-        }
-
-        // Validate that at least one format is selected
-        if (selectedFormats.length === 0) {
-            alert("Please select at least one format for export.");
-            return;
-        }
-
-        // Generate file content based on selected formats
-        if (selectedFormats.includes("json")) {
-            downloadFile(JSON.stringify(frameAnnotationsJson, null, 2), "frame_annotations", "json");
-        }
-
-        if (selectedFormats.includes("csv")) {
-            // Convert to CSV and download
-            var csvContent = convertToCSV(frameAnnotationsJson);
-            downloadFile(csvContent, "frame_annotations", "csv");
-        }
-    }
-
-    function convertToCSV(data) {
-        var csv = "";
-        var columns = Object.keys(data[0]);
-
-        // Add header row
-        csv += columns.join(",") + "\n";
-
-        // Add data rows
-        data.forEach(function (row) {
-            var values = columns.map(function (column) {
-                return row[column];
-            });
-            csv += values.join(",") + "\n";
+        exportButton.addEventListener("click", function() {
+            exportAnnotations(videoId);
         });
-
-        return csv;
     }
 
-    function downloadFile(content, fileName, format) {
-        var blob = new Blob([content], { type: "text/" + format });
-        var link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName + "." + format;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    function exportAnnotations(videoId) {
+        var selectedFormats = document.querySelectorAll('input[name="format"]:checked');
+        var selectedColumns = document.querySelectorAll('.column-checkbox:checked');
+
+        selectedFormats.forEach(function (format) {
+            // Combine selected columns into a single array
+            var selectedColumnsArray = Array.from(selectedColumns).map(function (column) {
+                return column.value;
+            });
+
+            // Assuming you have the video_id available in your HTML, replace 'your_video_id' with the actual value
+            var videoID = videoId;
+
+            // Form the URL based on the selected format and columns
+            var url = `/export/${format.value}/${videoID}?columns=${selectedColumnsArray.join(',')}`;
+
+            // Create a hidden link element and trigger a click event to download the file
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = `${format.value}_${videoID}.${format.value === 'json' ? 'json' : 'csv'}`;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
     }
 });

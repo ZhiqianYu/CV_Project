@@ -17,10 +17,6 @@
     <script src="{% static 'search.js' %}"></script>
     <script src="{% static 'loaddata.js' %}"></script>
     <script src="{% static 'export.js' %}"></script>
-    <script>
-        // 定义全局 JavaScript 变量并将 frame_annotations_json 赋值给它
-        var frameAnnotationsJson = "{{ frame_annotations_json|safe|escapejs }}";
-    </script>
 </head>
 
 <body>
@@ -112,16 +108,16 @@
             <thead>
                 <tr>
                     <th class="sortable" data-column="frame-type">
-                        <label><input type="checkbox" class="column-checkbox" value="frame-type" checked>Type</label>
+                        <label><input type="checkbox" class="column-checkbox" value="frame_type" checked>Type</label>
                     </th>
                     <th class="sortable" data-column="frame-number">
-                        <label><input type="checkbox" class="column-checkbox" value="frame-number" checked>Number</label>
+                        <label><input type="checkbox" class="column-checkbox" value="frame_number" checked>Number</label>
                     </th>
                     <th class="sortable" data-column="rating">
-                        <label><input type="checkbox" class="column-checkbox" value="rating" checked>Rating</label>
+                        <label><input type="checkbox" class="column-checkbox" value="rank" checked>Rating</label>
                     </th>
                     <th class="sortable" data-column="annotated">
-                        <label><input type="checkbox" class="column-checkbox" value="annotated" checked>Annotated</label>
+                        <label><input type="checkbox" class="column-checkbox" value="is_annotated" checked>Annotated</label>
                     </th>
                     <th class="sortable" data-column="annotator">
                         <label><input type="checkbox" class="column-checkbox" value="annotator" checked> Annotator</label>
