@@ -18,6 +18,7 @@ def exportpagefromselection(request, video_id):
     frame_annotations = FrameAnnotations.objects.filter(video=video).order_by('frame_number', 'frame_type')
     frame_annotations_list = list(frame_annotations.values())
     video_frames = VideoFrames.objects.filter(video=video).first()
+    annotation_progress = video.annotation_progress
 
     context = {
         'video': video,
@@ -25,6 +26,7 @@ def exportpagefromselection(request, video_id):
         'frame_annotations_list': frame_annotations_list,
         'video_frames': video_frames,
         'video_name': video.file_name,
+        'annotation_progress': annotation_progress,
     }
 
     return render(request, 'exportpage.html', context)
@@ -34,6 +36,7 @@ def exportpagefromannotation(request, video_id):
     frame_annotations = FrameAnnotations.objects.filter(video=video).order_by('frame_number', 'frame_type')
     frame_annotations_list = list(frame_annotations.values())
     video_frames = VideoFrames.objects.filter(video=video).first()
+    annotation_progress = video.annotation_progress
 
     context = {
         'video': video,
@@ -41,6 +44,7 @@ def exportpagefromannotation(request, video_id):
         'frame_annotations_list': frame_annotations_list,
         'video_frames': video_frames,
         'video_name': video.file_name,
+        'annotation_progress': annotation_progress,
     }
 
     return render(request, 'exportpage.html', context)
