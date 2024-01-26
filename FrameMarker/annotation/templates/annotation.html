@@ -12,7 +12,6 @@
     <!--css File loader-->
     <link rel="stylesheet" href="{% static 'navbar.css' %}">
     <link rel="stylesheet" href="{% static 'annotation.css' %}">
-    <link rel="stylesheet" href="{% static 'search.css' %}">
 
     <!--js File loader-->
     <script src="{% static 'search.js' %}"></script>
@@ -44,6 +43,7 @@
         <div class="navbar-right">
             {% if user.is_authenticated  %}
             <a href="{% url 'login' %}" class='login-inf'>Welcome, {{ user.username }}!</a>
+            <span class="navbar-separator">|</span>
             <a href="{% url 'logout' %}" class='navbar-logout'>Logout</a>
             {% else  %}
             <a href="{% url 'login' %}" class="navbar-login">Login</a>
@@ -75,7 +75,8 @@
                 <div class="player-controls">
                     <button id="playPauseBtn">Play</button>
                     <button id="framegenerationBtn" onclick="generateFrames({{ video.id }})">Frame Generation</button>
-                    <button id="exportBtn">Export</button>
+                    <button id="saveBtn" onclick="saveAnnotation({{ video.id }})">Save Updates</button>
+                    <button id="exportBtn" onclick="exportData({{ video.id }})">Export</button>
                     <div id="buttonStatus"></div>
                 </div>
             </div>

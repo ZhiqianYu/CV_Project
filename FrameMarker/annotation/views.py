@@ -1,4 +1,3 @@
-# views.py
 import os
 import cv2
 from django.shortcuts import render, get_object_or_404
@@ -95,7 +94,7 @@ def generate_frames_for_video(video, uploadtime, num_threads=4):
 
             executor.submit(process_frame, frame_number, frame, frame_folder_4, frame_folder_60)
             frame_number += 1
-            print(f"Total frames 4 saved: {total_frames_4}.\nTotal frames 60 saved: {total_frames_60}.\nTotal frames generated: {frame_number}.")
+            print(f"Total frames 4 saved: {total_frames_4}.\nTotal frames 60 saved: {total_frames_60}.\nTotal frames read: {frame_number}.")
             
 
     base_media_path = os.path.join(settings.MEDIA_ROOT)
