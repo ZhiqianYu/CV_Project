@@ -88,7 +88,7 @@
                     <p>Video Name: {{ video.file_name }}</p>
                     <p>Video Uploader: {{ video.uploader }}</p>
                     <p>Upload Time: {{ video.upload_time }}</p>
-                    <p>Annotation Progress: {{ video.progress }}</p>
+                    <p>Annotation Progress: {{ annotation_progress }}%</p>
                     {% if frame_annotations %}
                         {% with first_annotation=frame_annotations.0 %}
                             <p>Annotator: {{ first_annotation.annotator }}</p>

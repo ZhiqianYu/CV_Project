@@ -6,6 +6,7 @@ from .models import VideoFrames, FrameAnnotations
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from concurrent.futures import ThreadPoolExecutor
+from django.db.models import Count
 
 def annotation(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
@@ -116,6 +117,15 @@ def generate_frames_for_video(video, uploadtime, num_threads=4):
 def annotate_frames(request, video_id, frame_type, frame_number, rank):
     video = get_object_or_404(Video, pk=video_id)
     video_frames = VideoFrames.objects.get(video=video)
+    annotated_frames_count = FrameAnnotations.objects.filter(video=video).filter(is_annotated=True).count()
+    
+    video_frames = VideoFrames.objects.get(video=video)
+    total_frames = video_frames.video_frames_total
+
+    progress_percentage = "{:.2f}".format((annotated_frames_count / total_frames) * 100)
+    print(f"Progress percentage: {progress_percentage}")
+    video.annotation_progress = progress_percentage
+    video.save()
 
     frame_type = frame_type
     frame_number = frame_number
