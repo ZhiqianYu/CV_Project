@@ -88,7 +88,7 @@
                     <p>Video Name: {{ video.file_name }}</p>
                     <p>Video Uploader: {{ video.uploader }}</p>
                     <p>Upload Time: {{ video.upload_time }}</p>
-                    <p>Annotated: {{ video.annotated }}</p>
+                    <p>Annotation Progress: {{ annotation_progress }}%</p>
                     {% if frame_annotations %}
                         {% with first_annotation=frame_annotations.0 %}
                             <p>Annotator: {{ first_annotation.annotator }}</p>
@@ -96,9 +96,8 @@
                     {% else %}
                         <p>Annotator: None</p>
                     {% endif %}
-                    <p>Annotation Progress: {{ video.progress }}</p>
                     <p>Total Frames: {{ video_frames.video_frames_total }}</p>
-                    <a href="{{ MEDIA_URL }}{{ video.video_file.url }}" class="video-list-link" download>Download Video File</a>
+                    <a href="{{ MEDIA_URL }}{{ video.video_file }}" class="video-list-link" download>Download Video File</a>
                 </div>
             </div>
         </div>
