@@ -1,4 +1,3 @@
-# views.py
 import os
 import cv2
 from django.shortcuts import render, get_object_or_404
