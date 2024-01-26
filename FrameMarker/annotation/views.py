@@ -39,6 +39,10 @@ def annotation(request, video_id):
         # 使用联接查询获取帧标注信息
         annotation = annotations_dict.get(frame_number, None)
 
+        # 如果帧没有标注信息，为其设置一个默认值
+        if annotation is None:
+            annotation = {'is_annotated': False, 'rank': ''}
+
         # 构造帧信息字典
         frame_info = {'frame_path': frame_path, 'frame_number': frame_number, 'annotation': annotation}
         frame_info_list.append(frame_info)
