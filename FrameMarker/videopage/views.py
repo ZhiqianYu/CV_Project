@@ -26,7 +26,12 @@ def video_list(request):
 
     if annotated_filter:
         annotated_filter = annotated_filter.lower() == 'true'
-        videos = videos.filter(annotated=annotated_filter)
+        if annotated_filter:
+            videos = videos.filter(annotation_progress__gt=0)
+        else:
+            videos = videos.filter(annotation_progress=0)
+
+
 
     # Sort videos based on user-selected criteria
     if sort_by == 'file_name':
@@ -39,6 +44,11 @@ def video_list(request):
             videos = videos.order_by('uploader__username')
         elif order == 'desc':
             videos = videos.order_by('-uploader__username')
+    elif sort_by == 'annotation_progress':
+        if order == 'asc':
+            videos = videos.order_by('annotation_progress')
+        elif order == 'desc':
+            videos = videos.order_by('-annotation_progress')
 
     # Get all unique uploaders for the dropdown
     all_uploaders = Video.objects.values('uploader__username').distinct()
