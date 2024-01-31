@@ -179,7 +179,7 @@ def create_video(video_path, preview_path, username):
     video_path = os.path.relpath(video_path, base_media_path)
     preview_path = os.path.relpath(preview_path, base_media_path)
 
-    video = Video(file_name=file_name, title=title, uploader=username, upload_time=now, annotated=False, approved=False, video_file=video_path, preview_file=preview_path)
+    video = Video(file_name=file_name, title=title, uploader=username, upload_time=now, annotation_progress=0, approved=False, video_file=video_path, preview_file=preview_path)
     video.save()
 
 def video_format_transform(video_path):

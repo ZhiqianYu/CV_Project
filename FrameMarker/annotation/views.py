@@ -1,4 +1,3 @@
-# views.py
 import os
 import cv2
 from django.shortcuts import render, get_object_or_404
@@ -7,10 +6,17 @@ from .models import VideoFrames, FrameAnnotations
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
 from concurrent.futures import ThreadPoolExecutor
+from django.db.models import Count
 
 def annotation(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     video_frames, created = VideoFrames.objects.get_or_create(video=video)
+    
+    #frames = FrameAnnotations.objects.filter(video=video)
+
+    annotations = FrameAnnotations.objects.filter(video=video)
+    # 将数据库中的帧标注信息转换为字典，以便于后续匹配
+    annotations_dict = {(anno.frame_number): anno for anno in annotations}
 
     filename = video.file_name
     uploader = video.uploader
@@ -24,24 +30,24 @@ def annotation(request, video_id):
     frame_folder_4 = video_frames.frame_folder_path_4
     frame_paths_4 = [os.path.join(frame_folder_4, f'frame_4_{i}.png') for i in range(4, max_frame_number, 4) if i % 60 != 0]
 
-    base_media_path = os.path.join(settings.MEDIA_ROOT)
-    frame_paths_60 = []
+    # 为每张图片获取帧编号和标注信息
+    frame_info_list = []
+    for frame_path in frame_paths_60:
+        # 从文件名中提取帧编号
+        frame_number = int(frame_path.split('_')[-1].split('.')[0])
+        # 从字典中获取相应帧编号的标注信息
+        # 使用联接查询获取帧标注信息
+        annotation = annotations_dict.get(frame_number, None)
 
-    for frame_path_60 in frame_paths_60_orig:
-        frame_path_60_rel = os.path.relpath(frame_path_60, base_media_path)
-        frame_path_60 = frame_path_60_rel
-        frame_paths_60 = frame_paths_60 + [frame_path_60]
-    
-
-    frame_folder_60_rel = os.path.relpath(frame_folder_60, base_media_path)
-    frame_folder_60 = frame_folder_60_rel
-
-    video.video_file_rel_path = os.path.relpath (video.video_file.path, base_media_path)
+        # 构造帧信息字典
+        frame_info = {'frame_path': frame_path, 'frame_number': frame_number, 'annotation': annotation}
+        frame_info_list.append(frame_info)
 
     return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 
                                             'frame_paths_4': frame_paths_4, 'frame_folder_4': frame_folder_4,
-                                            'frame_paths_60': frame_paths_60, 'frame_folder_60': frame_folder_60,
-                                            'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number})
+                                            'frame_paths_60': frame_info_list, 'frame_folder_60': frame_folder_60,
+                                            'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number,
+                                            'annotations': annotations})
 
 def generate_frames(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
@@ -109,7 +115,7 @@ def generate_frames_for_video(video, uploadtime, num_threads=4):
 
             executor.submit(process_frame, frame_number, frame, frame_folder_4, frame_folder_60)
             frame_number += 1
-            print(f"Total frames 4 saved: {total_frames_4}.\nTotal frames 60 saved: {total_frames_60}.\nTotal frames generated: {frame_number}.")
+            print(f"Total frames 4 saved: {total_frames_4}.\nTotal frames 60 saved: {total_frames_60}.\nTotal frames read: {frame_number}.")
             
 
     base_media_path = os.path.join(settings.MEDIA_ROOT)
@@ -131,6 +137,15 @@ def generate_frames_for_video(video, uploadtime, num_threads=4):
 def annotate_frames(request, video_id, frame_type, frame_number, rank):
     video = get_object_or_404(Video, pk=video_id)
     video_frames = VideoFrames.objects.get(video=video)
+    annotated_frames_count = FrameAnnotations.objects.filter(video=video).filter(is_annotated=True).count()
+    
+    video_frames = VideoFrames.objects.get(video=video)
+    total_frames = video_frames.video_frames_total
+
+    progress_percentage = "{:.2f}".format((annotated_frames_count / total_frames) * 100)
+    print(f"Progress percentage: {progress_percentage}")
+    video.annotation_progress = progress_percentage
+    video.save()
 
     frame_type = frame_type
     frame_number = frame_number

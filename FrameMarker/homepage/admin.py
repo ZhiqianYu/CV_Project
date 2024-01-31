@@ -14,9 +14,9 @@ scan_videos.short_description = 'Scan videos'
 scan_videos.actions = None
 
 class VideoAdmin(admin.ModelAdmin):
-    list_display = ('file_name', 'uploader', 'upload_time', 'annotated', 'annotation_time', 'approved')
+    list_display = ('file_name', 'uploader', 'upload_time', 'annotation_progress', 'annotation_time', 'approved')
     readonly_fields = ('file_name', 'uploader', 'upload_time', 'annotation_time', 'preview_image', 'video_file')
-    fields = ('file_name', 'upload_time', 'uploader', 'annotated', 'annotation_time', 'approved', 'preview_image', 'video_file')
+    fields = ('file_name', 'upload_time', 'uploader', 'annotation_progress', 'annotation_time', 'approved', 'preview_image', 'video_file')
     actions = [scan_videos]
 
     def preview_image(self, obj):
