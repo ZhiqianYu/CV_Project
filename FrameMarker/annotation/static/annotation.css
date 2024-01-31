@@ -267,6 +267,15 @@ body {
     flex-direction: row; /* Align vertically */
     gap: 2px;
     justify-content: right;
+    height: 24px;
+
+    border: 1px solid #6f68e6;
+}
+
+.rank-btns {
+    width: max-content;
+    justify-content: center;
+    height: 24px;
 }
 
 .rank-notif{
@@ -274,9 +283,9 @@ body {
     width: max-content;
     text-decoration: none;
     font-size: 15px;
-    font-weight: 400;
+    font-weight: 600;
     vertical-align: middle;
-    margin-top: 2px;
+    margin-top: 1px;
     margin-bottom: 1px;
     margin-right: 5px;
     border-radius: 5px;
@@ -286,11 +295,20 @@ body {
 }
 
 .frame-rank-btns {
-    width: 85%;
+    width: max-content;
     display: flex;
     flex-direction: row;
-    gap: 9px;
+    gap: 8px;
     justify-content: right;
+}
+
+.span {
+    color: rgb(72, 103, 240);
+    font-size: 17px;
+    line-height: 1;
+    padding: 0px 8px;
+    transform: translateY(7%);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .frame-rank-inf {
