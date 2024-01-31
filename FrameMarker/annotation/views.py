@@ -25,7 +25,7 @@ def annotation(request, video_id):
     total_frame_files = video_frames.video_frames_total
 
     frame_folder_60 = video_frames.frame_folder_path_60
-    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 60)]
+    frame_paths_60_orig = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 60)]
 
     frame_folder_4 = video_frames.frame_folder_path_4
     frame_paths_4 = [os.path.join(frame_folder_4, f'frame_4_{i}.png') for i in range(4, max_frame_number, 4) if i % 60 != 0]
