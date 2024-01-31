@@ -72,7 +72,7 @@ def calculate_max_frame_number(video):
     cap.release()
     return max_frame_number
 
-def generate_frames_for_video(video, uploadtime, num_threads=4):
+def generate_frames_for_video(video, uploadtime, num_threads=8):
 
     video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
     cap = cv2.VideoCapture(video_file_path)
