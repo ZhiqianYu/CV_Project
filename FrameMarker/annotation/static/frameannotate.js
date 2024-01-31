@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 1000);
 
         updateChoosedRank();
+        windows.location.reload();
     }
 
     function setSameRankForSubframes() {
