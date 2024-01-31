@@ -52,9 +52,6 @@ def annotation(request, video_id):
 def generate_frames(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     video_frames = VideoFrames.objects.filter(video=video)
-
-    print(f"Number of video need to generate frames: {video_frames.count()}")
-
     total_frames = calculate_max_frame_number(video)
 
     if not (video_frames.filter(has_frames_60=True).exists() and video_frames.filter(has_frames_4=True).exists()):
@@ -80,7 +77,8 @@ def generate_frames_for_video(video, uploadtime, num_threads=4):
     video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
     cap = cv2.VideoCapture(video_file_path)
 
-    folder_name = f"{video.file_name[:10].replace(' ', '')}-{video.uploader.username}-{uploadtime}"
+    filename_without_extension = os.path.splitext(video.file_name)[0]
+    folder_name = f"{filename_without_extension}-{video.uploader.username}-{uploadtime}"
 
     frame_folder = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name)
     frame_folder_4 = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name, '4')
@@ -143,7 +141,6 @@ def annotate_frames(request, video_id, frame_type, frame_number, rank):
     total_frames = video_frames.video_frames_total
 
     progress_percentage = "{:.2f}".format((annotated_frames_count / total_frames) * 100)
-    print(f"Progress percentage: {progress_percentage}")
     video.annotation_progress = progress_percentage
     video.save()
 
