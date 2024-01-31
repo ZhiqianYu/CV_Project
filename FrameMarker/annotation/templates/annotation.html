@@ -128,6 +128,7 @@
                     <div class="frame-rank-btns">
                         <div id="video-id-container" data-video-id="{{ video.id }}" style="display: none;"></div>
                         <button class="rank-btns" id="rank0" onclick="rateFrame('clear')">Clear</button>
+                        <button class="rank-btns" id="rank6" onclick="rateFrame('unknow')">Unknow</button>
                         <button class="rank-btns" id="rank1" onclick="rateFrame('Sehr schlecht')">Sehr schlecht</button>
                         <button class="rank-btns" id="rank2" onclick="rateFrame('Schlecht')">Schlecht</button>
                         <button class="rank-btns" id="rank3" onclick="rateFrame('Durchschnittlich')">Durchschnittlich</button>
@@ -152,6 +153,7 @@
                 Generation Process: <span id="current-Frame-gen">0</span>/<span id="max_frame_number-gen">0</span>
             </div>
             <div class="reuseRankBtn" style="display: none;">
+                
                 <button id="set-Same-Rank-Btn" onclick="setSameRankForSubframes({{ choosed_rank }})">Set Same Rank For Subframes</button>
             </div>
         </div>
