@@ -40,6 +40,7 @@ import os
 import cv2
 import ffmpeg
 from concurrent.futures import ThreadPoolExecutor
+from django.contrib.auth.decorators import login_required
 from PIL import Image
 
 # 链接定向
@@ -106,23 +107,18 @@ def search(request):
     return render(request, 'introduction.html', params)
 
 # 文件上传Form
+@login_required
 def upload_file(request):
     if request.method == 'POST':
         form = UploadForm(request.POST, request.FILES)
         if form.is_valid():
-            if request.user.is_authenticated:  # 检查用户是否已登录
-                username = request.user
-            else:
-                username = 'default'
-
+            username = request.user
             file = form.cleaned_data['file']
             file_name = file.name
-            video_path = os.path.join(settings.MEDIA_ROOT, 'Video', file_name)
 
-            file_extension = '.jpg'
-            preview_file_name = os.path.splitext(file_name)[0] + file_extension
-            preview_path = os.path.join(settings.MEDIA_ROOT, 'Preview', preview_file_name)
-            
+            video_path = os.path.join(settings.MEDIA_ROOT, 'Video', file_name)
+            preview_path = os.path.join(settings.MEDIA_ROOT, 'Preview', os.path.splitext(file_name)[0] + '.jpg')
+
             os.makedirs(os.path.dirname(video_path), exist_ok=True)
             os.makedirs(os.path.dirname(preview_path), exist_ok=True)
 
@@ -131,68 +127,40 @@ def upload_file(request):
             database_exists = Video.objects.filter(file_name=file_name).exists()
 
             if not video_exists:
-                if not preview_exists:
-                    if not database_exists:
-                        # 文件不存在，预览图不存在，数据库不存在
-                        # 文件不存在，预览图不存在，数据库不存在
-                        with open(video_path, 'wb') as destination_file:
-                            for chunk in file.chunks():
-                                destination_file.write(chunk)
-                        video_path = video_format_transform(video_path)
-                        generate_preview(video_path, preview_path)
-                        create_video(video_path, preview_path, username)
-                        return JsonResponse({'status': 'Upload Success', 'message': 'File uploaded. Database and preview created.'})
-                    else:
-                        # 文件不存在，预览图不存在，数据库存在
-                        with open(video_path, 'wb') as destination_file:
-                            for chunk in file.chunks():
-                                destination_file.write(chunk)
-                        video_path = video_format_transform(video_path)
-                        generate_preview(video_path, preview_path)
-                        Video.objects.filter(file_name=file_name).update(video_file=video_path, preview_file=preview_path)
-                        return JsonResponse({'status': 'Upload Success', 'message': 'File uploaded, database updated, preview created.'})
+                with open(video_path, 'wb') as destination_file:
+                    for chunk in file.chunks():
+                        destination_file.write(chunk)
+
+                video_path = video_format_transform(video_path)
+                generate_preview(video_path, preview_path)
+
+                if database_exists:
+                    Video.objects.filter(file_name=file_name).update(video_file=video_path, preview_file=preview_path)
+                    message = 'File uploaded, database updated, preview created.'
                 else:
-                    if not database_exists:
-                        # 文件不存在，预览图存在，数据库不存在
-                        with open(video_path, 'wb') as destination_file:
-                            for chunk in file.chunks():
-                                destination_file.write(chunk)
-                        video_path = video_format_transform(video_path)
-                        create_video(video_path, preview_path, username)
-                        return JsonResponse({'status': 'Upload Success', 'message': 'File uploaded. Database created.'})
-                    else:
-                        # 文件不存在，预览图存在，数据库存在
-                        with open(video_path, 'wb') as destination_file:
-                            for chunk in file.chunks():
-                                destination_file.write(chunk)
-                        video_path = video_format_transform(video_path)
-                        Video.objects.filter(file_name=file_name).update(video_file=video_path, preview_file=preview_path)
-                        return JsonResponse({'status': 'Upload Success', 'message': 'File uploaded, database updated.'})
+                    create_video(video_path, preview_path, username)
+                    message = 'File uploaded, database and preview created.'
+
             else:
                 if not preview_exists:
-                    if not database_exists:
-                        # 文件存在，预览图不存在，数据库不存在
-                        generate_preview(video_path, preview_path)
-                        create_video(video_path, preview_path, username)
-                        return JsonResponse({'status': 'Upload Success', 'message': 'File exist, database and preview created.'})
-                    else:
-                        # 文件存在，预览图不存在，数据库存在
-                        generate_preview(video_path, preview_path)
-                        Video.objects.filter(file_name=file_name).update(video_file=video_path, preview_file=preview_path)
-                        return JsonResponse({'status': 'Upload Success', 'message': 'File exist, database updated, preview created.'})
+                    generate_preview(video_path, preview_path)
+
+                if database_exists:
+                    Video.objects.filter(file_name=file_name).update(video_file=video_path, preview_file=preview_path)
+                    message = 'File exists, database updated, preview created.'
                 else:
-                    if not database_exists:
-                        # 文件存在，预览图存在，数据库不存在
-                        create_video(video_path, preview_path, username)
-                        return JsonResponse({'status': 'Upload Success', 'message': 'Files exist, database created'})
-                    else:
-                        # 文件存在，预览图存在，数据库存在
-                        Video.objects.filter(file_name=file_name).update(video_file=video_path, preview_file=preview_path)
-                        return JsonResponse({'status': 'Upload Success', 'message': 'Files exist, database updated.'})
+                    create_video(video_path, preview_path, username)
+                    message = 'File exists, database and preview created.'
+
+            messages.success(request, message)
+            return JsonResponse({'status': 'Upload Success', 'message': message})
+
         else:
             return JsonResponse({'status': 'Upload Failed', 'message': 'Invalid form data'})
+
     else:
         form = UploadForm()
+
     return render(request, 'upload.html', {'form': form})
 
 # 数据库操作
