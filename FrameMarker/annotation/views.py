@@ -23,8 +23,6 @@
         much faster than write frame img to disk.
 """
 
-
-
 import os
 import cv2
 from django.shortcuts import render, get_object_or_404
@@ -75,6 +73,26 @@ def annotation(request, video_id):
                                             'frame_paths_60': frame_info_list, 'frame_folder_60': frame_folder_60,
                                             'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number,
                                             'annotations': annotations})
+
+def update_overlay(request, video_id):
+    video = get_object_or_404(Video, pk=video_id)
+    video_frames, created = VideoFrames.objects.get_or_create(video=video)
+
+    annotations = FrameAnnotations.objects.filter(video=video)
+    annotations_dict = {anno.frame_number: {'is_annotated': anno.is_annotated, 'rank': anno.rank} for anno in annotations}
+
+    max_frame_number = calculate_max_frame_number(video)
+    frame_folder_60 = video_frames.frame_folder_path_60
+    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 60)]
+
+    frame_info_list = []
+    for frame_path in frame_paths_60:
+        frame_number = int(frame_path.split('_')[-1].split('.')[0])
+        annotation_data = annotations_dict.get(frame_number, {})
+        frame_info = {'frame_path': frame_path, 'frame_number': frame_number, 'annotation': annotation_data}
+        frame_info_list.append(frame_info)
+
+    return JsonResponse({'frame_info_list': frame_info_list})
 
 def generate_frames(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
