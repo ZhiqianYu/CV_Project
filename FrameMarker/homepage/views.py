@@ -1,3 +1,31 @@
+"""
+    Project by @ZhiqianYu, https://github.com/ZhiqianYu and
+               @DaBaivvi, https://github.com/DaBaivvi
+        for the course "Computer Vision - Project" of TU Darmstadt in WS 2023-24, instructed by Yannik Frisch, Henry Krumb.
+    
+    Description by @Zhiqian Yu:
+        This project is a web application for annotating frames of videos to prepare the data for ML.
+        It is built with Django. The project is hosted on GitHub: https://github.com/ZhiqianYu/CV_Project, currently private.
+        It has the basic function of registering, logging in, uploading videos, list videos, generating frames for videos,
+          annotating frames, and exporting the annotations in the required formats.
+
+        The project is divided into 4 apps: homepage, videopage, annotation, and exportpage.
+        The homepage app is responsible for the introduction page, uploading videos, registering, and logging in.
+        The videopage app is responsible for listing videos with ralated infos, filtering videos, and displaying the annotation progress.
+        The annotation app is responsible for generating frames for videos, then annotating frames of videos.
+        The exportpage app is responsible for loading the annotation data and exporting the annotations in the required formats.
+    
+    Introduction of this file:
+        This file is the homepage views.py. The main functions defined here are: register and login of user. How to process the uploaded video.
+        For video upload, it need to check the database and media resources whether the video is already exist or not. Then it will create the
+        video file in the media fold and generate a preview img for the video. Finally, it will create a database entry for the video.
+        If the uploaded video is not MP4, which is the required format for video player in annotation page, it will convert the video to MP4 format.
+        And store the original video in the old_Video folder. Then treat the new MP4 file as a new uploaded video. To generate preview 
+        and create database entry.
+        It also has a scan video function, it serves as to check the database and media resources whether there are existing files which is not
+        present in the database, it's a function in the admin page of videos. It will create or update database entry for the existing files.  
+"""
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
