@@ -1,3 +1,30 @@
+"""
+    Project by @ZhiqianYu, https://github.com/ZhiqianYu and
+               @DaBaivvi, https://github.com/DaBaivvi
+        for the course "Computer Vision - Project" of TU Darmstadt in WS 2023-24, instructed by Yannik Frisch, Henry Krumb.
+    
+    Description by @Zhiqian Yu:
+        This project is a web application for annotating frames of videos to prepare the data for ML.
+        It is built with Django. The project is hosted on GitHub: https://github.com/ZhiqianYu/CV_Project, currently private.
+        It has the basic function of registering, logging in, uploading videos, list videos, generating frames for videos,
+          annotating frames, and exporting the annotations in the required formats.
+
+        The project is divided into 4 apps: homepage, videopage, annotation, and exportpage.
+        The homepage app is responsible for the introduction page, uploading videos, registering, and logging in.
+        The videopage app is responsible for listing videos with ralated infos, filtering videos, and displaying the annotation progress.
+        The annotation app is responsible for generating frames for videos, then annotating frames of videos.
+        The exportpage app is responsible for loading the annotation data and exporting the annotations in the required formats.
+    
+    Introduction of this file:
+        Important here, the way how the annotation info is stored is get the infos of the choosed frames and display it on html page, then use
+        js to get the info on page and load another url with the infos. It also has some small trick to get the path and files from the files 
+        loaded in html page. It relys on the file and folder name all has certain logic. Then evoke the function in the views for annotation process.
+        For frame generation it's recommended to use more than 4 threads, otherwise it will cause ram overflow. As the speed of reading frame is 
+        much faster than write frame img to disk.
+"""
+
+
+
 import os
 import cv2
 from django.shortcuts import render, get_object_or_404
