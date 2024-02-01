@@ -52,19 +52,21 @@ def login_user(request):
              check_user = authenticate(username = username, password = password)
              if check_user is not None:
                  login(request, check_user)
-                 return redirect('introduction')
+                 next_url = request.GET.get('next', 'introduction')
+                 return redirect(next_url)
              else:
-                 messages.waring(request, 'Invalid Username or Password.')
+                 messages.warning(request, 'Invalid Username or Password.')
                  return redirect('register')
-         return redirect('introduction')
+         return redirect('login.html')
      else:
          return redirect('introduction')
 
 #Logout
 def logout_user(request):
+    next_url = request.GET.get('next', '/')
     request.session.flush()
     logout(request)
-    return redirect('introduction')
+    return redirect(next_url)
 
 #Search
 def search(request):

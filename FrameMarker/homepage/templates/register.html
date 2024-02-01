@@ -33,7 +33,7 @@
     
         <!-- Right section of the navbar -->
         <div class="navbar-right">
-            <a href="{% url 'login' %}" class="navbar-login">Login</a>
+            <a href="{% url 'login' %}?next={{ request.path }}" class="navbar-login">Login</a>
         </div>
     </div>
     
@@ -76,15 +76,3 @@
     </div>
 </body>
 </html>
-
-<!--
-    div classes in the form used
-    {% if error_message %}
-            <p class="error-message">{{ error_message }}</p>
-    {% endif %}
-
-
-
-            
-        
--->
