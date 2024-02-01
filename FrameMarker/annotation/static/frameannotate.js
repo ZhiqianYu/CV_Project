@@ -11,41 +11,108 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentFrameType = null;
     let currentVideoId = null;
 
-    function rateFrame(rating) {
-        // 更新当前选择的评级和视频id
+    async function rateFrame(rating) {
+        // Update current selection and video id
         currentRating = rating;
         currentVideoId = videoIdContainer.getAttribute('data-video-id');
         
-        // 从页面中提取当前帧的类型和帧号
+        // Extract current frame information
         const videoId = currentVideoId;
         const frameType = frameTypeElement.textContent;
         const frameNumber = frameNumberElement.textContent;
 
-        fetch(`/annotate_frames/${videoId}/${frameType}/${frameNumber}/${currentRating}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken(),
-            },
-            body: JSON.stringify({
-                // 数据格式
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
+        try {
+            const response = await fetch(`/annotate_frames/${videoId}/${frameType}/${frameNumber}/${currentRating}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(),
+                },
+                body: JSON.stringify({
+                    // Data format
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
             console.log(data);
-        })
-        .catch(error => {
+
+            rankNotif.style.display = 'block';
+
+            setTimeout(function () {
+                rankNotif.style.display = 'none';
+            }, 1000);
+
+            updateChoosedRank();
+
+            // Fetch updated overlay content after rating, only if the rating action was successful
+            if (data.status === 'success') {
+                await updateOverlayInformation();
+            }
+        } catch (error) {
             console.error('Error:', error);
+        }
+    }
+
+    async function updateOverlayInformation() {
+        await fetchUpdatedOverlayData();
+    }
+
+    async function fetchUpdatedOverlayData() {
+        // Fetch updated overlay data from the server
+        const currentVideoId = videoIdContainer.getAttribute('data-video-id');
+        try {
+            const response = await fetch(`/update_overlay/${currentVideoId}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(),
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            // Handle the updated data and update overlay content
+            updateOverlayContent(data.frame_info_list);
+        } catch (error) {
+            console.error('Error fetching updated data:', error);
+        }
+    }
+
+    function updateOverlayContent(FrameInfoList) {
+        // Update overlay-a-top content based on the fetched data
+        const overlayATopElements = document.querySelectorAll('.overlay-a-top');
+    
+        overlayATopElements.forEach(function (overlayATopElement, index) {
+            const FrameInfo = FrameInfoList[index];
+    
+            // Find child elements within overlay-a-top
+            const annoInfoElement = overlayATopElement.querySelector('.anno-info');
+            const annoRankElement = overlayATopElement.querySelector('.anno-rank');
+    
+            // Update content based on FrameInfo properties
+            if (FrameInfo) {
+                if (FrameInfo.annotation) {
+                    // Update annotation information
+                    annoInfoElement.innerHTML = FrameInfo.annotation.is_annotated ? '&#x2705;' : '&#x26A0;';
+                    annoRankElement.innerHTML = FrameInfo.annotation.rank ? FrameInfo.annotation.rank : '';
+                } else {
+                    // Handle the case when there is no annotation
+                    annoInfoElement.innerHTML = '';
+                    annoRankElement.innerHTML = '';
+                }
+            } else {
+                // Handle the case when FrameInfo is not available
+                annoInfoElement.innerHTML = '';
+                annoRankElement.innerHTML = '';
+            }
         });
-
-        rankNotif.style.display = 'block';
-
-        setTimeout(function () {
-            rankNotif.style.display = 'none';
-        }, 1000);
-
-        updateChoosedRank();
     }
 
     function setSameRankForSubframes() {
@@ -66,7 +133,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 rateSubframe(frameType4, frameNumber4, currentRating);
             });
 
-            // Optionally, you can add a success message or perform other actions here
             console.log('Same rating set for all subframes.');
         } else {
             // Handle the case where no rating is selected
@@ -100,7 +166,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function rateSubframe(frameType, frameNumber, rating) {
-
         currentVideoId = videoIdContainer.getAttribute('data-video-id');
 
         fetch(`/annotate_frames/${currentVideoId}/${frameType}/${frameNumber}/${rating}/`, {

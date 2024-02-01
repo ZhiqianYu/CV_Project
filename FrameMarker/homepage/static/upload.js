@@ -9,14 +9,14 @@ function showFileName(input) {
     const file = input.files[0];
     const fileNameArea = document.getElementById('fileNameArea');
     const chooseFileBtn = document.getElementById('chooseFileBtn');
-    const UploadFileBtn = document.getElementById('uploadFileBtn');
+    const uploadFileBtn = document.getElementById('uploadFileBtn');
 
     if (file) {
         fileNameArea.textContent = 'File: ' + file.name;
         fileNameArea.style.display = 'block';
         // 选择文件后，显示内容变更为更改文件, 显示上传按钮
         chooseFileBtn.textContent = 'Change File';
-        UploadFileBtn.style.display = '';
+        uploadFileBtn.style.display = '';
     }
 }
 
@@ -24,16 +24,30 @@ function uploadFile() {
     var form = document.getElementById('UploadForm');
     var formData = new FormData(form);
 
+    // Check if the user is authenticated
+    if (!isAuthenticated) {
+        alert('Please log in to upload files.');
+        window.location.href = '/login/';
+        return;
+    }
+
     fetch(form.action, {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
-    .then(data => handleUploadResponse(data))
+    .then(data => {
+        // Display the success message
+        alert(data.message);
+
+        // Handle the rest of the response
+        handleUploadResponse(data);
+    })
     .catch((error) => {
         console.error('Error:', error);
     });
 }
+
 
 function handleUploadResponse(response) {
     if (response.status === 'Upload Success' && response.message === 'File uploaded. Database and preview created.') {
@@ -51,7 +65,7 @@ function handleUploadResponse(response) {
             window.location.href = 'videolist';
         }
     } else if (response.status === 'Upload Success' && response.message === 'File exist, database updated, preview created.') {
-        alert('File exist, database updated, preview created.');
+        alert('File exists, database updated, preview created.');
         window.location.href = '/uploadpage';
     } else if (response.status === 'Upload Success' && response.message === 'Files exist, database updated.') {
         alert('Files exist, database updated. No need to upload.');
