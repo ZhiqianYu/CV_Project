@@ -15,8 +15,8 @@
 
     <!--js File loader-->
     <script src="{% static 'search.js' %}"></script>
-    <script src="{% static 'frameannotate.js' %}"></script>
     <script src="{% static 'framegeneration.js' %}"></script>
+    <script src="{% static 'frameannotate.js' %}"></script>
     <script src="{% static 'framedisplay.js' %}"></script>
     
     <!-- 引入 jQuery 库 -->
@@ -87,19 +87,20 @@
                                 <div class="frames-60" >
                                     <img src="{{ MEDIA_URL }}{{ frame_info.frame_path }}" alt="frame">
                                     <div class="overlay-a-top">
-                                        {% if frame_info.annotation %}
-                                            <span class="anno-info">
-                                                {% if frame_info.annotation.is_annotated %}
-                                                    &#10003; 
+                                            <span class="anno-info" id="overlay-info-anno">
+                                                {% if frame_info.annotation.is_annotated == True %}
+                                                    &#x2705;
                                                 {% else %}
-                                                    Not annotated
+                                                    &#x26A0;
                                                 {% endif %}
                                             </span>
                                             <span>&nbsp;&nbsp;</span>
-                                            <span class="anno-rank">
-                                                {{ frame_info.annotation.rank }}
+                                            <span class="anno-rank" id="overlay-info-rank">
+                                                {% if frame_info.annotation.rank == null %}
+                                                {% else %}
+                                                    {{ frame_info.annotation.rank }}
+                                                {% endif %}
                                             </span>
-                                        {% endif %}
                                     </div>
                                     <div class="overlay-a-bot">
                                         <span class="anno-num">
@@ -128,11 +129,13 @@
                     <div class="frame-rank-btns">
                         <div id="video-id-container" data-video-id="{{ video.id }}" style="display: none;"></div>
                         <button class="rank-btns" id="rank0" onclick="rateFrame('clear')">Clear</button>
-                        <button class="rank-btns" id="rank1" onclick="rateFrame('Sehr schlecht')">Sehr schlecht</button>
+                        <button class="rank-btns" id="rank6" onclick="rateFrame('unknow')">Unknow</button>
+                        <span class="span">|</span>
+                        <button class="rank-btns" id="rank1" onclick="rateFrame('Schlecht -')">Schlecht -</button>
                         <button class="rank-btns" id="rank2" onclick="rateFrame('Schlecht')">Schlecht</button>
-                        <button class="rank-btns" id="rank3" onclick="rateFrame('Durchschnittlich')">Durchschnittlich</button>
+                        <button class="rank-btns" id="rank3" onclick="rateFrame('Durchschnittlich')">Ok</button>
                         <button class="rank-btns" id="rank4" onclick="rateFrame('Gut')">Gut</button>
-                        <button class="rank-btns" id="rank5" onclick="rateFrame('Sehr gut')">Sehr gut</button>
+                        <button class="rank-btns" id="rank5" onclick="rateFrame('Gut +')">Gut +</button>
                     </div>
                 </div>
             </div>
@@ -152,6 +155,7 @@
                 Generation Process: <span id="current-Frame-gen">0</span>/<span id="max_frame_number-gen">0</span>
             </div>
             <div class="reuseRankBtn" style="display: none;">
+                
                 <button id="set-Same-Rank-Btn" onclick="setSameRankForSubframes({{ choosed_rank }})">Set Same Rank For Subframes</button>
             </div>
         </div>

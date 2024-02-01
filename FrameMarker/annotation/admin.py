@@ -11,6 +11,10 @@ class VideoFramesAdmin(admin.ModelAdmin):
 
     video_name.short_description = 'Video Name'
 
+    def delete_queryset(self, request, queryset):
+        for obj in queryset:
+            obj.delete() 
+
 
 class FrameAnnotationsAdmin(admin.ModelAdmin):
     list_display = ('video', 'frame_type', 'frame_number', 'rank', 'is_annotated', 'annotator')

@@ -1,3 +1,26 @@
+"""
+    Project by @ZhiqianYu, https://github.com/ZhiqianYu and
+               @DaBaivvi, https://github.com/DaBaivvi
+        for the course "Computer Vision - Project" of TU Darmstadt in WS 2023-24, instructed by Yannik Frisch, Henry Krumb.
+    
+    Description by @Zhiqian Yu:
+        This project is a web application for annotating frames of videos to prepare the data for ML.
+        It is built with Django. The project is hosted on GitHub: https://github.com/ZhiqianYu/CV_Project, currently private.
+        It has the basic function of registering, logging in, uploading videos, list videos, generating frames for videos,
+          annotating frames, and exporting the annotations in the required formats.
+
+        The project is divided into 4 apps: homepage, videopage, annotation, and exportpage.
+        The homepage app is responsible for the introduction page, uploading videos, registering, and logging in.
+        The videopage app is responsible for listing videos with ralated infos, filtering videos, and displaying the annotation progress.
+        The annotation app is responsible for generating frames for videos, then annotating frames of videos.
+        The exportpage app is responsible for loading the annotation data and exporting the annotations in the required formats.
+    
+    Introduction of this file:
+        This file is the views for the videopage app. It is responsible for displaying the list of videos that have been uploaded
+          to the website. And also allows the user to filter and sort the videos based on various criteria. It can display the annotation 
+          progress for the videos. This info is on the overlay of the video preview-img.
+"""
+
 from django.shortcuts import render
 from homepage.models import Video
 

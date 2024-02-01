@@ -1,3 +1,28 @@
+"""
+    Project by @ZhiqianYu, https://github.com/ZhiqianYu and
+               @DaBaivvi, https://github.com/DaBaivvi
+        for the course "Computer Vision - Project" of TU Darmstadt in WS 2023-24, instructed by Yannik Frisch, Henry Krumb.
+    
+    Description by @Zhiqian Yu:
+        This project is a web application for annotating frames of videos to prepare the data for ML.
+        It is built with Django. The project is hosted on GitHub: https://github.com/ZhiqianYu/CV_Project, currently private.
+        It has the basic function of registering, logging in, uploading videos, list videos, generating frames for videos,
+          annotating frames, and exporting the annotations in the required formats.
+
+        The project is divided into 4 apps: homepage, videopage, annotation, and exportpage.
+        The homepage app is responsible for the introduction page, uploading videos, registering, and logging in.
+        The videopage app is responsible for listing videos with ralated infos, filtering videos, and displaying the annotation progress.
+        The annotation app is responsible for generating frames for videos, then annotating frames of videos.
+        The exportpage app is responsible for loading the annotation data and exporting the annotations in the required formats.
+    
+    Introduction of this file:
+        Important here, the way how the annotation info is stored is get the infos of the choosed frames and display it on html page, then use
+        js to get the info on page and load another url with the infos. It also has some small trick to get the path and files from the files 
+        loaded in html page. It relys on the file and folder name all has certain logic. Then evoke the function in the views for annotation process.
+        For frame generation it's recommended to use more than 4 threads, otherwise it will cause ram overflow. As the speed of reading frame is 
+        much faster than write frame img to disk.
+"""
+
 import os
 import cv2
 from django.shortcuts import render, get_object_or_404
@@ -53,12 +78,29 @@ def annotation(request, video_id):
                                             'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number,
                                             'annotations': annotations})
 
+def update_overlay(request, video_id):
+    video = get_object_or_404(Video, pk=video_id)
+    video_frames, created = VideoFrames.objects.get_or_create(video=video)
+
+    annotations = FrameAnnotations.objects.filter(video=video)
+    annotations_dict = {anno.frame_number: {'is_annotated': anno.is_annotated, 'rank': anno.rank} for anno in annotations}
+
+    max_frame_number = calculate_max_frame_number(video)
+    frame_folder_60 = video_frames.frame_folder_path_60
+    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 60)]
+
+    frame_info_list = []
+    for frame_path in frame_paths_60:
+        frame_number = int(frame_path.split('_')[-1].split('.')[0])
+        annotation_data = annotations_dict.get(frame_number, {})
+        frame_info = {'frame_path': frame_path, 'frame_number': frame_number, 'annotation': annotation_data}
+        frame_info_list.append(frame_info)
+
+    return JsonResponse({'frame_info_list': frame_info_list})
+
 def generate_frames(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     video_frames = VideoFrames.objects.filter(video=video)
-
-    print(f"Number of video need to generate frames: {video_frames.count()}")
-
     total_frames = calculate_max_frame_number(video)
 
     if not (video_frames.filter(has_frames_60=True).exists() and video_frames.filter(has_frames_4=True).exists()):
@@ -79,12 +121,13 @@ def calculate_max_frame_number(video):
     cap.release()
     return max_frame_number
 
-def generate_frames_for_video(video, uploadtime, num_threads=4):
+def generate_frames_for_video(video, uploadtime, num_threads=8):
 
     video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
     cap = cv2.VideoCapture(video_file_path)
 
-    folder_name = f"{video.file_name[:10].replace(' ', '')}-{video.uploader.username}-{uploadtime}"
+    filename_without_extension = os.path.splitext(video.file_name)[0]
+    folder_name = f"{filename_without_extension}-{video.uploader.username}-{uploadtime}"
 
     frame_folder = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name)
     frame_folder_4 = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name, '4')
@@ -147,7 +190,6 @@ def annotate_frames(request, video_id, frame_type, frame_number, rank):
     total_frames = video_frames.video_frames_total
 
     progress_percentage = "{:.2f}".format((annotated_frames_count / total_frames) * 100)
-    print(f"Progress percentage: {progress_percentage}")
     video.annotation_progress = progress_percentage
     video.save()
 
