@@ -70,9 +70,12 @@
             <label for="uploader">Uploader:</label>
             <select name="uploader">
                 <option value="">All</option>
-                    <option value="{{ user.username }}" {% if request.GET.uploader == user.username %}selected{% endif %}>{{ user.username }}</option>
-            </select>
-
+                {% for uploader in all_uploaders %}
+                    <option value="{{ uploader }}" {% if request.GET.uploader == uploader %}selected{% endif %}>
+                        {{ uploader }}
+                    </option>
+                {% endfor %}
+            </select>            
             <label for="annotated">Annotated:</label>
             <select name="annotated">
                 <option value="">All</option>
