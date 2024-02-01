@@ -46,13 +46,13 @@ body {
 .player-btns {
     display: flex;
     flex-direction: column; /* Align vertically */
-    width: 722px;
+    width: 38%;
 }
 
 /* Style for Video Player */
 .video-player {
     width: auto;
-    height: 405px;
+    height: 398px;
     position: relative;
     background-color: #cce5ff;
     border: 1px solid rgb(65, 147, 240);
@@ -100,14 +100,14 @@ body {
 .frames-btns {
     display: flex;
     flex-direction: column; /* Align vertically */
-    margin-left: 5px;
-    width: calc(100% - 727px);
+    margin-left: 15px;
+    width: 61%;
 }
 
 /* Right side - Frames Container */
 .frames-container {
     width: 100%; /* Adjust the width as needed */
-    height: 408px;
+    height: 405px;
 
     overflow-y: scroll;
     overflow-x: hidden;
@@ -268,8 +268,6 @@ body {
     gap: 2px;
     justify-content: right;
     height: 24px;
-
-    border: 1px solid #6f68e6;
 }
 
 .rank-btns {
