@@ -46,13 +46,20 @@ body {
 .player-btns {
     display: flex;
     flex-direction: column; /* Align vertically */
-    width: 38%;
+    width: 44%;
+}
+
+.frames-btns {
+    display: flex;
+    flex-direction: column; /* Align vertically */
+    margin-left: 15px;
+    width: 55%;
 }
 
 /* Style for Video Player */
 .video-player {
     width: auto;
-    height: 398px;
+    height: 407px;
     position: relative;
     background-color: #cce5ff;
     border: 1px solid rgb(65, 147, 240);
@@ -72,10 +79,8 @@ body {
 }
 
 #VideoLoaded {
-    max-width: 100%;
-    max-height: 100%;
     width: auto;
-    height: 405px;
+    height: 100%;
     object-fit: contain;
 }
 
@@ -95,13 +100,6 @@ body {
     align-items: center;
     flex-direction: row; /* Align vertically */
     gap: 20px;
-}
-
-.frames-btns {
-    display: flex;
-    flex-direction: column; /* Align vertically */
-    margin-left: 15px;
-    width: 61%;
 }
 
 /* Right side - Frames Container */
