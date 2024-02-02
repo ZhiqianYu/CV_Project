@@ -48,7 +48,7 @@
             {% else  %}
             <a href="{% url 'login' %}?next={{ request.path }}" class="navbar-login">Login</a>
             <span class="navbar-separator">|</span>
-            <a href="{% url 'register' %}" class="navbar-register">Register</a>
+            <a href="{% url 'register' %}?next={{ request.path }}" class="navbar-register">Register</a>
             {% endif  %}
         </div>
     </div>
@@ -167,7 +167,7 @@
             {% if frame_folder_4 %}
                 <div class="noti-info"> Frame not loaded yet. Choose frame above to load relevant detailed frames here. </div>
             {% else %}
-                <div class="noti-info"> Frame not exist. Please first generate the frame and refresh the page </div>
+            <div class="noti-info"> Frame not exist. Please first generate the frame and refresh the page </div>
             {% endif %}
         </div>
     </div>

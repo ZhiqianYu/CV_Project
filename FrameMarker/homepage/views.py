@@ -63,10 +63,19 @@ def register_view(request):
             new_user.save()
             # 注册成功后重定向到某个页面，比如登录页面
             messages.success(request, 'Account has been created successfully.')
-            return JsonResponse({'status': 'success', 'username': username})  
+
+            # Check if there's a 'next' parameter in the request
+            next_url = request.GET.get('next', None)
+            if next_url:
+                # Redirect to the URL specified in 'next'
+                return JsonResponse({'status': 'success', 'username': username})  
+            else:
+                # If no 'next' parameter, redirect to a default page (e.g., 'introduction')
+                return JsonResponse({'status': 'success', 'username': username, 'next': 'introduction'})
         else:
             errors = form.errors.as_json()
-            return JsonResponse({'status': 'error', 'errors': errors})  
+            return JsonResponse({'status': 'error', 'errors': errors})
+       
     else:
         form = RegisterForm()
     

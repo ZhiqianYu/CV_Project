@@ -55,6 +55,7 @@ def annotation(request, video_id):
     frame_folder_4 = video_frames.frame_folder_path_4
     frame_paths_4 = [os.path.join(frame_folder_4, f'frame_4_{i}.png') for i in range(4, max_frame_number, 4) if i % 60 != 0]
 
+
     # 为每张图片获取帧编号和标注信息
     frame_info_list = []
     for frame_path in frame_paths_60:
@@ -72,11 +73,38 @@ def annotation(request, video_id):
         frame_info = {'frame_path': frame_path, 'frame_number': frame_number, 'annotation': annotation}
         frame_info_list.append(frame_info)
 
+    # 为每张图片获取帧编号和标注信息（frame_paths_4）
+    frame_info_list_4 = []
+    for frame_path_4 in frame_paths_4:
+            # 从文件名中提取帧编号
+            frame_number_4 = int(frame_path_4.split('_')[-1].split('.')[0])
+            # 使用帧编号获取帧标注信息
+            annotation_4 = annotations_dict.get(frame_number_4, None)
+
+            # 如果帧没有标注信息，为其设置一个默认值
+            if annotation_4 is None:
+                annotation_4 = {'is_annotated': False, 'rank': ''}
+            # 构造帧信息字典
+            frame_info_4 = {'frame_path': frame_path_4, 'frame_number': frame_number_4, 'annotation': annotation_4}
+            frame_info_list_4.append(frame_info_4)
+    print("frame_info_list_4:", frame_info_list_4)
+
     return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 
-                                            'frame_paths_4': frame_paths_4, 'frame_folder_4': frame_folder_4,
+                                            'frame_paths_4': frame_info_list_4, 'frame_folder_4': frame_folder_4,
                                             'frame_paths_60': frame_info_list, 'frame_folder_60': frame_folder_60,
                                             'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number,
                                             'annotations': annotations})
+
+def get_frame_info_4(request):
+    selected_frame_index = request.GET.get('index')
+    frame_number = request.GET.get('frame_number')
+
+
+    frame_info_4 = get_frame_info_4(selected_frame_index, frame_number)
+
+    return JsonResponse({'frame_info_4': frame_info_4})
+
+
 
 def update_overlay(request, video_id):
     video = get_object_or_404(Video, pk=video_id)

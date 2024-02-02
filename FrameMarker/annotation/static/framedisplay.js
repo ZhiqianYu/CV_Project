@@ -121,13 +121,29 @@ document.addEventListener('DOMContentLoaded', function () {
         return `${basePath}/4`;
     }
 
-    function fetchAndLoad4Frames(selectedFrameIndex) {
+
+    // 修改 fetchAndLoad4Frames 函数
+    function fetchAndLoad4Frames(selectedFrameIndex, frameNumber) {
+    // 向后端发送请求，将 selectedFrameIndex 和 frameNumber 传递给后端
+        fetch(`/get_frame_info_4?index=${selectedFrameIndex}&frame_number=${frameNumber}`)
+            .then(response => {
+                console.log(response);  // 查看实际返回的内容
+                response.json();})
+            .then(data => {
+                const frameInfo4 = data.frame_info_4;
+                // 这里调用显示帧的函数，传递 frameInfo4 以及其他必要的参数
+                displayFrame4(frameInfo4);
+            })
+            .catch(error => console.error('Error fetching frame info for frames_4:', error));
+    }
+
+    //function fetchAndLoad4Frames(selectedFrameIndex) {
         // Simulate fetching 4-frame paths
-        const framePaths4 = simulateFetching4Frames(selectedFrameIndex);
+        //const framePaths4 = simulateFetching4Frames(selectedFrameIndex);
 
         // Update the HTML to include the fetched 4-frame paths dynamically
-        updateFramesContainer4(framePaths4);
-    }
+        //updateFramesContainer4(framePaths4);
+    //}
 
     function simulateFetching4Frames(selectedFrameIndex) {
         // Fetching 4-frame paths from the server based on the selected 60-frame index
@@ -160,6 +176,30 @@ document.addEventListener('DOMContentLoaded', function () {
         attachedEventListenersTo4Frames();
     }
 
+ // 假设这个函数用于点击 frames_60 时触发
+    function onFrames60Click(selectedFrameIndex) {
+        // 在这里获取 frameNumber，这可能需要你的逻辑，获取当前选定帧的帧编号
+        const frameNumber = getFrameNumber(selectedFrameIndex);
+
+        // 向后端发送请求，获取 frames_4 对应的帧信息
+       //fetch(`/get_frame_info_4?index=${selectedFrameIndex}&frame_number=${frameNumber}`)
+            //.then(response => response.json())
+            //.then(data => {
+                //const frameInfo4 = data.frame_info_4;
+                // 这里调用显示帧的函数，传递 frameInfo4 以及其他必要的参数
+                //displayFrame4(frameInfo4);
+            //})
+            //.catch(error => console.error('Error fetching frame info for frames_4:', error));
+        
+        fetchAndLoad4Frames(selectedFrameIndex, frameNumber);
+    }   
+    
+    function getFrameNumber(selectedFrameIndex) {
+        // 这里是获取当前选定帧的帧编号的逻辑，你可能需要根据你的需求自行实现
+        // 示例：假设选定的帧索引是从 1 开始的
+        return selectedFrameIndex + 1;
+    }
+    
     // event listener for the 60 frames
     frameElements60.forEach((frameElement) => {
         frameElement.addEventListener('click', function () {
@@ -168,7 +208,9 @@ document.addEventListener('DOMContentLoaded', function () {
             displaySelectedFrame(framePath);
 
             const selectedFrameIndex = extractFrameIndexFromPath(framePath);
-            fetchAndLoad4Frames(selectedFrameIndex);
+            //fetchAndLoad4Frames(selectedFrameIndex, frameNumber);
+            // 在这里调用 onFrames60Click 函数
+            onFrames60Click(selectedFrameIndex);
         });
     });
 
