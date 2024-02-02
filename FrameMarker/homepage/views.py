@@ -179,7 +179,6 @@ def create_video(video_path, preview_path, username):
     video.save()
 
 def video_format_transform(video_path):
-    # 转换视频格式
     file_name = os.path.basename(video_path)
     file_extension = os.path.splitext(file_name)[1]
     if file_extension != '.mp4':

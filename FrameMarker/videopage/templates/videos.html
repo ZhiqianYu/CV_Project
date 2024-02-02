@@ -97,7 +97,11 @@
                     </a>
                     <div class="annotation-overlay">
                         <a href="{% url 'annotation' video.id %}">
-                            <p class="annotation-info">{% if video.annotation_progess != 100 %}Annotaiton Progress:{{ video.annotation_progress }}%{% else %}Not Annotated{% endif %}</p>
+                            {% if video.annotation_progress == 0 %}
+                                <p class="annotation-info">Not Annotated</p>
+                            {% else %}
+                                <p class="annotation-info">Annotated ({{ video.annotation_progress }}%)</p> 
+                            {% endif %}
                         </a>
                     </div>
                 </div>
