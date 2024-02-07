@@ -35,7 +35,12 @@ function uploadFile() {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         // Display the success message
         alert(data.message);
@@ -45,6 +50,7 @@ function uploadFile() {
     })
     .catch((error) => {
         console.error('Error:', error);
+        alert('Upload failed. Please try again later.');
     });
 }
 

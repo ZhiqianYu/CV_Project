@@ -42,6 +42,7 @@ import ffmpeg
 from concurrent.futures import ThreadPoolExecutor
 from django.contrib.auth.decorators import login_required
 from PIL import Image
+import cpuinfo
 
 # 链接定向
 def introduction(request):
@@ -179,6 +180,7 @@ def create_video(video_path, preview_path, username):
     video.save()
 
 def video_format_transform(video_path):
+    gpu_type = get_gpu_type()
     file_name = os.path.basename(video_path)
     file_extension = os.path.splitext(file_name)[1]
     if file_extension != '.mp4':
@@ -186,9 +188,24 @@ def video_format_transform(video_path):
         new_video_path = os.path.join(settings.MEDIA_ROOT, 'Video', new_file_name)
         print ('New File Name is:', new_file_name)
         print ('New Video Path is:', new_video_path)
+
+        codec = None
+        if gpu_type == 'NVIDIA':
+            codec = 'h264_nvenc'
+            print('Using NVIDIA GPU for GPU acceleration.')
+        elif gpu_type == 'Intel':
+            codec = 'h264_qsv'
+            print('Using Intel GPU for GPU acceleration.')
+        elif gpu_type == 'AMD':
+            codec = 'h264_amf'
+            print('Using AMD GPU for GPU acceleration.')
+        else:
+            # 没有检测到支持的 GPU 类型，使用默认编码器
+            codec = 'libx264'
+            print('Using default codec. No GPU acceleration detected.')
         
         try:
-            ffmpeg.input(video_path).output(new_video_path).run()
+            ffmpeg.input(video_path).output(new_video_path, codec=codec).run()
             print('Video format converted.')
             print ('New File Name is:', new_file_name)
             print ('New Video Path is:', new_video_path)
@@ -226,6 +243,17 @@ def generate_preview(video_path, preview_path):
         # 保存预览图
         image.save(preview_path)
     video.release()
+
+def get_gpu_type():
+    info = cpuinfo.get_cpu_info()
+    if 'NVIDIA' in info['brand_raw']:
+        return 'NVIDIA'
+    elif 'Intel' in info['brand_raw']:
+        return 'Intel'
+    elif 'AMD' in info['brand_raw']:
+        return 'AMD'
+    else:
+        return None
 
 def scan_videos(username):
     video_dir = os.path.join(settings.MEDIA_ROOT, 'Video')
