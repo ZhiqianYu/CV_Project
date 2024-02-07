@@ -28,22 +28,18 @@
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.conf import settings
 from django.urls import reverse
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from PIL import Image
 from .forms import RegisterForm, UploadForm
 from .models import Video
-import os
-import cv2
-import ffmpeg
-from concurrent.futures import ThreadPoolExecutor
-from django.contrib.auth.decorators import login_required
-from PIL import Image
-import cpuinfo
-import subprocess
+import os, sys, cv2, ffmpeg, cpuinfo, subprocess
 
 # 链接定向
 def introduction(request):
@@ -190,11 +186,8 @@ def video_format_transform(video_path):
     if file_extension != '.mp4':
         new_file_name = os.path.splitext(file_name)[0] + '.mp4'
         new_video_path = os.path.join(settings.MEDIA_ROOT, 'Video', new_file_name)
-        print ('New File Name is:', new_file_name)
-        print ('New Video Path is:', new_video_path)
 
         codec = choose_encoder(gpu_type, cpu_model)
-        print('Selected encoder:', codec)
         
         try:
             ffmpeg.input(video_path).output(new_video_path, codec=codec).run()

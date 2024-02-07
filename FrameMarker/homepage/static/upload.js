@@ -50,7 +50,7 @@ function uploadFile() {
     })
     .catch((error) => {
         console.error('Error:', error);
-        alert('Upload failed. Please try again later.');
+        alert('Upload failed due to unstable Internet Connection. Please check video list then try again later.');
     });
 }
 
