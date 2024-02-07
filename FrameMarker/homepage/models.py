@@ -25,6 +25,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
 import os
+from django.conf import settings
 
 # 视频模型，用来储存视频信息，并放入数据库
 class Video(models.Model):
@@ -44,6 +45,15 @@ class Video(models.Model):
             
         if self.preview_file and self.preview_file.path and os.path.exists(self.preview_file.path):
             os.remove(self.preview_file.path)
+        
+        old_video_dir = os.path.join(settings.MEDIA_ROOT, 'old_Video')
+        for filename in os.listdir(old_video_dir):
+            old_filename, old_extension = os.path.splitext(filename)
+            current_filename, current_extension = os.path.splitext(self.file_name)
+            if old_filename == current_filename:
+                old_video_path = os.path.join(old_video_dir, filename)
+                if os.path.exists(old_video_path):
+                    os.remove(old_video_path)
             
         super().delete(*args, **kwargs)
         
