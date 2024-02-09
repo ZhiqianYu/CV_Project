@@ -187,18 +187,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
             framesContainer4.appendChild(frameElement4);
 
-            // Send request to backend to get annotation information
-            try {
-                const annotationResponse = await fetch(`/subframe_overlay/${currentVideoId}/${frameType}/${frameNumber}/`);
-                const responseData = await annotationResponse.json();
-                const annotationData = responseData.annotation_data;
-                // Update overlay with annotation information
-                updateOverlaySubFrames(annotationData, frameNumber);
-            } catch (error) {
-                console.error('Error fetching annotation data:', error);
-            }
+            // Fetch overlay information for the frame
+            await fetchAndLoadSubOverlayInfo(currentVideoId, frameType, frameNumber);
         }
         attachedEventListenersTo4Frames();
+    }
+
+    window.fetchAndLoadSubOverlayInfo = async function(videoId, frameType, frameNumber) {
+        try {
+            const annotationResponse = await fetch(`/subframe_overlay/${videoId}/${frameType}/${frameNumber}/`);
+            const responseData = await annotationResponse.json();
+            const annotationData = responseData.annotation_data;
+            // Update overlay with annotation information
+            updateOverlaySubFrames(annotationData, frameNumber);
+        } catch (error) {
+            console.error('Error fetching annotation data:', error);
+        }
     }
 
     // Function to update overlay with annotation information
@@ -229,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // event listener for the 4 frames
-    function attachedEventListenersTo4Frames() {
+    window.attachedEventListenersTo4Frames =function () {
         // Get the updated frame elements after reattaching the HTML
         const frameElements4Updated = document.querySelectorAll('.frames-4 img');
     

@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentRating = null;
     let currentFrameType = null;
     let currentVideoId = null;
-
-    async function rateFrame(rating) {
+    window.rateFrame = async function(rating) {
         // Update current selection and video id
         currentRating = rating;
         currentVideoId = videoIdContainer.getAttribute('data-video-id');
@@ -50,7 +49,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Fetch updated overlay content after rating, only if the rating action was successful
             if (data.status === 'success') {
-                await updateOverlayInformation();
+                if (frameType === '60') {
+                    await updateOverlayInformation();
+                } else if (frameType === '4') {
+                    await fetchAndLoadSubOverlayInfo(currentVideoId, frameType, frameNumber);
+                }
             }
         } catch (error) {
             console.error('Error:', error);
@@ -145,16 +148,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     rateSubframe(frameType4, frameNumber4, currentRating);
                 });
     
-                // Reload 4 frames for the corresponding 60 frame
-                fetchAndLoad4Frames(frameNumber);
-                
                 // Display rank notification
                 rankNotif.style.display = 'block';
 
                 setTimeout(function () {
                     rankNotif.style.display = 'none';
-                }, 1000);
-                console.log('Subframes rated and loaded for the selected main frame.');
+                    
+                    // Reload 4 frames for the corresponding 60 frame after setting subframes rating
+                    fetchAndLoad4Frames(frameNumber);
+                    console.log('Subframes rated and loaded for the selected main frame.');
+                }, 800); // Delay execution for 1 second
             } else {
                 // If the chosen frame is not a 60 frame, show an error message
                 console.error('Please select a main frame to rate subframes.');
