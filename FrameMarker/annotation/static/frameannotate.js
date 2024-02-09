@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (FrameInfo) {
                 if (FrameInfo.annotation) {
                     // Update annotation information
-                    annoInfoElement.innerHTML = FrameInfo.annotation.is_annotated ? '&#x2705;' : '&#x26A0;';
+                    annoInfoElement.innerHTML = FrameInfo.annotation.is_annotated ? '✅' : '⚠️';
                     annoRankElement.innerHTML = FrameInfo.annotation.rank ? FrameInfo.annotation.rank : '';
                 } else {
                     // Handle the case when there is no annotation
@@ -118,43 +118,53 @@ document.addEventListener('DOMContentLoaded', function () {
     function setSameRankForSubframes() {
         // Get the current rating
         const currentRating = getCurrentRating();
-
+    
+        // Get the frame type and number elements
+        const frameNumberElement = document.getElementById('choosed-frame-number');
+        const frameTypeElement = document.getElementById('choosed-frame-type');
+    
         if (currentRating !== null) {
-            // Get all 4-frame elements
-            const frameElements4 = document.querySelectorAll('.frames-4 img');
+            // Get the frame type
+            const frameType = frameTypeElement.textContent.trim();
+    
+            // Check if the chosen frame is a 60 frame
+            if (frameType === '60') {
+                // Get the frame number
+                const frameNumber = parseInt(frameNumberElement.textContent.trim());
+    
+                // Get all 4-frame elements
+                const frameElements4 = document.querySelectorAll('.frames-4 img');
 
-            // Loop through each 4-frame element and set the same rating
-            frameElements4.forEach(function (frameElement4) {
-                const framePath4 = frameElement4.src;
-                const frameNumber4 = extractFrameIndexFromPath(framePath4);
-                const frameType4 = extractFrameTypeFromPath(framePath4);
+                // Loop through each 4-frame element and set the same rating
+                frameElements4.forEach(function (frameElement4) {
+                    const framePath4 = frameElement4.src;
+                    const frameNumber4 = extractFrameIndexFromPath(framePath4);
+                    const frameType4 = extractFrameTypeFromPath(framePath4);
 
-                // Update the rating for the subframe
-                rateSubframe(frameType4, frameNumber4, currentRating);
-            });
+                    // Update the rating for the subframe
+                    rateSubframe(frameType4, frameNumber4, currentRating);
+                });
+    
+                // Reload 4 frames for the corresponding 60 frame
+                fetchAndLoad4Frames(frameNumber);
+                
+                // Display rank notification
+                rankNotif.style.display = 'block';
 
-            console.log('Same rating set for all subframes.');
+                setTimeout(function () {
+                    rankNotif.style.display = 'none';
+                }, 1000);
+                console.log('Subframes rated and loaded for the selected main frame.');
+            } else {
+                // If the chosen frame is not a 60 frame, show an error message
+                console.error('Please select a main frame to rate subframes.');
+                alert('Please select a main frame to rate subframes.');
+            }
         } else {
-            // Handle the case where no rating is selected
+            // If no rating is selected, show an error message
             console.error('No rating selected.');
+            alert('Please select a rating before applying to subframes.');
         }
-    }
-
-    function extractFrameIndexFromPath(framePath) {
-        // Extract the last number after the last underscore in the frame filename
-        const matches = framePath.match(/_(\d+)\.png/);
-        if (matches && matches[1]) {
-            return parseInt(matches[1]);
-        }
-        return 0;  // Default to 0 if no match
-    }
-
-    function extractFrameTypeFromPath(framePath) {
-        const matches = framePath.match(/\/(\d+)\/frame_(\w+)_\d+(_\d+)?\.png/);
-        if (matches && matches[2]) {
-            return matches[2];
-        }
-        return '';  // Default to empty string if no match
     }
 
     function getCurrentRating() {

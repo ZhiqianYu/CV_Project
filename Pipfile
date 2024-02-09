@@ -10,6 +10,7 @@ django-extensions = "*"
 pillow = "*"
 opencv-python = "*"
 Pillow = ">=10.2.0"
+ffmpeg-python = "*"
 
 [dev-packages]
 Pillow = ">=10.2.0"
