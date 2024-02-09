@@ -96,7 +96,6 @@ def subframe_overlay(request, video_id, frame_type, frame_number):
         # when data not exist return 404
         return JsonResponse({'error': 'Annotation data not found'}, status=404)
 
-
 def update_overlay(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     video_frames, created = VideoFrames.objects.get_or_create(video=video)

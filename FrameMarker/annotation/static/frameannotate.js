@@ -50,7 +50,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Fetch updated overlay content after rating, only if the rating action was successful
             if (data.status === 'success') {
-                await updateOverlayInformation();
+                if (frameType === '60') {
+                    await updateOverlayInformation();
+                } else if (frameType === '4') {
+                    await fetchAndLoadSubOverlayInfo(currentVideoId, frameType, frameNumber);
+                }
             }
         } catch (error) {
             console.error('Error:', error);
@@ -145,15 +149,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     rateSubframe(frameType4, frameNumber4, currentRating);
                 });
     
-                // Reload 4 frames for the corresponding 60 frame
-                fetchAndLoad4Frames(frameNumber);
-                
                 // Display rank notification
                 rankNotif.style.display = 'block';
 
                 setTimeout(function () {
                     rankNotif.style.display = 'none';
                 }, 1000);
+
+                // Reload 4 frames for the corresponding 60 frame, place here to ensure the rating is updated
+                fetchAndLoad4Frames(frameNumber);
                 console.log('Subframes rated and loaded for the selected main frame.');
             } else {
                 // If the chosen frame is not a 60 frame, show an error message
