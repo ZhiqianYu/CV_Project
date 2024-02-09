@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentRating = null;
     let currentFrameType = null;
     let currentVideoId = null;
-
-    async function rateFrame(rating) {
+    window.rateFrame = async function(rating) {
         // Update current selection and video id
         currentRating = rating;
         currentVideoId = videoIdContainer.getAttribute('data-video-id');
@@ -154,11 +153,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 setTimeout(function () {
                     rankNotif.style.display = 'none';
-                }, 1000);
-
-                // Reload 4 frames for the corresponding 60 frame, place here to ensure the rating is updated
-                fetchAndLoad4Frames(frameNumber);
-                console.log('Subframes rated and loaded for the selected main frame.');
+                    
+                    // Reload 4 frames for the corresponding 60 frame after setting subframes rating
+                    fetchAndLoad4Frames(frameNumber);
+                    console.log('Subframes rated and loaded for the selected main frame.');
+                }, 800); // Delay execution for 1 second
             } else {
                 // If the chosen frame is not a 60 frame, show an error message
                 console.error('Please select a main frame to rate subframes.');
