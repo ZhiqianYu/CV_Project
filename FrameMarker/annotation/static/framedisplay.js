@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.querySelector('.video-player');
     const frameElements60 = document.querySelectorAll('.frames-60 img');
     const frameElements4 = document.querySelectorAll('.frames-4 img');
+    const videoIdContainer = document.getElementById('video-id-container');
     
     // 鼠标悬浮状态保持
     const frameContainers60 = document.querySelectorAll('.frames-60');
@@ -97,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function extractFrameIndexFromPath(framePath) {
+    window.extractFrameIndexFromPath = function(framePath) {
         // Extract the last number after the last underscore in the frame filename
         const matches = framePath.match(/_(\d+)\.png/);
         if (matches && matches[1]) {
@@ -106,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return 0;  // Default to 0 if no match
     }
 
-    function extractFrameTypeFromPath(framePath) {
+    window.extractFrameTypeFromPath = function(framePath) {
         const matches = framePath.match(/\/(\d+)\/frame_(\w+)_\d+(_\d+)?\.png/);
         if (matches && matches[2]) {
             return matches[2];
@@ -121,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return `${basePath}/4`;
     }
 
-    function fetchAndLoad4Frames(selectedFrameIndex) {
+    window.fetchAndLoad4Frames = function(selectedFrameIndex) {
         // Simulate fetching 4-frame paths
         const framePaths4 = simulateFetching4Frames(selectedFrameIndex);
 
@@ -139,7 +140,10 @@ document.addEventListener('DOMContentLoaded', function () {
         return framePaths4;
     }
 
-    function updateFramesContainer4(framePaths4) {
+    async function updateFramesContainer4(framePaths4) {
+        // Get the current video ID from html element
+        currentVideoId = videoIdContainer.getAttribute('data-video-id');
+
         // Clear the existing content in the 4-frames container
         framesContainer4.innerHTML = '';
     
@@ -147,17 +151,69 @@ document.addEventListener('DOMContentLoaded', function () {
         for (const framePath4 of framePaths4) {
             const frameElement4 = document.createElement('div');
             frameElement4.classList.add('frames-4');
-    
+
+            // Extract frame type and frame number from frame path
+            const frameType = extractFrameTypeFromPath(framePath4);
+            const frameNumber = extractFrameIndexFromPath(framePath4);
+
+            // create sub img element
             const imgElement4 = document.createElement('img');
             imgElement4.src = framePath4;
-            imgElement4.alt = 'frame';
-    
+            imgElement4.alt = 'Sub Frame Image wait for loading...';
             frameElement4.appendChild(imgElement4);
+            
+            // creat overlay top
+            const overlayTopElement = document.createElement('div');
+            overlayTopElement.classList.add('sub-overlay-a-top');
+            const overlayInfoElement = document.createElement('span');
+            overlayInfoElement.classList.add('sub-anno-info');
+            overlayInfoElement.id = `sub-overlay-info-anno-${frameNumber}`; 
+            overlayTopElement.appendChild(overlayInfoElement);
+
+            const overlayRankElement = document.createElement('span');
+            overlayRankElement.classList.add('sub-anno-rank');
+            overlayRankElement.id = `sub-overlay-info-rank-${frameNumber}`; 
+            overlayTopElement.appendChild(overlayRankElement);
+            frameElement4.appendChild(overlayTopElement);
+
+            // create overlay bot
+            const overlayBotElement = document.createElement('div');
+            overlayBotElement.classList.add('sub-overlay-a-bot');
+            const overlayNumElement = document.createElement('span');
+            overlayNumElement.classList.add('sub-anno-num');
+            overlayNumElement.innerHTML = frameNumber; 
+            overlayBotElement.appendChild(overlayNumElement);
+            frameElement4.appendChild(overlayBotElement);
+
             framesContainer4.appendChild(frameElement4);
+
+            // Send request to backend to get annotation information
+            try {
+                const annotationResponse = await fetch(`/subframe_overlay/${currentVideoId}/${frameType}/${frameNumber}/`);
+                const responseData = await annotationResponse.json();
+                const annotationData = responseData.annotation_data;
+                // Update overlay with annotation information
+                updateOverlaySubFrames(annotationData, frameNumber);
+            } catch (error) {
+                console.error('Error fetching annotation data:', error);
+            }
         }
-    
-        // Reattach event listeners for the 4 frames
         attachedEventListenersTo4Frames();
+    }
+
+    // Function to update overlay with annotation information
+    function updateOverlaySubFrames(annotationData, frameNumber) {
+        const overlayInfoElement = document.getElementById(`sub-overlay-info-anno-${frameNumber}`);
+        const overlayRankElement = document.getElementById(`sub-overlay-info-rank-${frameNumber}`);
+        
+        // Update overlay elements with annotation data
+        if (annotationData) {
+            overlayInfoElement.textContent = annotationData.is_annotated ? '✅' : '⚠️';
+            overlayRankElement.textContent = annotationData.rank;
+        } else {
+            overlayInfoElement.textContent = '⚠️';
+            overlayRankElement.textContent = ''; // Clear rank if annotation data is not available
+        }
     }
 
     // event listener for the 60 frames
