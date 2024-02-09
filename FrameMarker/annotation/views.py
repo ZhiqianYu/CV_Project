@@ -78,11 +78,6 @@ def annotation(request, video_id):
                                             'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number,
                                             'annotations': annotations})
 
-def overlay_subframe(request, video_id, selected_frame_index):   
-    frame_annotations_sub = FrameAnnotations.objects.filter(video_id=video_id, frame_number__gte=selected_frame_index, frame_number__lt=selected_frame_index + 60)
-    frame_info_sub = [{'frame_path': annotation.frame_path, 'is_annotated': annotation.is_annotated, 'rank': annotation.rank} for annotation in frame_annotations_sub]
-    return JsonResponse({'frame_info_sub': frame_info_sub})
-
 def update_overlay(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     video_frames, created = VideoFrames.objects.get_or_create(video=video)

@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // 鼠标悬浮状态保持
     const frameContainers60 = document.querySelectorAll('.frames-60');
     const frameContainers4 = document.querySelectorAll('.frames-4');
-    const videoIdContainer = document.getElementById('video-id-container');
 
     // 所选帧的信息更新到页面
     const choosedFrameNumberElement = document.getElementById('choosed-frame-number');
@@ -123,20 +122,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function fetchAndLoad4Frames(selectedFrameIndex) {
-        // 发送帧索引到服务器端，以获取相应的4帧图像及其叠加层信息
-        const currentVideoId = videoIdContainer.getAttribute('data-video-id');
-        fetch(`/overlay_subframe/${currentVideoId}/${selectedFrameIndex}/`)
-            .then(response => response.json())
-            .then(data => {
-                // 解析服务器端返回的4帧图像及其叠加层信息
-                const frameInfosub = data.frame_info_sub;
-    
-                // 更新页面上的4帧图像及其叠加层信息
-                updateFramesContainer4(frameInfosub);
-            })
-            .catch(error => {
-                console.error('Error fetching subframes info:', error);
-            });
+        // Simulate fetching 4-frame paths
+        const framePaths4 = simulateFetching4Frames(selectedFrameIndex);
+
+        // Update the HTML to include the fetched 4-frame paths dynamically
+        updateFramesContainer4(framePaths4);
     }
 
     function simulateFetching4Frames(selectedFrameIndex) {
