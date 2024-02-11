@@ -125,11 +125,9 @@ document.addEventListener('DOMContentLoaded', function () {
     window.fetchAndLoad4Frames = function(selectedFrameIndex) {
         // Simulate fetching 4-frame paths
         const framePaths4 = simulateFetching4Frames(selectedFrameIndex);
-
-        // Update the HTML to include the fetched 4-frame paths dynamically
         updateFramesContainer4(framePaths4);
     }
-
+    
     function simulateFetching4Frames(selectedFrameIndex) {
         // Fetching 4-frame paths from the server based on the selected 60-frame index
         const framePaths4 = [];
@@ -229,6 +227,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const selectedFrameIndex = extractFrameIndexFromPath(framePath);
             fetchAndLoad4Frames(selectedFrameIndex);
+            // 在这里调用 onFrames60Click 函数
+            onFrames60Click(selectedFrameIndex);
         });
     });
 

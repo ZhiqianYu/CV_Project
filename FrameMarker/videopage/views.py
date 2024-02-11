@@ -54,8 +54,6 @@ def video_list(request):
         else:
             videos = videos.filter(annotation_progress=0)
 
-
-
     # Sort videos based on user-selected criteria
     if sort_by == 'file_name':
         if order == 'asc':
@@ -74,7 +72,7 @@ def video_list(request):
             videos = videos.order_by('-annotation_progress')
 
     # Get all unique uploaders for the dropdown
-    all_uploaders = Video.objects.values('uploader__username').distinct()
+    all_uploaders = set(video.uploader.username for video in videos)
 
     
     # Get the base directory where your media files are stored

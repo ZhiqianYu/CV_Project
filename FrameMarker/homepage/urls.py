@@ -38,6 +38,6 @@ urlpatterns = [
     path('logout/', views.logout_user, name='logout'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('register/', views.register_view, name = 'register'),
-
+    path('search/', views.search, name='search'),
     path('exportpage/', exportpage_views.exportpage, name='export')
 ]
