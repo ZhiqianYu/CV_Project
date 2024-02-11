@@ -61,10 +61,19 @@ def register_view(request):
             new_user.save()
             # 注册成功后重定向到某个页面，比如登录页面
             messages.success(request, 'Account has been created successfully.')
-            return JsonResponse({'status': 'success', 'username': username})  
+
+            # Check if there's a 'next' parameter in the request
+            next_url = request.GET.get('next', None)
+            if next_url:
+                # Redirect to the URL specified in 'next'
+                return JsonResponse({'status': 'success', 'username': username})  
+            else:
+                # If no 'next' parameter, redirect to a default page (e.g., 'introduction')
+                return JsonResponse({'status': 'success', 'username': username, 'next': 'introduction'})
         else:
             errors = form.errors.as_json()
-            return JsonResponse({'status': 'error', 'errors': errors})  
+            return JsonResponse({'status': 'error', 'errors': errors})
+       
     else:
         form = RegisterForm()
     
@@ -79,19 +88,21 @@ def login_user(request):
              check_user = authenticate(username = username, password = password)
              if check_user is not None:
                  login(request, check_user)
-                 return redirect('introduction')
+                 next_url = request.GET.get('next', 'introduction')
+                 return redirect(next_url)
              else:
-                 messages.waring(request, 'Invalid Username or Password.')
+                 messages.warning(request, 'Invalid Username or Password.')
                  return redirect('register')
-         return redirect('introduction')
+         return redirect('login.html')
      else:
          return redirect('introduction')
 
 #Logout
 def logout_user(request):
+    next_url = request.GET.get('next', '/')
     request.session.flush()
     logout(request)
-    return redirect('introduction')
+    return redirect(next_url)
 
 #Search
 def search(request):
