@@ -28,20 +28,18 @@
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.conf import settings
 from django.urls import reverse
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from PIL import Image
 from .forms import RegisterForm, UploadForm
 from .models import Video
-import os
-import cv2
-import ffmpeg
-from concurrent.futures import ThreadPoolExecutor
-from django.contrib.auth.decorators import login_required
-from PIL import Image
+import os, sys, cv2, ffmpeg, cpuinfo, subprocess
 
 # 链接定向
 def introduction(request):
@@ -190,19 +188,23 @@ def create_video(video_path, preview_path, username):
     video.save()
 
 def video_format_transform(video_path):
+    gpu_type = get_gpu_type()
+    cpu_model = get_cpu_type()
+
     file_name = os.path.basename(video_path)
     file_extension = os.path.splitext(file_name)[1]
+
     if file_extension != '.mp4':
         new_file_name = os.path.splitext(file_name)[0] + '.mp4'
         new_video_path = os.path.join(settings.MEDIA_ROOT, 'Video', new_file_name)
-        print ('New File Name is:', new_file_name)
-        print ('New Video Path is:', new_video_path)
+
+        codec = choose_encoder(gpu_type, cpu_model)
         
         try:
-            ffmpeg.input(video_path).output(new_video_path).run()
-            print('Video format converted.')
+            ffmpeg.input(video_path).output(new_video_path, codec=codec).run()
             print ('New File Name is:', new_file_name)
             print ('New Video Path is:', new_video_path)
+            print('Video format converted with %s GPU acceleration.' % gpu_type if gpu_type else 'Video format converted using CPU.')
         except ffmpeg.Error as e:
             print(f'Error during ffmpeg conversion: {e.stderr}')
             return video_path
@@ -237,6 +239,37 @@ def generate_preview(video_path, preview_path):
         # 保存预览图
         image.save(preview_path)
     video.release()
+
+def get_gpu_type():
+    try:
+        # 使用 nvidia-smi 命令获取 NVIDIA GPU 信息
+        result = subprocess.run(['nvidia-smi'], capture_output=True, text=True)
+        gpu_info = result.stdout
+
+        # 解析显卡信息
+        if 'NVIDIA' in gpu_info:
+            return 'NVIDIA'
+        else:
+            return None
+    except Exception as e:
+        print(f'Error getting GPU info: {e}')
+        return None
+
+def get_cpu_type():
+    info = cpuinfo.get_cpu_info()
+    # 解析 CPU 型号信息
+    cpu_model = info.get('brand_raw', None)
+    return cpu_model
+
+def choose_encoder(gpu_type, cpu_model):
+    if gpu_type == 'NVIDIA':
+        return 'h264_nvenc'
+    elif cpu_model and 'Intel' in cpu_model:
+        return 'h264_qsv'
+    elif cpu_model and 'AMD' in cpu_model:
+        return 'h264_amf'
+    else:
+        return 'libx264'
 
 def scan_videos(username):
     video_dir = os.path.join(settings.MEDIA_ROOT, 'Video')

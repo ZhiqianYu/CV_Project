@@ -78,6 +78,24 @@ def annotation(request, video_id):
                                             'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number,
                                             'annotations': annotations})
 
+def subframe_overlay(request, video_id, frame_type, frame_number):
+    # get the video object by video_id
+    video = get_object_or_404(Video, pk=video_id)
+    # get annotation data for subframes
+    try:
+        annotation = FrameAnnotations.objects.get(video=video, frame_number=frame_number, frame_type=frame_type)
+        # create a dictionary to store the annotation data
+        annotation_data = {
+            'rank': annotation.rank,
+            'is_annotated': annotation.is_annotated,
+            'frame_type': annotation.frame_type,
+            'frame_number': annotation.frame_number,
+        }
+        return JsonResponse({'annotation_data': annotation_data})
+    except FrameAnnotations.DoesNotExist:
+        # when data not exist return 404
+        return JsonResponse({'error': 'Annotation data not found'}, status=404)
+
 def update_overlay(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     video_frames, created = VideoFrames.objects.get_or_create(video=video)

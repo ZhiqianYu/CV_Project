@@ -43,6 +43,7 @@ urlpatterns = [
     path('generate_frames/<int:video_id>/', views.generate_frames, name='generate_frames'),
     path('annotate_frames/<int:video_id>/<str:frame_type>/<int:frame_number>/<str:rank>/', views.annotate_frames, name='annotate_frames'),
     path('update_overlay/<int:video_id>/', views.update_overlay, name='update_overlay'),
+    path('subframe_overlay/<int:video_id>/<str:frame_type>/<int:frame_number>/', views.subframe_overlay, name='subframe_overlay'),
     path('exportpage/anno/<int:video_id>/', exportpage_views.exportpagefromannotation, name='exportpagefromannotation'),
 ] 
 
