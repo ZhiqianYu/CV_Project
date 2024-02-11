@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
             displaySelectedFrame(framePath);
 
             const selectedFrameIndex = extractFrameIndexFromPath(framePath);
-            fetchAndLoad4Frames(selectedFrameIndex, frameNumber);
+            fetchAndLoad4Frames(selectedFrameIndex);
             // 在这里调用 onFrames60Click 函数
             onFrames60Click(selectedFrameIndex);
         });
