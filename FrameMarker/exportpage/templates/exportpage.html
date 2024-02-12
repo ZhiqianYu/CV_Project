@@ -17,9 +17,16 @@
     <script src="{% static 'search.js' %}"></script>
     <script src="{% static 'loaddata.js' %}"></script>
     <script src="{% static 'export.js' %}"></script>
+    <script src="{% static 'auth_check.js' %}"></script>
+    <script>
+        // 将用户登录状态传递给 JavaScript 文件
+        var isAuthenticated = {{ user.is_authenticated|lower }};
+        document.getElementById("auth-check").setAttribute("data-is-authenticated", isAuthenticated);
+    </script>
 </head>
 
 <body>
+    <div id="auth-check" data-is-authenticated=""></div>
     <div class="navbar">
         <!-- Left section of the navbar -->
         <div class="navbar-left">

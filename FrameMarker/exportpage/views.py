@@ -29,16 +29,19 @@ from django.http import HttpResponse, JsonResponse
 from annotation.models import FrameAnnotations, VideoFrames
 from homepage.models import Video
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.decorators import login_required 
 from datetime import datetime
 import json
 import csv
 import os
 
+@login_required(login_url='/login/')
 def exportpage(request):
     videos = Video.objects.all().order_by('file_name')
 
     return render(request, 'exportpage.html', {'videos': videos})
 
+@login_required(login_url='/login/')
 def exportpagefromselection(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     frame_annotations = FrameAnnotations.objects.filter(video=video).order_by('frame_number', 'frame_type')
@@ -57,6 +60,7 @@ def exportpagefromselection(request, video_id):
 
     return render(request, 'exportpage.html', context)
 
+@login_required(login_url='/login/')
 def exportpagefromannotation(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     frame_annotations = FrameAnnotations.objects.filter(video=video).order_by('frame_number', 'frame_type')
@@ -75,7 +79,8 @@ def exportpagefromannotation(request, video_id):
 
     return render(request, 'exportpage.html', context)
 
-def export_format(request, format, video_id):
+@login_required(login_url='/login/')
+def export_format(request, format, video_id):    
     selected_columns = request.GET.get('columns').split(',')
 
     if format == 'json':
@@ -86,6 +91,7 @@ def export_format(request, format, video_id):
         # Handle unsupported format
         return HttpResponse("Unsupported format", status=400)
 
+@login_required(login_url='/login/')
 def exportjson(request, video_id, selected_columns):
     video = get_object_or_404(Video, pk=video_id)
     frame_annotations = FrameAnnotations.objects.filter(video=video).order_by('frame_number', 'frame_type')
@@ -101,6 +107,7 @@ def exportjson(request, video_id, selected_columns):
     response['Content-Disposition'] = f'attachment; filename="{filename}_{time}_annotations.json"'
     return response
 
+@login_required(login_url='/login/')
 def exportcsv(request, video_id, selected_columns):
     video = get_object_or_404(Video, pk=video_id)
     frame_annotations = FrameAnnotations.objects.filter(video=video).order_by('frame_number', 'frame_type')
