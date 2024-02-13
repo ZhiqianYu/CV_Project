@@ -50,10 +50,10 @@ def annotation(request, video_id):
     total_frame_files = video_frames.video_frames_total
 
     frame_folder_60 = video_frames.frame_folder_path_60
-    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 60)]
+    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 5)]
 
     frame_folder_4 = video_frames.frame_folder_path_4
-    frame_paths_4 = [os.path.join(frame_folder_4, f'frame_4_{i}.png') for i in range(4, max_frame_number, 4) if i % 60 != 0]
+    frame_paths_4 = [os.path.join(frame_folder_4, f'frame_4_{i}.png') for i in range(0, max_frame_number, 1) if i % 5 != 0]
 
     # 为每张图片获取帧编号和标注信息
     frame_info_list = []
@@ -105,7 +105,7 @@ def update_overlay(request, video_id):
 
     max_frame_number = calculate_max_frame_number(video)
     frame_folder_60 = video_frames.frame_folder_path_60
-    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 60)]
+    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 5)]
 
     frame_info_list = []
     for frame_path in frame_paths_60:
@@ -162,12 +162,12 @@ def generate_frames_for_video(video, uploadtime, num_threads=8):
 
     def process_frame(frame_number, frame, frame_folder_4, frame_folder_60):
         nonlocal total_frames_60, total_frames_4
-        if frame_number % 60 == 0:
+        if frame_number % 5 == 0:
             frame_path = os.path.join(frame_folder_60, f'frame_60_{frame_number}.png')
             cv2.imwrite(frame_path, frame)
             total_frames_60 += 1
 
-        if frame_number % 4 == 0 and frame_number % 60 != 0:
+        if frame_number % 1 == 0 and frame_number % 5 != 0:
             frame_path = os.path.join(frame_folder_4, f'frame_4_{frame_number}.png')
             cv2.imwrite(frame_path, frame)
             total_frames_4 += 1
@@ -180,7 +180,7 @@ def generate_frames_for_video(video, uploadtime, num_threads=8):
 
             executor.submit(process_frame, frame_number, frame, frame_folder_4, frame_folder_60)
             frame_number += 1
-            print(f"Total frames 4 saved: {total_frames_4}.\nTotal frames 60 saved: {total_frames_60}.\nTotal frames read: {frame_number}.")
+            print(f"Total frames sub saved: {total_frames_4}.\nTotal frames main saved: {total_frames_60}.\nTotal frames read: {frame_number}.")
             
 
     base_media_path = os.path.join(settings.MEDIA_ROOT)
