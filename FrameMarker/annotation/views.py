@@ -23,16 +23,16 @@
         much faster than write frame img to disk.
 """
 
-import os
-import cv2
 from django.shortcuts import render, get_object_or_404
 from homepage.models import Video
 from .models import VideoFrames, FrameAnnotations
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
-from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
-import threading, time
+import threading, time, os, cv2
+from ultralytics import YOLO
+
+model = YOLO("yolov8s.pt")
 
 def annotation(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
@@ -161,7 +161,6 @@ def generate_frames_for_video(video, num_threads=8):
     total_frames_60 = 0
     total_frames_4 = 0
     batch_size = 300
-    video_frames, created = VideoFrames.objects.get_or_create(video=video)
     
     try:
         def process_frame(frame_number, frame_img, frame_folder_4, frame_folder_60):
@@ -210,6 +209,14 @@ def generate_frames_for_video(video, num_threads=8):
         frame_queue.join()
         cap.release()
         save_frame_to_database(video, frame_folder_4, frame_folder_60, total_frames_60, total_frames_4)
+
+        # detection for all frames generated
+        image_paths_60 = [os.path.join(frame_folder_60, file) for file in os.listdir(frame_folder_60)]
+        image_paths_4 = [os.path.join(frame_folder_4, file) for file in os.listdir(frame_folder_4)]
+        for image_path in image_paths_60 + image_paths_4:
+           detected = detection(image_path)
+        print(f"Detection for all frames generated done.")
+
     except Exception as e:
         error_message = str(e)
         print(f"Frame generation failed: {error_message}")
@@ -237,6 +244,69 @@ def save_frame_to_database(video, frame_folder_4, frame_folder_60, total_frames_
     video_frames.frame_folder_path_60 = frame_folder_60_rel
     video_frames.save()
     print(f"Databse updated for video {video.file_name} with frame info.")
+
+def detection(image_path):
+    # load the image
+    image = cv2.imread(image_path)
+    img_name = os.path.basename(image_path)
+    
+    # use the model to detect objects in the image
+    results = model(image)
+    
+    # get the bounding boxes and probabilities
+    for result in results:  # as result could have multiple dimensions on data, get all posible results
+        box_tensor = result.boxes.xyxy.numpy() # bounding boxes of instrument tip, transformed from tensor to numpy array
+        probs_tensor = result.boxes.conf.numpy() # classification probabilities, transformed from tensor to numpy 
+        obj_num = result.boxes.cls.numpy() # object names
+
+        names = {0: 'tip', 1: 'claw', 2: 'canula'}
+
+        obj_names = [names.get(num, 'unknown') for num in obj_num]
+
+        # see if any objects were detected
+        if not box_tensor.any() or not probs_tensor.any():
+            print(f'No objects detected in {img_name}')
+            return 'No object'
+        
+        # 在原始图像上绘制边界框和标注概率
+        for i in range(len(box_tensor)):
+            # 获取边界框的坐标
+            x1, y1, x2, y2 = box_tensor[i]
+            confidence = probs_tensor[i]
+            name = obj_names[i]
+            if confidence > 0.5:
+                # 计算文本位置
+                text_loc_name = (int(x1), int(y1) - 35)
+                text_loc_conf = (int(x1), int(y1) - 5)
+                # 获取文本尺寸
+                text_siz_name = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                text_siz_conf = cv2.getTextSize(f'{confidence:.2f}', cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                # 计算背景矩形的尺寸
+                bg_siz_name = (text_siz_name[0] + 10, text_siz_name[1] + 8)
+                bg_siz_conf = (text_siz_conf[0] + 10, text_siz_conf[1] + 8)
+                
+                # 在图像上绘制边界框
+                cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (20, 255, 30), 2)
+                # 绘制文字背景
+                bg_color = (30, 50, 150)  # 背景颜色
+                alpha = 0.8  # 设置透明度
+                overlay = image.copy()
+                cv2.rectangle(overlay, (text_loc_name[0], text_loc_name[1] - text_siz_name[1]), 
+                            (text_loc_name[0] + bg_siz_name[0], text_loc_name[1]), bg_color, -1)
+                cv2.rectangle(overlay, (text_loc_conf[0], text_loc_conf[1] - text_siz_conf[1]), 
+                            (text_loc_conf[0] + bg_siz_conf[0], text_loc_conf[1]), bg_color, -1)
+                cv2.addWeighted(overlay, alpha, image, 1 - alpha, 0, image)
+                
+                # 在图像上标注对象名称和概率
+                cv2.putText(image, f'{name}', text_loc_name, cv2.FONT_HERSHEY_SIMPLEX, 1, (20, 255, 30), 2)
+                cv2.putText(image, f'{confidence:.2f}', text_loc_conf, cv2.FONT_HERSHEY_SIMPLEX, 1, (20, 255, 30), 2)
+
+                # 保存带有边界框和标注的图像
+                cv2.imwrite(image_path, image, [cv2.IMWRITE_JPEG_QUALITY, 100])
+                print(f'Objects {name} detected in {img_name}')
+            else:
+                continue
+    return 'Object detected'
 
 def annotate_frames(request, video_id, frame_type, frame_number, rank):
     video = get_object_or_404(Video, pk=video_id)

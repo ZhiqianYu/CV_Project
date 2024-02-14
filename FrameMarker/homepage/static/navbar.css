@@ -51,6 +51,7 @@
     font-size: 17px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     float: right;
+    margin-right: 20px;
 }
 
 .navbar-right .login-inf {
@@ -58,6 +59,7 @@
     font-size: 17px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     float: right;
+    margin-right: 20px;
 }
 
 .navbar-right .navbar-logout {
@@ -72,10 +74,10 @@
 .navbar-right .navbar-separator {
     color: rgb(227, 239, 223);
     font-size: 17px;
-    padding: 0px 20px;
     line-height: 1;
     transform: translateY(-8%);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+    margin-right: 20px;
 }
 
 .navbar-right .navbar-register {
