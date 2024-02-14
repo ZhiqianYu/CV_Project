@@ -3,7 +3,7 @@ from homepage.models import Video
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete
-import os
+import os, shutil
 
 class VideoFrames(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
@@ -32,11 +32,7 @@ class VideoFrames(models.Model):
         # Delete the contents of the frame folders
         for folder_path in [frame_folder, frame_folder_4, frame_folder_60]:
             if os.path.exists(folder_path):
-                for root, dirs, files in os.walk(folder_path, topdown=False):
-                    for file in files:
-                        file_path = os.path.join(root, file)
-                        os.remove(file_path)
-                    os.rmdir(root)
+                shutil.rmtree(folder_path)
 
         # Optionally, you can remove the folders themselves (if empty)
         if os.path.exists(frame_folder):

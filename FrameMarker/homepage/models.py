@@ -40,21 +40,32 @@ class Video(models.Model):
     preview_file = models.ImageField(upload_to='Preview/', null=True, blank=True)    
 
     def delete(self, *args, **kwargs):
-        if self.video_file and self.video_file.path and os.path.exists(self.video_file.path):
-            os.remove(self.video_file.path)
-            
-        if self.preview_file and self.preview_file.path and os.path.exists(self.preview_file.path):
-            os.remove(self.preview_file.path)
+        if self.video_file:
+            video_file_path = self.video_file.path
+            if video_file_path and os.path.exists(video_file_path):
+                os.remove(video_file_path)
         
+        if self.preview_file:
+            preview_file_path = self.preview_file.path
+            if preview_file_path and os.path.exists(preview_file_path):
+                os.remove(preview_file_path)
+        
+        # 删除旧视频文件
         old_video_dir = os.path.join(settings.MEDIA_ROOT, 'old_Video')
-        for filename in os.listdir(old_video_dir):
-            old_filename, old_extension = os.path.splitext(filename)
-            current_filename, current_extension = os.path.splitext(self.file_name)
-            if old_filename == current_filename:
-                old_video_path = os.path.join(old_video_dir, filename)
-                if os.path.exists(old_video_path):
-                    os.remove(old_video_path)
-            
+        current_filename, _ = os.path.splitext(self.file_name)
+        if os.path.exists(old_video_dir):
+            for filename in os.listdir(old_video_dir):
+                old_filename, _ = os.path.splitext(filename)
+                if old_filename == current_filename:
+                    old_video_path = os.path.join(old_video_dir, filename)
+                    if os.path.exists(old_video_path):
+                        os.remove(old_video_path)
+            # 尝试删除包含旧视频文件的文件夹，如果为空的话
+            try:
+                os.rmdir(old_video_dir)
+            except OSError:
+                pass  # 如果文件夹不为空或无法删除，忽略错误
+        
         super().delete(*args, **kwargs)
         
     def save(self, *args, **kwargs):

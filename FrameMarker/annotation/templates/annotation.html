@@ -82,36 +82,36 @@
         </div>
         <div class="frames-btns">  
             <div class="frames-container">
+                {% if frame_folder_60 %}
                     {% for frame_info in frame_paths_60 %}
-                        {% if frame_folder_60 %}
-                                <div class="frames-60" >
-                                    <img src="{{ MEDIA_URL }}{{ frame_info.frame_path }}" alt="frame">
-                                    <div class="overlay-a-top">
-                                            <span class="anno-info" id="overlay-info-anno">
-                                                {% if frame_info.annotation.is_annotated == True %}
-                                                    ✅
-                                                {% else %}
-                                                    ⚠️
-                                                {% endif %}
-                                            </span>
-                                            <span>&nbsp;&nbsp;</span>
-                                            <span class="anno-rank" id="overlay-info-rank">
-                                                {% if frame_info.annotation.rank == null %}
-                                                {% else %}
-                                                    {{ frame_info.annotation.rank }}
-                                                {% endif %}
-                                            </span>
-                                    </div>
-                                    <div class="overlay-a-bot">
-                                        <span class="anno-num">
-                                            <p>{{ frame_info.frame_number }}</p>
-                                        </span>
-                                    </div>
-                                </div>
-                        {% else %}
-                            <div class="noti-info"> Frame not exist. Please first generate the frame and refresh the page </div>
-                        {% endif %}
+                        <div class="frames-60" >
+                            <img src="{{ MEDIA_URL }}{{ frame_info.frame_path }}" alt="frame">
+                            <div class="overlay-a-top">
+                                    <span class="anno-info" id="overlay-info-anno">
+                                        {% if frame_info.annotation.is_annotated == True %}
+                                            ✅
+                                        {% else %}
+                                            ⚠️
+                                        {% endif %}
+                                    </span>
+                                    <span>&nbsp;&nbsp;</span>
+                                    <span class="anno-rank" id="overlay-info-rank">
+                                        {% if frame_info.annotation.rank == null %}
+                                        {% else %}
+                                            {{ frame_info.annotation.rank }}
+                                        {% endif %}
+                                    </span>
+                            </div>
+                            <div class="overlay-a-bot">
+                                <span class="anno-num">
+                                    <p>{{ frame_info.frame_number }}</p>
+                                </span>
+                            </div>
+                        </div>
                     {% endfor %}
+                {% else %}
+                    <div class="noti-info"> Frame not exist. Please first generate the frame and refresh the page </div>
+                {% endif %}
             </div>
 
             <div class="inf-btns">

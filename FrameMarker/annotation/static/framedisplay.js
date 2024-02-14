@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.extractFrameIndexFromPath = function(framePath) {
         // Extract the last number after the last underscore in the frame filename
-        const matches = framePath.match(/_(\d+)\.png/);
+        const matches = framePath.match(/_(\d+)\.jpg/);
         if (matches && matches[1]) {
             return parseInt(matches[1]);
         }
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.extractFrameTypeFromPath = function(framePath) {
-        const matches = framePath.match(/\/(\d+)\/frame_(\w+)_\d+(_\d+)?\.png/);
+        const matches = framePath.match(/\/(\d+)\/frame_(\w+)_\d+(_\d+)?\.jpg/);
         if (matches && matches[2]) {
             return matches[2];
         }
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Fetching 4-frame paths from the server based on the selected 60-frame index
         const framePaths4 = [];
         for (let i = selectedFrameIndex + 1; i < selectedFrameIndex + 5 && i < totalFrames; i += 1) {
-            const framePath4 = `${extract4PathFrom60Path(frameElements60[0].src)}/frame_4_${i}.png`;
+            const framePath4 = `${extract4PathFrom60Path(frameElements60[0].src)}/frame_4_${i}.jpg`;
             framePaths4.push(framePath4);
         }
         return framePaths4;
