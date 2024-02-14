@@ -7,12 +7,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoIdContainer = document.getElementById('video-id-container');
     const setSameRankBtn = document.getElementById('set-Same-Rank-Btn');
 
+    const progressBar = document.getElementById('progressIndicator');
+    const currentFrameElement = document.getElementById('current-Frame');
+
     let currentRating = null;
     let currentVideoId = null;
 
-    // 定义一个标志来跟踪事件监听器是否已经被绑定
-    let isEventListenersBound = false;
-    
     async function rateFrame(rating) {
         // Update current selection and video id
         currentRating = rating;
@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await response.json();
             // Handle the updated data and update overlay content
             updateOverlayContent(data.frame_info);
+            updateProgressFromOverlay(data.frame_info);
         } catch (error) {
             console.error('Error fetching updated data:', error);
         }
@@ -133,6 +134,22 @@ document.addEventListener('DOMContentLoaded', function () {
             // Handle the case when there is no annotation
             annoInfoElement.innerHTML = '';
             annoRankElement.innerHTML = '';
+        }
+    }
+
+    function updateProgressFromOverlay(FrameInfo) {
+        // 获取叠加层数据中的进度信息
+        const progress = parseFloat(FrameInfo.progress); // 假设进度以百分比形式存储
+        // 更新进度条
+        const progressBar = document.getElementById('progressBar');
+        const progressIndicator = document.getElementById('progressIndicator');
+
+        if (progressBar && progressIndicator) {
+            // 更新进度条的宽度
+            currentFrameElement.textContent = progress + '%';
+            progressIndicator.style.width = `${progress}%`;
+        } else {
+            console.error('Progress bar elements not found.');
         }
     }
 

@@ -1,21 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.querySelector('.video-player');
     const frameElements60 = document.querySelectorAll('.frames-60 img');
-    const frameElements4 = document.querySelectorAll('.frames-4 img');
     const videoIdContainer = document.getElementById('video-id-container');
     
     // 鼠标悬浮状态保持
     const frameContainers60 = document.querySelectorAll('.frames-60');
-    const frameContainers4 = document.querySelectorAll('.frames-4');
 
     // 所选帧的信息更新到页面
     const choosedFrameNumberElement = document.getElementById('choosed-frame-number');
     const choosedFrameTypElement = document.getElementById('choosed-frame-type');
-    const choosedFrameElement = document.querySelector('.choosed-frame');
     
-    // 进度条更新到页面
-    const progressIndicator = document.getElementById('progressIndicator');
-    const currentFrameElement = document.getElementById('current-Frame');
+    // show reuse rank button
     const totalFramesElement = document.getElementById('max_frame_number');
 
     // 视频播放器按钮
@@ -52,20 +47,15 @@ document.addEventListener('DOMContentLoaded', function () {
         choosedFrameTypElement.textContent = selectedFrameTyp;
 
         // Save frame type to a custom attribute in an element
-        updateProgressBar();
+        reUseBtn();
         updateVideoPlayer(framePath);
     }
 
-    function updateProgressBar() {
+    function reUseBtn() {
         if (isFrameSelected) {
-            const percentage = (selectedFrameNumber / totalFrames) * 100;
-            progressIndicator.style.width = percentage + '%';
-            currentFrameElement.textContent = selectedFrameNumber;
             // Show the current-position element
             toggleCurrentPositionReuseBtnVisibility(true);
         } else {
-            progressIndicator.style.width = '0%';
-            currentFrameElement.textContent = 'Not selected';
             // Hide the current-position element
             toggleCurrentPositionReuseBtnVisibility(false);
         }

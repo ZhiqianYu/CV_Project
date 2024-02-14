@@ -115,6 +115,7 @@ def update_overlay(request, video_id, frame_type, frame_number):
     frame_info['frame_name'] = f'frame_main_{frame_number}.jpg'
     frame_info['frame_number'] = frame_number
     frame_info['annotation'] = annotations_dict.get(frame_number, {})
+    frame_info['progress'] = video.annotation_progress
     return JsonResponse({'frame_info': frame_info})
 
 def generate_frames(request, video_id):
@@ -308,8 +309,8 @@ def detection(video, frame_folder_main, frame_folder_sub, image_path_tmp):
                 text_siz_name = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
                 text_siz_conf = cv2.getTextSize(f'{confidence:.2f}', cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
                 # 计算背景矩形的尺寸
-                bg_siz_name = (text_siz_name[0] + 10, text_siz_name[1] + 8)
-                bg_siz_conf = (text_siz_conf[0] + 10, text_siz_conf[1] + 8)
+                bg_siz_name = (text_siz_name[0] + 10, text_siz_name[1] + 10)
+                bg_siz_conf = (text_siz_conf[0] + 10, text_siz_conf[1] + 10)
                 
                 # 在图像上绘制边界框
                 cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (20, 255, 30), 2)
