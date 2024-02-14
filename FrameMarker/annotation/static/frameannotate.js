@@ -69,8 +69,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.status === 'success') {
                 if (frameType === 'main') {
                     await updateOverlayInformation(frameNumber);
+                    await updateProgress(frameNumber);
                 } else if (frameType === 'sub') {
                     await fetchAndLoadSubOverlayInfo(currentVideoId, frameType, frameNumber);
+                    await updateProgress(frameNumber);
                 }
             }
         } catch (error) {
@@ -102,6 +104,30 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await response.json();
             // Handle the updated data and update overlay content
             updateOverlayContent(data.frame_info);
+        } catch (error) {
+            console.error('Error fetching updated data:', error);
+        }
+    }
+
+    async function updateProgress(frameNumber) {
+        // Fetch updated overlay data from the server
+        const currentVideoId = videoIdContainer.getAttribute('data-video-id');
+        const currentFrameType = frameTypeElement.textContent.trim();
+        try {
+            const response = await fetch(`/update_overlay/${currentVideoId}/${currentFrameType}/${frameNumber}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(),
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            // Handle the updated data and update overlay content
             updateProgressFromOverlay(data.frame_info);
         } catch (error) {
             console.error('Error fetching updated data:', error);
@@ -239,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {
             rankNotif.style.display = 'none';
         }, 1000);
+        updateProgress(frameNumber);
     }
 
     function getCSRFToken() {
