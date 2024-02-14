@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentRating = null;
     let currentFrameType = null;
     let currentVideoId = null;
+    
     window.rateFrame = async function(rating) {
         // Update current selection and video id
         currentRating = rating;
@@ -31,7 +32,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Data format
                 }),
             });
-
+            /*
+            if problem occur of repeating the same database then use timeout function
+            setTimeout(async function() {
+                const response = await fetch(`/annotate_frames/${videoId}/${frameType}/${frameNumber}/${currentRating}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCSRFToken(),
+                    },
+                    body: JSON.stringify({
+                        // Data format
+                    }),
+                });
+            }, 100); // 设置等待的时间，单位为毫秒
+            */
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }

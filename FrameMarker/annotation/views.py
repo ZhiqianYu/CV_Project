@@ -246,7 +246,7 @@ def annotate_frames(request, video_id, frame_type, frame_number, rank):
     frame_number = frame_number
     rank = rank
 
-    if rank == 'Clear':
+    if rank == 'Delete':
         # If rank is empty, delete the corresponding FrameAnnotations entry
         try:
             frame_annotation = FrameAnnotations.objects.get(
