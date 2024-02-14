@@ -152,4 +152,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'Resources')
 MEDIA_URL = '/Resources/'
 
+LOGIN_URL = '/login/'
+
 LOGIN_REDIRECT_URL = 'introduction'

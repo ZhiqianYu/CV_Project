@@ -23,14 +23,20 @@
 
 from django.shortcuts import render
 from homepage.models import Video
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import AnonymousUser
 import os
 from django.conf import settings
 from django.shortcuts import render
 from .models import Video
 
-
+@login_required(login_url='/login/')  # Redirect to login page if not logged in
 def video_list(request):
+    # Check if the user is logged in
+    if isinstance(request.user, AnonymousUser):
+         # User is not logged in, you can choose to return an empty response or redirect to a login page
+        return render(request, 'not_logged_in.html')  # Create a template for not logged in
+
     # Retrieve all videos from the database
     videos = Video.objects.all()
 
