@@ -131,56 +131,75 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function updateFramesContainer4(framePaths4) {
         // Get the current video ID from html element
-        currentVideoId = videoIdContainer.getAttribute('data-video-id');
-
+        const currentVideoId = videoIdContainer.getAttribute('data-video-id');
+    
         // Clear the existing content in the 4-frames container
         framesContainer4.innerHTML = '';
     
         // Append the fetched 4-frame paths to the 4-frames container
         for (const framePath4 of framePaths4) {
-            const frameElement4 = document.createElement('div');
-            frameElement4.classList.add('frames-4');
-
-            // Extract frame type and frame number from frame path
-            const frameType = extractFrameTypeFromPath(framePath4);
             const frameNumber = extractFrameIndexFromPath(framePath4);
-
-            // create sub img element
-            const imgElement4 = document.createElement('img');
-            imgElement4.src = framePath4;
-            imgElement4.alt = 'Sub frame has no object';
-            frameElement4.appendChild(imgElement4);
-            
-            // creat overlay top
-            const overlayTopElement = document.createElement('div');
-            overlayTopElement.classList.add('sub-overlay-a-top');
-            const overlayInfoElement = document.createElement('span');
-            overlayInfoElement.classList.add('sub-anno-info');
-            overlayInfoElement.id = `sub-overlay-info-anno-${frameNumber}`; 
-            overlayTopElement.appendChild(overlayInfoElement);
-
-            const overlayRankElement = document.createElement('span');
-            overlayRankElement.classList.add('sub-anno-rank');
-            overlayRankElement.id = `sub-overlay-info-rank-${frameNumber}`; 
-            overlayTopElement.appendChild(overlayRankElement);
-            frameElement4.appendChild(overlayTopElement);
-
-            // create overlay bot
-            const overlayBotElement = document.createElement('div');
-            overlayBotElement.classList.add('sub-overlay-a-bot');
-            const overlayNumElement = document.createElement('span');
-            overlayNumElement.classList.add('sub-anno-num');
-            overlayNumElement.innerHTML = frameNumber; 
-            overlayBotElement.appendChild(overlayNumElement);
-            frameElement4.appendChild(overlayBotElement);
-
-            framesContainer4.appendChild(frameElement4);
-
-            // Fetch overlay information for the frame
-            await fetchAndLoadSubOverlayInfo(currentVideoId, frameType, frameNumber);
+    
+            // Check if the subframe image exists before creating elements
+            const subframeImgExists = await checkIfSubframeImgExists(framePath4);
+    
+            if (subframeImgExists) {
+                const frameElement4 = document.createElement('div');
+                frameElement4.classList.add('frames-4');
+                
+                // Extract frame type and frame number from frame path
+                const frameType = extractFrameTypeFromPath(framePath4);
+                const frameNumber = extractFrameIndexFromPath(framePath4);
+                // create sub img element
+                const imgElement4 = document.createElement('img');
+                imgElement4.src = framePath4;
+                imgElement4.alt = 'Sub frame has no object';
+                frameElement4.appendChild(imgElement4);
+                
+                // creat overlay top
+                const overlayTopElement = document.createElement('div');
+                overlayTopElement.classList.add('sub-overlay-a-top');
+                const overlayInfoElement = document.createElement('span');
+                overlayInfoElement.classList.add('sub-anno-info');
+                overlayInfoElement.id = `sub-overlay-info-anno-${frameNumber}`; 
+                overlayTopElement.appendChild(overlayInfoElement);
+    
+                const overlayRankElement = document.createElement('span');
+                overlayRankElement.classList.add('sub-anno-rank');
+                overlayRankElement.id = `sub-overlay-info-rank-${frameNumber}`; 
+                overlayTopElement.appendChild(overlayRankElement);
+                frameElement4.appendChild(overlayTopElement);
+    
+                // create overlay bot
+                const overlayBotElement = document.createElement('div');
+                overlayBotElement.classList.add('sub-overlay-a-bot');
+                const overlayNumElement = document.createElement('span');
+                overlayNumElement.classList.add('sub-anno-num');
+                overlayNumElement.innerHTML = frameNumber; 
+                overlayBotElement.appendChild(overlayNumElement);
+                frameElement4.appendChild(overlayBotElement);
+    
+                framesContainer4.appendChild(frameElement4);
+                // Fetch overlay information for the frame
+                await fetchAndLoadSubOverlayInfo(currentVideoId, frameType, frameNumber);
+            }
         }
         attachedEventListenersTo4Frames();
     }
+    
+    async function checkIfSubframeImgExists(framePath) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = function() {
+                resolve(true);
+            };
+            img.onerror = function() {
+                resolve(false);
+            };
+            img.src = framePath;
+        });
+    }
+    
 
     window.fetchAndLoadSubOverlayInfo = async function(videoId, frameType, frameNumber) {
         try {
