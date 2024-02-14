@@ -135,8 +135,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Clear the existing content in the 4-frames container
         framesContainer4.innerHTML = '';
-    
+        
         // Append the fetched 4-frame paths to the 4-frames container
+        let subframeExists = false;
         for (const framePath4 of framePaths4) {
             const frameNumber = extractFrameIndexFromPath(framePath4);
     
@@ -144,6 +145,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const subframeImgExists = await checkIfSubframeImgExists(framePath4);
     
             if (subframeImgExists) {
+                subframeExists = true;
+                
                 const frameElement4 = document.createElement('div');
                 frameElement4.classList.add('frames-4');
                 
@@ -178,7 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 overlayNumElement.innerHTML = frameNumber; 
                 overlayBotElement.appendChild(overlayNumElement);
                 frameElement4.appendChild(overlayBotElement);
-    
                 framesContainer4.appendChild(frameElement4);
                 // Fetch overlay information for the frame
                 await fetchAndLoadSubOverlayInfo(currentVideoId, frameType, frameNumber);
