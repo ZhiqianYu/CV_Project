@@ -39,7 +39,7 @@ from datetime import datetime
 from PIL import Image
 from .forms import RegisterForm, UploadForm
 from .models import Video
-import os, sys, cv2, ffmpeg, cpuinfo, subprocess
+import os, sys, cv2, ffmpeg, GPUtil, subprocess
 
 # 链接定向
 def introduction(request):
@@ -188,8 +188,7 @@ def create_video(video_path, preview_path, username):
     video.save()
 
 def video_format_transform(video_path):
-    gpu_type = get_gpu_type()
-    cpu_model = get_cpu_type()
+    gpu_name = get_gpu_name()
 
     file_name = os.path.basename(video_path)
     file_extension = os.path.splitext(file_name)[1]
@@ -198,13 +197,13 @@ def video_format_transform(video_path):
         new_file_name = os.path.splitext(file_name)[0] + '.mp4'
         new_video_path = os.path.join(settings.MEDIA_ROOT, 'Video', new_file_name)
 
-        codec = choose_encoder(gpu_type, cpu_model)
-        
+        codec = choose_encoder(gpu_name)
+
         try:
-            ffmpeg.input(video_path).output(new_video_path, codec=codec).run()
-            print ('New File Name is:', new_file_name)
-            print ('New Video Path is:', new_video_path)
-            print('Video format converted with %s GPU acceleration.' % gpu_type if gpu_type else 'Video format converted using CPU.')
+            if codec:
+                ffmpeg.input(video_path).output(new_video_path, codec=codec).run()
+            else:
+                ffmpeg.input(video_path).output(new_video_path).run()
         except ffmpeg.Error as e:
             print(f'Error during ffmpeg conversion: {e.stderr}')
             return video_path
@@ -217,7 +216,6 @@ def video_format_transform(video_path):
         return new_video_path
     else:
         return video_path
-    
 
 def generate_preview(video_path, preview_path):
     # 生成预览图
@@ -240,36 +238,35 @@ def generate_preview(video_path, preview_path):
         image.save(preview_path)
     video.release()
 
-def get_gpu_type():
+def get_gpu_name():
     try:
-        # 使用 nvidia-smi 命令获取 NVIDIA GPU 信息
-        result = subprocess.run(['nvidia-smi'], capture_output=True, text=True)
-        gpu_info = result.stdout
-
-        # 解析显卡信息
-        if 'NVIDIA' in gpu_info:
-            return 'NVIDIA'
+        gpus = GPUtil.getGPUs()
+        if len(gpus) == 0:
+            return "No GPU found."
         else:
-            return None
+            max_memory = 0
+            max_memory_gpu = None
+            for gpu in gpus:
+                if gpu.memoryTotal > max_memory:
+                    max_memory = gpu.memoryTotal
+                    max_memory_gpu = gpu
+
+            if max_memory_gpu is None:
+                return "No GPU found."
+            else:
+                gpu_name = max_memory_gpu.name
+                return gpu_name
     except Exception as e:
-        print(f'Error getting GPU info: {e}')
-        return None
+        return f"Error occurred: {str(e)}"
 
-def get_cpu_type():
-    info = cpuinfo.get_cpu_info()
-    # 解析 CPU 型号信息
-    cpu_model = info.get('brand_raw', None)
-    return cpu_model
-
-def choose_encoder(gpu_type, cpu_model):
-    if gpu_type == 'NVIDIA':
-        return 'h264_nvenc'
-    elif cpu_model and 'Intel' in cpu_model:
-        return 'h264_qsv'
-    elif cpu_model and 'AMD' in cpu_model:
-        return 'h264_amf'
+def choose_encoder(gpu_name):
+    print('GPU Type:', gpu_name)
+    if "NVIDIA" in gpu_name:
+        return "h264_nvenc"
+    if "AMD" in gpu_name:
+        return "h264_amf"
     else:
-        return 'libx264'
+        return None
 
 def scan_videos(username):
     video_dir = os.path.join(settings.MEDIA_ROOT, 'Video')

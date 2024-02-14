@@ -82,36 +82,38 @@
         </div>
         <div class="frames-btns">  
             <div class="frames-container">
+                {% if frame_folder_60 %}
                     {% for frame_info in frame_paths_60 %}
-                        {% if frame_folder_60 %}
-                                <div class="frames-60" >
-                                    <img src="{{ MEDIA_URL }}{{ frame_info.frame_path }}" alt="frame">
-                                    <div class="overlay-a-top">
-                                            <span class="anno-info" id="overlay-info-anno">
-                                                {% if frame_info.annotation.is_annotated == True %}
-                                                    ✅
-                                                {% else %}
-                                                    ⚠️
-                                                {% endif %}
-                                            </span>
-                                            <span>&nbsp;&nbsp;</span>
-                                            <span class="anno-rank" id="overlay-info-rank">
-                                                {% if frame_info.annotation.rank == null %}
-                                                {% else %}
-                                                    {{ frame_info.annotation.rank }}
-                                                {% endif %}
-                                            </span>
-                                    </div>
-                                    <div class="overlay-a-bot">
-                                        <span class="anno-num">
-                                            <p>{{ frame_info.frame_number }}</p>
+                        <div class="frames-60" >
+                            <img src="{{ MEDIA_URL }}{{ frame_info.frame_path }}" alt="frame">
+                            <div class="overlay-{{frame_info.frame_number}}">
+                                <div class="overlay-a-top">
+                                        <span class="anno-info" id="overlay-info-anno">
+                                            {% if frame_info.annotation.is_annotated == True %}
+                                                ✅
+                                            {% else %}
+                                                ⚠️
+                                            {% endif %}
                                         </span>
-                                    </div>
+                                        <span>&nbsp;&nbsp;</span>
+                                        <span class="anno-rank" id="overlay-info-rank">
+                                            {% if frame_info.annotation.rank == null %}
+                                            {% else %}
+                                                {{ frame_info.annotation.rank }}
+                                            {% endif %}
+                                        </span>
                                 </div>
-                        {% else %}
-                            <div class="noti-info"> Frame not exist. Please first generate the frame and refresh the page </div>
-                        {% endif %}
+                                <div class="overlay-a-bot">
+                                    <span class="anno-num">
+                                        <p>{{ frame_info.frame_number }}</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     {% endfor %}
+                {% else %}
+                    <div class="noti-info"> Frame not exist. Please first generate the frame and refresh the page </div>
+                {% endif %}
             </div>
 
             <div class="inf-btns">
@@ -149,7 +151,7 @@
         </div>
         <div class="frame-time-indicator">
             <div class="current-position" style="display: none;">
-                Annotation Process: <span id="current-Frame">{{ choosed_frame_number }}</span>/<span id="max_frame_number">{{ max_frame_number }}</span>
+                Annotation Process: <span id="current-Frame">{{ choosed_frame_number }}</span><span id="max_frame_number" style="display: none;">{{ max_frame_number }}</span>
             </div>
             <div class="current-position-gen" style="display: none;">
                 Generation Process: <span id="current-Frame-gen">0</span>/<span id="max_frame_number-gen">0</span>

@@ -23,15 +23,16 @@
         much faster than write frame img to disk.
 """
 
-import os
-import cv2
 from django.shortcuts import render, get_object_or_404
 from homepage.models import Video
 from .models import VideoFrames, FrameAnnotations
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseBadRequest
-from concurrent.futures import ThreadPoolExecutor
-from django.db.models import Count
+from queue import Queue
+import threading, time, os, cv2, re, shutil
+from ultralytics import YOLO
+
+model = YOLO("yolov8s.pt")
 
 def annotation(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
@@ -47,36 +48,43 @@ def annotation(request, video_id):
     uploader = video.uploader
 
     max_frame_number = calculate_max_frame_number(video)
-    total_frame_files = video_frames.video_frames_total
+    if video_frames.total_frames_main_undetect is not None:
+        total_frame_files = video_frames.video_frames_total
+    else:
+        total_frame_files = 'N/A'
 
-    frame_folder_60 = video_frames.frame_folder_path_60
-    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 60)]
+    frame_paths_main = []
+    frame_paths_sub = []
 
-    frame_folder_4 = video_frames.frame_folder_path_4
-    frame_paths_4 = [os.path.join(frame_folder_4, f'frame_4_{i}.png') for i in range(4, max_frame_number, 4) if i % 60 != 0]
+    # 构建 frame_paths_main 和 frame_paths_sub 列表
+    if video_frames.has_frames_main or video_frames.has_frames_sub:
+        media_root = settings.MEDIA_ROOT
+        frame_folder_main = video_frames.frame_folder_path_main
+        main_list_path = os.path.join(media_root, video_frames.frame_folder_path_main)
+        frame_paths_main = [os.path.join(frame_folder_main, file) for file in os.listdir(main_list_path)]
+        if video_frames.frame_folder_path_sub is not None:
+            frame_folder_sub = video_frames.frame_folder_path_sub
+            sub_list_path = os.path.join(media_root, video_frames.frame_folder_path_sub)
+            frame_paths_sub = [os.path.join(frame_folder_sub, file) for file in os.listdir(sub_list_path)]
+    else:
+        frame_folder_main = False
+        frame_folder_sub = False
 
-    # 为每张图片获取帧编号和标注信息
+    # 构建帧信息列表
     frame_info_list = []
-    for frame_path in frame_paths_60:
-        # 从文件名中提取帧编号
+    for frame_path in frame_paths_main:
         frame_number = int(frame_path.split('_')[-1].split('.')[0])
-        # 从字典中获取相应帧编号的标注信息
-        # 使用联接查询获取帧标注信息
         annotation = annotations_dict.get(frame_number, None)
-
-        # 如果帧没有标注信息，为其设置一个默认值
         if annotation is None:
             annotation = {'is_annotated': False, 'rank': ''}
-
-        # 构造帧信息字典
         frame_info = {'frame_path': frame_path, 'frame_number': frame_number, 'annotation': annotation}
         frame_info_list.append(frame_info)
 
     return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 
-                                            'frame_paths_4': frame_paths_4, 'frame_folder_4': frame_folder_4,
-                                            'frame_paths_60': frame_info_list, 'frame_folder_60': frame_folder_60,
-                                            'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number,
-                                            'annotations': annotations})
+                                               'frame_paths_4': frame_paths_sub, 'frame_folder_4': frame_folder_sub,
+                                               'frame_paths_60': frame_info_list, 'frame_folder_60': frame_folder_main,
+                                               'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number,
+                                               'annotations': annotations})
 
 def subframe_overlay(request, video_id, frame_type, frame_number):
     # get the video object by video_id
@@ -96,41 +104,39 @@ def subframe_overlay(request, video_id, frame_type, frame_number):
         # when data not exist return 404
         return JsonResponse({'error': 'Annotation data not found'}, status=404)
 
-def update_overlay(request, video_id):
+def update_overlay(request, video_id, frame_type, frame_number):
     video = get_object_or_404(Video, pk=video_id)
     video_frames, created = VideoFrames.objects.get_or_create(video=video)
 
     annotations = FrameAnnotations.objects.filter(video=video)
     annotations_dict = {anno.frame_number: {'is_annotated': anno.is_annotated, 'rank': anno.rank} for anno in annotations}
 
-    max_frame_number = calculate_max_frame_number(video)
-    frame_folder_60 = video_frames.frame_folder_path_60
-    frame_paths_60 = [os.path.join(frame_folder_60, f'frame_60_{i}.png') for i in range(0, max_frame_number, 60)]
-
-    frame_info_list = []
-    for frame_path in frame_paths_60:
-        frame_number = int(frame_path.split('_')[-1].split('.')[0])
-        annotation_data = annotations_dict.get(frame_number, {})
-        frame_info = {'frame_path': frame_path, 'frame_number': frame_number, 'annotation': annotation_data}
-        frame_info_list.append(frame_info)
-
-    return JsonResponse({'frame_info_list': frame_info_list})
+    frame_info = {}
+    frame_info['frame_name'] = f'frame_main_{frame_number}.jpg'
+    frame_info['frame_number'] = frame_number
+    frame_info['annotation'] = annotations_dict.get(frame_number, {})
+    frame_info['progress'] = video.annotation_progress
+    return JsonResponse({'frame_info': frame_info})
 
 def generate_frames(request, video_id):
     video = get_object_or_404(Video, pk=video_id)
     video_frames = VideoFrames.objects.filter(video=video)
     total_frames = calculate_max_frame_number(video)
 
-    if not (video_frames.filter(has_frames_60=True).exists() and video_frames.filter(has_frames_4=True).exists()):
+    if not (video_frames.filter(has_frames_main=True).exists() and video_frames.filter(has_frames_sub=True).exists()):
         print("Frames not found or not all frames are generated. Generating frames...")
-        uploadtime = video.upload_time.strftime('%Y%m%d%H%M%S') 
         
-        # Call the separate function for frame generation
-        generate_frames_for_video(video, uploadtime)
+        try:
+            # Call the separate function for frame generation
+            generate_frames_for_video(video)
+            return JsonResponse({'status': 'success', 'total_frames': total_frames})
+        except Exception as e:
+            error_message = str(e)
+            print(f"Frame generation failed: {error_message}")
+            return JsonResponse({'status': 'error', 'message': 'Frame generation failed', 'error': error_message}, status=500)
     else:
         print("Frames already exist and are generated.")
-    
-    return JsonResponse({'status': 'success', 'total_frames': total_frames})
+        return JsonResponse({'status': 'success', 'total_frames': total_frames})
 
 def calculate_max_frame_number(video):
     video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
@@ -139,65 +145,205 @@ def calculate_max_frame_number(video):
     cap.release()
     return max_frame_number
 
-def generate_frames_for_video(video, uploadtime, num_threads=8):
-
+def generate_frames_for_video(video, num_threads=8):
     video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
-    cap = cv2.VideoCapture(video_file_path)
-
+    uploadtime = video.upload_time.strftime('%Y%m%d%H%M%S') 
     filename_without_extension = os.path.splitext(video.file_name)[0]
     folder_name = f"{filename_without_extension}-{video.uploader.username}-{uploadtime}"
 
     frame_folder = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name)
-    frame_folder_4 = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name, '4')
-    frame_folder_60 = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name, '60')
+    frame_folder_sub = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name, 'sub')
+    frame_folder_main = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name, 'main')
+
+    frame_folder_sub_tmp = os.path.join(settings.MEDIA_ROOT, frame_folder, 'temp', 'sub')
+    frame_folder_main_tmp = os.path.join(settings.MEDIA_ROOT, frame_folder, 'temp', 'main')
     os.makedirs(frame_folder, exist_ok=True)
-    os.makedirs(frame_folder_4, exist_ok=True)
-    os.makedirs(frame_folder_60, exist_ok=True)
+    os.makedirs(frame_folder_sub, exist_ok=True)
+    os.makedirs(frame_folder_main, exist_ok=True)
 
     frame_number = 0
-    total_frames_60 = 0
-    total_frames_4 = 0
+    total_frames_main_undetect = 0
+    total_frames_sub_undetect = 0
+    batch_size = 300
+    
+    try:
+        def process_frame(frame_number, frame_img):
+            nonlocal total_frames_main_undetect, total_frames_sub_undetect
+            if frame_number % 5 == 0:
+                frame_path_main_tmp = os.path.join(frame_folder_main_tmp, f'frame_main_{frame_number}.jpg')
+                os.makedirs(frame_folder_main_tmp, exist_ok=True)
+                cv2.imwrite(frame_path_main_tmp, frame_img)
+                total_frames_main_undetect += 1
 
-    video_frames, created = VideoFrames.objects.get_or_create(video=video)
+            if frame_number % 1 == 0 and frame_number % 5 != 0:
+                frame_path_sub_tmp = os.path.join(frame_folder_sub_tmp, f'frame_sub_{frame_number}.jpg')
+                os.makedirs(frame_folder_sub_tmp, exist_ok=True)
+                cv2.imwrite(frame_path_sub_tmp, frame_img)
+                total_frames_sub_undetect += 1
+        
+        frame_queue = Queue(maxsize=batch_size*0.25*num_threads) # Queue for storing frames to be processed, larger than batch size
+        def read_and_process_frames():
+            while True:
+                frame_number, frame_img = frame_queue.get()  # get frame from the queue
+                process_frame(frame_number, frame_img)
+                frame_queue.task_done()  # tell the queue that the frame is processed
 
-    def process_frame(frame_number, frame, frame_folder_4, frame_folder_60):
-        nonlocal total_frames_60, total_frames_4
-        if frame_number % 60 == 0:
-            frame_path = os.path.join(frame_folder_60, f'frame_60_{frame_number}.png')
-            cv2.imwrite(frame_path, frame)
-            total_frames_60 += 1
+        cap = cv2.VideoCapture(video_file_path)
+        # Start the threads for processing frames
+        for _ in range(num_threads):
+            threading.Thread(target=read_and_process_frames, daemon=True).start()
 
-        if frame_number % 4 == 0 and frame_number % 60 != 0:
-            frame_path = os.path.join(frame_folder_4, f'frame_4_{frame_number}.png')
-            cv2.imwrite(frame_path, frame)
-            total_frames_4 += 1
-
-    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        frame_number = 0
         while True:
-            ret, frame = cap.read()
+            # Read a batch of frames
+            frames = []
+            for _ in range(batch_size):
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                frames.append((frame_number, frame))
+                frame_number += 1
+            # put frames readed into the queue
+            for frame_data in frames:
+                while frame_queue.full():  # when the queue is full, wait for a short time
+                    time.sleep(0.1)
+                frame_queue.put(frame_data)
             if not ret:
                 break
+            print(f"Total frames file main saved: {total_frames_main_undetect}.\nTotal frames file sub saved: {total_frames_sub_undetect}.\nTotal frames file read: {frame_number}.")
+        # Wait for all frames to be processed
+        frame_queue.join()
+        cap.release()
+        save_frame_to_database(video, frame_folder_sub, frame_folder_main, total_frames_main_undetect, total_frames_sub_undetect)
 
-            executor.submit(process_frame, frame_number, frame, frame_folder_4, frame_folder_60)
-            frame_number += 1
-            print(f"Total frames 4 saved: {total_frames_4}.\nTotal frames 60 saved: {total_frames_60}.\nTotal frames read: {frame_number}.")
-            
+        # detection for all frames generated
+        image_paths_main_tmp = [os.path.join(frame_folder_main_tmp, file) for file in os.listdir(frame_folder_main_tmp)]
+        image_paths_sub_tmp = [os.path.join(frame_folder_sub_tmp, file) for file in os.listdir(frame_folder_sub_tmp)]
+        for image_path_tmp in image_paths_main_tmp + image_paths_sub_tmp:
+            detection(video, frame_folder_main, frame_folder_sub, image_path_tmp)
+        print(f"Detection for all frames generated done.")
+
+    except Exception as e:
+        error_message = str(e)
+        print(f"Frame generation failed: {error_message}")
+        return JsonResponse({'status': 'error', 'message': 'Frame generation failed', 'error': error_message}, status=500)
+    
+def save_frame_to_database(video, frame_folder_sub, frame_folder_main, total_frames_main_undetect, total_frames_sub_undetect):
+    uploadtime = video.upload_time.strftime('%Y%m%d%H%M%S') 
+    filename_without_extension = os.path.splitext(video.file_name)[0]
+    folder_name = f"{filename_without_extension}-{video.uploader.username}-{uploadtime}"
 
     base_media_path = os.path.join(settings.MEDIA_ROOT)
+    frame_folder = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name)
     frame_folder_rel = os.path.relpath(frame_folder, base_media_path)
-    frame_folder_4_rel = os.path.relpath(frame_folder_4, base_media_path)
-    frame_folder_60_rel = os.path.relpath(frame_folder_60, base_media_path)
+    frame_folder_sub_rel = os.path.relpath(frame_folder_sub, base_media_path)
+    frame_folder_main_rel = os.path.relpath(frame_folder_main, base_media_path)
 
-    video_frames.has_frames_60 = total_frames_60 > 0
-    video_frames.has_frames_4 = total_frames_4 > 0
-    video_frames.total_frames_60 = total_frames_60
-    video_frames.total_frames_4 = total_frames_4
-    video_frames.video_frames_total = total_frames_60 + total_frames_4
+    video_frames, _ = VideoFrames.objects.get_or_create(video=video)
+    video_frames.total_frames_main_undetect = total_frames_main_undetect
+    video_frames.total_frames_sub_undetect = total_frames_sub_undetect
+    video_frames.video_frames_total = total_frames_main_undetect + total_frames_sub_undetect
     video_frames.frame_folder_path = frame_folder_rel
-    video_frames.frame_folder_path_4 = frame_folder_4_rel
-    video_frames.frame_folder_path_60 = frame_folder_60_rel
+    video_frames.frame_folder_path_sub = frame_folder_sub_rel
+    video_frames.frame_folder_path_main = frame_folder_main_rel
     video_frames.save()
-    cap.release()
+    print(f"Databse created for video {video.file_name} with frame info.")
+
+def updateVideoFrames(video, main_detected, sub_detected):
+    video_frames, _ = VideoFrames.objects.get_or_create(video=video)
+    video_frames.total_frames_main += main_detected
+    video_frames.total_frames_sub += sub_detected
+    video_frames.has_frames_main = video_frames.total_frames_main > 0
+    video_frames.has_frames_sub = video_frames.total_frames_sub > 0
+    video_frames.save()
+    print(f"Databse updated for video {video.file_name} with frame info.")
+
+def detection(video, frame_folder_main, frame_folder_sub, image_path_tmp):
+    # temp folder for frames
+    video_frames, created = VideoFrames.objects.get_or_create(video=video)
+    frame_folder = os.path.join(settings.MEDIA_ROOT, video_frames.frame_folder_path)
+    frame_folder_tmp = os.path.join(frame_folder, 'temp')
+    os.makedirs(frame_folder_tmp, exist_ok=True)
+
+    # load the image
+    image = cv2.imread(image_path_tmp)
+    img_name = os.path.basename(image_path_tmp)
+    count_main = 0
+    count_sub = 0
+    # use the model to detect objects in the image
+    results = model(image)
+        
+    def extractFrameIndexFromPath(image_path):
+        match = re.search(r'_(\d+)\.jpg', image_path)
+        if match:
+            frame_index = int(match.group(1))
+            return frame_index
+        else:
+            return 0
+    
+    # get the bounding boxes and probabilities
+    for result in results:  # as result could have multiple dimensions on data, get all posible results
+        box_tensor = result.boxes.xyxy.numpy() # bounding boxes of instrument tip, transformed from tensor to numpy array
+        probs_tensor = result.boxes.conf.numpy() # classification probabilities, transformed from tensor to numpy 
+        obj_num = result.boxes.cls.numpy() # object names
+
+        names = {0: 'tip', 1: 'claw', 2: 'canula'}
+        obj_names = [names.get(num, 'unknown') for num in obj_num]
+
+        # see if any objects were detected
+        if not box_tensor.any() or not probs_tensor.any():
+            print(f'No objects detected in {img_name}')
+            return False
+        
+        # 在原始图像上绘制边界框和标注概率
+        for i in range(len(box_tensor)):
+            # 获取边界框的坐标
+            x1, y1, x2, y2 = box_tensor[i]
+            confidence = probs_tensor[i]
+            name = obj_names[i]
+            if confidence > 0.5:
+                # 计算文本位置
+                text_loc_name = (int(x1), int(y1) - 35)
+                text_loc_conf = (int(x1), int(y1) - 5)
+                # 获取文本尺寸
+                text_siz_name = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                text_siz_conf = cv2.getTextSize(f'{confidence:.2f}', cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                # 计算背景矩形的尺寸
+                bg_siz_name = (text_siz_name[0] + 10, text_siz_name[1] + 10)
+                bg_siz_conf = (text_siz_conf[0] + 10, text_siz_conf[1] + 10)
+                
+                # 在图像上绘制边界框
+                cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (20, 255, 30), 2)
+                # 绘制文字背景
+                bg_color = (30, 50, 150)  # 背景颜色
+                alpha = 0.8  # 设置透明度
+                overlay = image.copy()
+                cv2.rectangle(overlay, (text_loc_name[0], text_loc_name[1] - text_siz_name[1]), 
+                            (text_loc_name[0] + bg_siz_name[0], text_loc_name[1]), bg_color, -1)
+                cv2.rectangle(overlay, (text_loc_conf[0], text_loc_conf[1] - text_siz_conf[1]), 
+                            (text_loc_conf[0] + bg_siz_conf[0], text_loc_conf[1]), bg_color, -1)
+                cv2.addWeighted(overlay, alpha, image, 1 - alpha, 0, image)
+                
+                # 在图像上标注对象名称和概率
+                cv2.putText(image, f'{name}', text_loc_name, cv2.FONT_HERSHEY_SIMPLEX, 1, (20, 255, 30), 2)
+                cv2.putText(image, f'{confidence:.2f}', text_loc_conf, cv2.FONT_HERSHEY_SIMPLEX, 1, (20, 255, 30), 2)
+
+                # 保存带有边界框和标注的图像
+                frame_number = extractFrameIndexFromPath(image_path_tmp)
+                if frame_number % 5 == 0: # here would need to be changed if the frame number gap is not 5
+                    frame_path_main = os.path.join(frame_folder_main, f'frame_main_{frame_number}.jpg')
+                    cv2.imwrite(frame_path_main, image, [cv2.IMWRITE_JPEG_QUALITY, 100])
+                    count_main += 1
+                else:
+                    frame_path_sub = os.path.join(frame_folder_sub, f'frame_sub_{frame_number}.jpg')
+                    cv2.imwrite(frame_path_sub, image, [cv2.IMWRITE_JPEG_QUALITY, 100])
+                    count_sub += 1
+
+                print(f'{count_main} frames of main saved.\n{count_sub} frames of sub saved.\n')
+                updateVideoFrames(video, count_main, count_sub)
+            else:
+                continue
+    return True
 
 def annotate_frames(request, video_id, frame_type, frame_number, rank):
     video = get_object_or_404(Video, pk=video_id)
@@ -215,7 +361,7 @@ def annotate_frames(request, video_id, frame_type, frame_number, rank):
     frame_number = frame_number
     rank = rank
 
-    if rank == 'Clear':
+    if rank == 'Delete':
         # If rank is empty, delete the corresponding FrameAnnotations entry
         try:
             frame_annotation = FrameAnnotations.objects.get(

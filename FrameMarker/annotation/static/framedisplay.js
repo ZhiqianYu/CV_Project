@@ -1,21 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
     const videoPlayerContainer = document.querySelector('.video-player');
     const frameElements60 = document.querySelectorAll('.frames-60 img');
-    const frameElements4 = document.querySelectorAll('.frames-4 img');
     const videoIdContainer = document.getElementById('video-id-container');
     
     // 鼠标悬浮状态保持
     const frameContainers60 = document.querySelectorAll('.frames-60');
-    const frameContainers4 = document.querySelectorAll('.frames-4');
 
     // 所选帧的信息更新到页面
     const choosedFrameNumberElement = document.getElementById('choosed-frame-number');
     const choosedFrameTypElement = document.getElementById('choosed-frame-type');
-    const choosedFrameElement = document.querySelector('.choosed-frame');
     
-    // 进度条更新到页面
-    const progressIndicator = document.getElementById('progressIndicator');
-    const currentFrameElement = document.getElementById('current-Frame');
+    // show reuse rank button
     const totalFramesElement = document.getElementById('max_frame_number');
 
     // 视频播放器按钮
@@ -52,20 +47,15 @@ document.addEventListener('DOMContentLoaded', function () {
         choosedFrameTypElement.textContent = selectedFrameTyp;
 
         // Save frame type to a custom attribute in an element
-        updateProgressBar();
+        reUseBtn();
         updateVideoPlayer(framePath);
     }
 
-    function updateProgressBar() {
+    function reUseBtn() {
         if (isFrameSelected) {
-            const percentage = (selectedFrameNumber / totalFrames) * 100;
-            progressIndicator.style.width = percentage + '%';
-            currentFrameElement.textContent = selectedFrameNumber;
             // Show the current-position element
             toggleCurrentPositionReuseBtnVisibility(true);
         } else {
-            progressIndicator.style.width = '0%';
-            currentFrameElement.textContent = 'Not selected';
             // Hide the current-position element
             toggleCurrentPositionReuseBtnVisibility(false);
         }
@@ -100,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.extractFrameIndexFromPath = function(framePath) {
         // Extract the last number after the last underscore in the frame filename
-        const matches = framePath.match(/_(\d+)\.png/);
+        const matches = framePath.match(/_(\d+)\.jpg/);
         if (matches && matches[1]) {
             return parseInt(matches[1]);
         }
@@ -108,9 +98,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.extractFrameTypeFromPath = function(framePath) {
-        const matches = framePath.match(/\/(\d+)\/frame_(\w+)_\d+(_\d+)?\.png/);
-        if (matches && matches[2]) {
-            return matches[2];
+        const matches = framePath.match(/frame_(.*?)_\d+(_\d+)?\.jpg/);
+        if (matches && matches.length > 1) {
+            const type = matches[1];
+            return type;
         }
         return '';  // Default to empty string if no match
     }
@@ -119,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Extract the base path for 4-frame paths from the 60-frame path
         const basePath0 = framePath.substring(0, framePath.lastIndexOf('/'));
         const basePath = framePath.substring(0, basePath0.lastIndexOf('/'));
-        return `${basePath}/4`;
+        return `${basePath}/sub`;
     }
 
     window.fetchAndLoad4Frames = function(selectedFrameIndex) {
@@ -131,8 +122,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function simulateFetching4Frames(selectedFrameIndex) {
         // Fetching 4-frame paths from the server based on the selected 60-frame index
         const framePaths4 = [];
-        for (let i = selectedFrameIndex + 4; i < selectedFrameIndex + 60 && i < totalFrames; i += 4) {
-            const framePath4 = `${extract4PathFrom60Path(frameElements60[0].src)}/frame_4_${i}.png`;
+        for (let i = selectedFrameIndex +1; i < selectedFrameIndex + 5 && i < totalFrames; i += 1) {
+            const framePath4 = `${extract4PathFrom60Path(frameElements60[0].src)}/frame_sub_${i}.jpg`;
             framePaths4.push(framePath4);
         }
         return framePaths4;
@@ -140,56 +131,77 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function updateFramesContainer4(framePaths4) {
         // Get the current video ID from html element
-        currentVideoId = videoIdContainer.getAttribute('data-video-id');
-
+        const currentVideoId = videoIdContainer.getAttribute('data-video-id');
+    
         // Clear the existing content in the 4-frames container
         framesContainer4.innerHTML = '';
-    
+        
         // Append the fetched 4-frame paths to the 4-frames container
+        let subframeExists = false;
         for (const framePath4 of framePaths4) {
-            const frameElement4 = document.createElement('div');
-            frameElement4.classList.add('frames-4');
-
-            // Extract frame type and frame number from frame path
-            const frameType = extractFrameTypeFromPath(framePath4);
             const frameNumber = extractFrameIndexFromPath(framePath4);
-
-            // create sub img element
-            const imgElement4 = document.createElement('img');
-            imgElement4.src = framePath4;
-            imgElement4.alt = 'Sub Frame Image wait for loading...';
-            frameElement4.appendChild(imgElement4);
-            
-            // creat overlay top
-            const overlayTopElement = document.createElement('div');
-            overlayTopElement.classList.add('sub-overlay-a-top');
-            const overlayInfoElement = document.createElement('span');
-            overlayInfoElement.classList.add('sub-anno-info');
-            overlayInfoElement.id = `sub-overlay-info-anno-${frameNumber}`; 
-            overlayTopElement.appendChild(overlayInfoElement);
-
-            const overlayRankElement = document.createElement('span');
-            overlayRankElement.classList.add('sub-anno-rank');
-            overlayRankElement.id = `sub-overlay-info-rank-${frameNumber}`; 
-            overlayTopElement.appendChild(overlayRankElement);
-            frameElement4.appendChild(overlayTopElement);
-
-            // create overlay bot
-            const overlayBotElement = document.createElement('div');
-            overlayBotElement.classList.add('sub-overlay-a-bot');
-            const overlayNumElement = document.createElement('span');
-            overlayNumElement.classList.add('sub-anno-num');
-            overlayNumElement.innerHTML = frameNumber; 
-            overlayBotElement.appendChild(overlayNumElement);
-            frameElement4.appendChild(overlayBotElement);
-
-            framesContainer4.appendChild(frameElement4);
-
-            // Fetch overlay information for the frame
-            await fetchAndLoadSubOverlayInfo(currentVideoId, frameType, frameNumber);
+    
+            // Check if the subframe image exists before creating elements
+            const subframeImgExists = await checkIfSubframeImgExists(framePath4);
+    
+            if (subframeImgExists) {
+                subframeExists = true;
+                
+                const frameElement4 = document.createElement('div');
+                frameElement4.classList.add('frames-4');
+                
+                // Extract frame type and frame number from frame path
+                const frameType = extractFrameTypeFromPath(framePath4);
+                const frameNumber = extractFrameIndexFromPath(framePath4);
+                // create sub img element
+                const imgElement4 = document.createElement('img');
+                imgElement4.src = framePath4;
+                imgElement4.alt = 'Sub frame has no object';
+                frameElement4.appendChild(imgElement4);
+                
+                // creat overlay top
+                const overlayTopElement = document.createElement('div');
+                overlayTopElement.classList.add('sub-overlay-a-top');
+                const overlayInfoElement = document.createElement('span');
+                overlayInfoElement.classList.add('sub-anno-info');
+                overlayInfoElement.id = `sub-overlay-info-anno-${frameNumber}`; 
+                overlayTopElement.appendChild(overlayInfoElement);
+    
+                const overlayRankElement = document.createElement('span');
+                overlayRankElement.classList.add('sub-anno-rank');
+                overlayRankElement.id = `sub-overlay-info-rank-${frameNumber}`; 
+                overlayTopElement.appendChild(overlayRankElement);
+                frameElement4.appendChild(overlayTopElement);
+    
+                // create overlay bot
+                const overlayBotElement = document.createElement('div');
+                overlayBotElement.classList.add('sub-overlay-a-bot');
+                const overlayNumElement = document.createElement('span');
+                overlayNumElement.classList.add('sub-anno-num');
+                overlayNumElement.innerHTML = frameNumber; 
+                overlayBotElement.appendChild(overlayNumElement);
+                frameElement4.appendChild(overlayBotElement);
+                framesContainer4.appendChild(frameElement4);
+                // Fetch overlay information for the frame
+                await fetchAndLoadSubOverlayInfo(currentVideoId, frameType, frameNumber);
+            }
         }
         attachedEventListenersTo4Frames();
     }
+    
+    async function checkIfSubframeImgExists(framePath) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = function() {
+                resolve(true);
+            };
+            img.onerror = function() {
+                resolve(false);
+            };
+            img.src = framePath;
+        });
+    }
+    
 
     window.fetchAndLoadSubOverlayInfo = async function(videoId, frameType, frameNumber) {
         try {
@@ -224,11 +236,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const framePath = frameElement.src;
             isFrameSelected = true;
             displaySelectedFrame(framePath);
-
             const selectedFrameIndex = extractFrameIndexFromPath(framePath);
             fetchAndLoad4Frames(selectedFrameIndex);
             // 在这里调用 onFrames60Click 函数
-            onFrames60Click(selectedFrameIndex);
+            onFrames60Click(frameElement);
         });
     });
 
