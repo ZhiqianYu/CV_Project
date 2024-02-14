@@ -124,11 +124,10 @@ def generate_frames(request, video_id):
 
     if not (video_frames.filter(has_frames_60=True).exists() and video_frames.filter(has_frames_4=True).exists()):
         print("Frames not found or not all frames are generated. Generating frames...")
-        uploadtime = video.upload_time.strftime('%Y%m%d%H%M%S') 
         
         try:
             # Call the separate function for frame generation
-            generate_frames_for_video(video, uploadtime)
+            generate_frames_for_video(video)
             return JsonResponse({'status': 'success', 'total_frames': total_frames})
         except Exception as e:
             error_message = str(e)
@@ -145,8 +144,9 @@ def calculate_max_frame_number(video):
     cap.release()
     return max_frame_number
 
-def generate_frames_for_video(video, uploadtime, num_threads=8):
+def generate_frames_for_video(video, num_threads=8):
     video_file_path = os.path.join(settings.MEDIA_ROOT, str(video.video_file))
+    uploadtime = video.upload_time.strftime('%Y%m%d%H%M%S') 
     filename_without_extension = os.path.splitext(video.file_name)[0]
     folder_name = f"{filename_without_extension}-{video.uploader.username}-{uploadtime}"
 
@@ -176,7 +176,7 @@ def generate_frames_for_video(video, uploadtime, num_threads=8):
                 cv2.imwrite(frame_path, frame_img)
                 total_frames_4 += 1
         
-        frame_queue = Queue(maxsize=500) # Queue for storing frames to be processed, larger than batch size
+        frame_queue = Queue(maxsize=batch_size*0.25*num_threads) # Queue for storing frames to be processed, larger than batch size
         def read_and_process_frames():
             while True:
                 frame_number, frame_img = frame_queue.get()  # get frame from the queue
@@ -205,30 +205,38 @@ def generate_frames_for_video(video, uploadtime, num_threads=8):
                 frame_queue.put(frame_data)
             if not ret:
                 break
-            print(f"Total frames sub saved: {total_frames_4}.\nTotal frames main saved: {total_frames_60}.\nTotal frames read: {frame_number}.")
+            print(f"Total frames file main saved: {total_frames_60}.\nTotal frames file sub saved: {total_frames_4}.\nTotal frames file read: {frame_number}.")
         # Wait for all frames to be processed
         frame_queue.join()
         cap.release()
-                
-
-        base_media_path = os.path.join(settings.MEDIA_ROOT)
-        frame_folder_rel = os.path.relpath(frame_folder, base_media_path)
-        frame_folder_4_rel = os.path.relpath(frame_folder_4, base_media_path)
-        frame_folder_60_rel = os.path.relpath(frame_folder_60, base_media_path)
-
-        video_frames.has_frames_60 = total_frames_60 > 0
-        video_frames.has_frames_4 = total_frames_4 > 0
-        video_frames.total_frames_60 = total_frames_60
-        video_frames.total_frames_4 = total_frames_4
-        video_frames.video_frames_total = total_frames_60 + total_frames_4
-        video_frames.frame_folder_path = frame_folder_rel
-        video_frames.frame_folder_path_4 = frame_folder_4_rel
-        video_frames.frame_folder_path_60 = frame_folder_60_rel
-        video_frames.save()
+        save_frame_to_database(video, frame_folder_4, frame_folder_60, total_frames_60, total_frames_4)
     except Exception as e:
         error_message = str(e)
         print(f"Frame generation failed: {error_message}")
         return JsonResponse({'status': 'error', 'message': 'Frame generation failed', 'error': error_message}, status=500)
+    
+def save_frame_to_database(video, frame_folder_4, frame_folder_60, total_frames_60, total_frames_4):
+    uploadtime = video.upload_time.strftime('%Y%m%d%H%M%S') 
+    filename_without_extension = os.path.splitext(video.file_name)[0]
+    folder_name = f"{filename_without_extension}-{video.uploader.username}-{uploadtime}"
+
+    base_media_path = os.path.join(settings.MEDIA_ROOT)
+    frame_folder = os.path.join(settings.MEDIA_ROOT, 'Frames', folder_name)
+    frame_folder_rel = os.path.relpath(frame_folder, base_media_path)
+    frame_folder_4_rel = os.path.relpath(frame_folder_4, base_media_path)
+    frame_folder_60_rel = os.path.relpath(frame_folder_60, base_media_path)
+
+    video_frames, _ = VideoFrames.objects.get_or_create(video=video)
+    video_frames.has_frames_60 = total_frames_60 > 0
+    video_frames.has_frames_4 = total_frames_4 > 0
+    video_frames.total_frames_60 = total_frames_60
+    video_frames.total_frames_4 = total_frames_4
+    video_frames.video_frames_total = total_frames_60 + total_frames_4
+    video_frames.frame_folder_path = frame_folder_rel
+    video_frames.frame_folder_path_4 = frame_folder_4_rel
+    video_frames.frame_folder_path_60 = frame_folder_60_rel
+    video_frames.save()
+    print(f"Databse updated for video {video.file_name} with frame info.")
 
 def annotate_frames(request, video_id, frame_type, frame_number, rank):
     video = get_object_or_404(Video, pk=video_id)
