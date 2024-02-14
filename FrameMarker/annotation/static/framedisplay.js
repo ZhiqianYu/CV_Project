@@ -108,9 +108,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.extractFrameTypeFromPath = function(framePath) {
-        const matches = framePath.match(/\/(\d+)\/frame_(\w+)_\d+(_\d+)?\.jpg/);
-        if (matches && matches[2]) {
-            return matches[2];
+        const matches = framePath.match(/frame_(.*?)_\d+(_\d+)?\.jpg/);
+        if (matches && matches.length > 1) {
+            const type = matches[1];
+            return type;
         }
         return '';  // Default to empty string if no match
     }
@@ -119,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Extract the base path for 4-frame paths from the 60-frame path
         const basePath0 = framePath.substring(0, framePath.lastIndexOf('/'));
         const basePath = framePath.substring(0, basePath0.lastIndexOf('/'));
-        return `${basePath}/4`;
+        return `${basePath}/sub`;
     }
 
     window.fetchAndLoad4Frames = function(selectedFrameIndex) {
@@ -131,8 +132,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function simulateFetching4Frames(selectedFrameIndex) {
         // Fetching 4-frame paths from the server based on the selected 60-frame index
         const framePaths4 = [];
-        for (let i = selectedFrameIndex + 1; i < selectedFrameIndex + 5 && i < totalFrames; i += 1) {
-            const framePath4 = `${extract4PathFrom60Path(frameElements60[0].src)}/frame_4_${i}.jpg`;
+        for (let i = selectedFrameIndex +1; i < selectedFrameIndex + 5 && i < totalFrames; i += 1) {
+            const framePath4 = `${extract4PathFrom60Path(frameElements60[0].src)}/frame_sub_${i}.jpg`;
             framePaths4.push(framePath4);
         }
         return framePaths4;
@@ -157,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // create sub img element
             const imgElement4 = document.createElement('img');
             imgElement4.src = framePath4;
-            imgElement4.alt = 'Sub Frame Image wait for loading...';
+            imgElement4.alt = 'Sub frame has no object';
             frameElement4.appendChild(imgElement4);
             
             // creat overlay top
@@ -224,11 +225,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const framePath = frameElement.src;
             isFrameSelected = true;
             displaySelectedFrame(framePath);
-
             const selectedFrameIndex = extractFrameIndexFromPath(framePath);
             fetchAndLoad4Frames(selectedFrameIndex);
             // 在这里调用 onFrames60Click 函数
-            onFrames60Click(selectedFrameIndex);
+            onFrames60Click(frameElement);
         });
     });
 

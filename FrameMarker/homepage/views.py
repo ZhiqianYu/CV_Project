@@ -239,22 +239,25 @@ def generate_preview(video_path, preview_path):
     video.release()
 
 def get_gpu_name():
-    gpus = GPUtil.getGPUs()
-    if len(gpus) == 0:
-        return "No GPU found."
-    else:
-        max_memory = 0
-        max_memory_gpu = None
-        for gpu in gpus:
-            if gpu.memoryTotal > max_memory:
-                max_memory = gpu.memoryTotal
-                max_memory_gpu = gpu
-
-        if max_memory_gpu is None:
+    try:
+        gpus = GPUtil.getGPUs()
+        if len(gpus) == 0:
             return "No GPU found."
         else:
-            gpu_name = max_memory_gpu.name
-            return gpu_name
+            max_memory = 0
+            max_memory_gpu = None
+            for gpu in gpus:
+                if gpu.memoryTotal > max_memory:
+                    max_memory = gpu.memoryTotal
+                    max_memory_gpu = gpu
+
+            if max_memory_gpu is None:
+                return "No GPU found."
+            else:
+                gpu_name = max_memory_gpu.name
+                return gpu_name
+    except Exception as e:
+        return f"Error occurred: {str(e)}"
 
 def choose_encoder(gpu_name):
     print('GPU Type:', gpu_name)

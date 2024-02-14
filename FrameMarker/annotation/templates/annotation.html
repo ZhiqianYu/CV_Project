@@ -86,26 +86,28 @@
                     {% for frame_info in frame_paths_60 %}
                         <div class="frames-60" >
                             <img src="{{ MEDIA_URL }}{{ frame_info.frame_path }}" alt="frame">
-                            <div class="overlay-a-top">
-                                    <span class="anno-info" id="overlay-info-anno">
-                                        {% if frame_info.annotation.is_annotated == True %}
-                                            ✅
-                                        {% else %}
-                                            ⚠️
-                                        {% endif %}
+                            <div class="overlay-{{frame_info.frame_number}}">
+                                <div class="overlay-a-top">
+                                        <span class="anno-info" id="overlay-info-anno">
+                                            {% if frame_info.annotation.is_annotated == True %}
+                                                ✅
+                                            {% else %}
+                                                ⚠️
+                                            {% endif %}
+                                        </span>
+                                        <span>&nbsp;&nbsp;</span>
+                                        <span class="anno-rank" id="overlay-info-rank">
+                                            {% if frame_info.annotation.rank == null %}
+                                            {% else %}
+                                                {{ frame_info.annotation.rank }}
+                                            {% endif %}
+                                        </span>
+                                </div>
+                                <div class="overlay-a-bot">
+                                    <span class="anno-num">
+                                        <p>{{ frame_info.frame_number }}</p>
                                     </span>
-                                    <span>&nbsp;&nbsp;</span>
-                                    <span class="anno-rank" id="overlay-info-rank">
-                                        {% if frame_info.annotation.rank == null %}
-                                        {% else %}
-                                            {{ frame_info.annotation.rank }}
-                                        {% endif %}
-                                    </span>
-                            </div>
-                            <div class="overlay-a-bot">
-                                <span class="anno-num">
-                                    <p>{{ frame_info.frame_number }}</p>
-                                </span>
+                                </div>
                             </div>
                         </div>
                     {% endfor %}

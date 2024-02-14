@@ -8,10 +8,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const setSameRankBtn = document.getElementById('set-Same-Rank-Btn');
 
     let currentRating = null;
-    let currentFrameType = null;
     let currentVideoId = null;
+
+    // 定义一个标志来跟踪事件监听器是否已经被绑定
+    let isEventListenersBound = false;
     
-    window.rateFrame = async function(rating) {
+    async function rateFrame(rating) {
         // Update current selection and video id
         currentRating = rating;
         currentVideoId = videoIdContainer.getAttribute('data-video-id');
@@ -65,9 +67,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Fetch updated overlay content after rating, only if the rating action was successful
             if (data.status === 'success') {
-                if (frameType === '60') {
-                    await updateOverlayInformation();
-                } else if (frameType === '4') {
+                if (frameType === 'main') {
+                    await updateOverlayInformation(frameNumber);
+                } else if (frameType === 'sub') {
                     await fetchAndLoadSubOverlayInfo(currentVideoId, frameType, frameNumber);
                 }
             }
@@ -76,15 +78,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    async function updateOverlayInformation() {
-        await fetchUpdatedOverlayData();
+    async function updateOverlayInformation(frameNumber) {
+        await fetchUpdatedOverlayData(frameNumber);
     }
 
-    async function fetchUpdatedOverlayData() {
+    async function fetchUpdatedOverlayData(frameNumber) {
         // Fetch updated overlay data from the server
         const currentVideoId = videoIdContainer.getAttribute('data-video-id');
+        const currentFrameType = frameTypeElement.textContent.trim();
         try {
-            const response = await fetch(`/update_overlay/${currentVideoId}/`, {
+            const response = await fetch(`/update_overlay/${currentVideoId}/${currentFrameType}/${frameNumber}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -98,40 +101,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const data = await response.json();
             // Handle the updated data and update overlay content
-            updateOverlayContent(data.frame_info_list);
+            updateOverlayContent(data.frame_info);
         } catch (error) {
             console.error('Error fetching updated data:', error);
         }
     }
 
-    function updateOverlayContent(FrameInfoList) {
+    function updateOverlayContent(FrameInfo) {
         // Update overlay-a-top content based on the fetched data
-        const overlayATopElements = document.querySelectorAll('.overlay-a-top');
+        
+        // Get the frame number from FrameInfo
+        const frameNumber = FrameInfo.frame_number;
     
-        overlayATopElements.forEach(function (overlayATopElement, index) {
-            const FrameInfo = FrameInfoList[index];
+        // Select the overlay element based on the frame number
+        const overlayATopElement = document.querySelector(`.overlay-${frameNumber} .overlay-a-top`);
+        if (!overlayATopElement) {
+            console.error(`Overlay element not found for frame number ${frameNumber}`);
+            return;
+        }
     
-            // Find child elements within overlay-a-top
-            const annoInfoElement = overlayATopElement.querySelector('.anno-info');
-            const annoRankElement = overlayATopElement.querySelector('.anno-rank');
+        // Find child elements within overlay-a-top
+        const annoInfoElement = overlayATopElement.querySelector('.anno-info');
+        const annoRankElement = overlayATopElement.querySelector('.anno-rank');
     
-            // Update content based on FrameInfo properties
-            if (FrameInfo) {
-                if (FrameInfo.annotation) {
-                    // Update annotation information
-                    annoInfoElement.innerHTML = FrameInfo.annotation.is_annotated ? '✅' : '⚠️';
-                    annoRankElement.innerHTML = FrameInfo.annotation.rank ? FrameInfo.annotation.rank : '';
-                } else {
-                    // Handle the case when there is no annotation
-                    annoInfoElement.innerHTML = '';
-                    annoRankElement.innerHTML = '';
-                }
-            } else {
-                // Handle the case when FrameInfo is not available
-                annoInfoElement.innerHTML = '';
-                annoRankElement.innerHTML = '';
-            }
-        });
+        // Update content based on FrameInfo properties
+        if (FrameInfo.annotation) {
+            // Update annotation information
+            annoInfoElement.innerHTML = FrameInfo.annotation.is_annotated ? '✅' : '⚠️';
+            annoRankElement.innerHTML = FrameInfo.annotation.rank ? FrameInfo.annotation.rank : '';
+        } else {
+            // Handle the case when there is no annotation
+            annoInfoElement.innerHTML = '';
+            annoRankElement.innerHTML = '';
+        }
     }
 
     function setSameRankForSubframes() {
@@ -146,15 +148,15 @@ document.addEventListener('DOMContentLoaded', function () {
             // Get the frame type
             const frameType = frameTypeElement.textContent.trim();
     
-            // Check if the chosen frame is a 60 frame
-            if (frameType === '60') {
+            // Check if the chosen frame is a main frame
+            if (frameType === 'main') {
                 // Get the frame number
                 const frameNumber = parseInt(frameNumberElement.textContent.trim());
     
-                // Get all 4-frame elements
+                // Get all sub-frame elements
                 const frameElements4 = document.querySelectorAll('.frames-4 img');
 
-                // Loop through each 4-frame element and set the same rating
+                // Loop through each sub-frame element and set the same rating
                 frameElements4.forEach(function (frameElement4) {
                     const framePath4 = frameElement4.src;
                     const frameNumber4 = extractFrameIndexFromPath(framePath4);
