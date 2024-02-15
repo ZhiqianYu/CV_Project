@@ -64,7 +64,7 @@
             <label for="order">Order:</label>
             <select name="order">
                 <option value="asc" {% if request.GET.order_by == 'asc' %}selected{% endif %}>Ascending</option>
-                <option value="dsc" {% if request.GET.order_by == 'dsc' %}selected{% endif %}>Descending</option>
+                <option value="desc" {% if request.GET.order_by == 'desc' %}selected{% endif %}>Descending</option>
             </select>
 
             <label for="uploader">Uploader:</label>
