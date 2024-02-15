@@ -31,7 +31,8 @@ function generateFrames(videoId) {
                     alert("Frame generation succeeded.");
                     window.location.reload();
                 } else {
-                    console.error("Frame generation failed", xhr.statusText);
+                    alert("Frame generation takes too long: " + xhr.statusText);
+                    window.location.reload();
                 }
             }
         };

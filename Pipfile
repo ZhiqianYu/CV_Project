@@ -4,12 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
+django ~> 5.0.2
 django-debug-toolbar = "*"
 django-extensions = "*"
 pillow = "*"
 opencv-python = "*"
-Pillow = ">=10.2.0"
+Pillow ~> 10.2.0
 ffmpeg-python = "*"
 
 [dev-packages]

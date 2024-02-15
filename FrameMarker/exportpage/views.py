@@ -56,6 +56,7 @@ def exportpagefromselection(request, video_id):
         'video_frames': video_frames,
         'video_name': video.file_name,
         'annotation_progress': annotation_progress,
+        'total_frames_orig': video_frames.total_frames_main_undetect + video_frames.total_frames_sub_undetect,
     }
 
     return render(request, 'exportpage.html', context)
@@ -75,6 +76,7 @@ def exportpagefromannotation(request, video_id):
         'video_frames': video_frames,
         'video_name': video.file_name,
         'annotation_progress': annotation_progress,
+        'total_frames_orig': video_frames.total_frames_main_undetect + video_frames.total_frames_sub_undetect,
     }
 
     return render(request, 'exportpage.html', context)
