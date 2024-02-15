@@ -79,10 +79,11 @@ def annotation(request, video_id):
             annotation = {'is_annotated': False, 'rank': ''}
         frame_info = {'frame_path': frame_path, 'frame_number': frame_number, 'annotation': annotation}
         frame_info_list.append(frame_info)
+    sorted_frame_info_list = sorted(frame_info_list, key=lambda x: x['frame_number'])
 
     return render(request, 'annotation.html', {'video': video, 'filename': filename, 'uploader': uploader, 
                                                'frame_paths_4': frame_paths_sub, 'frame_folder_4': frame_folder_sub,
-                                               'frame_paths_60': frame_info_list, 'frame_folder_60': frame_folder_main,
+                                               'frame_paths_60': sorted_frame_info_list, 'frame_folder_60': frame_folder_main,
                                                'total_frame_files': total_frame_files, 'max_frame_number': max_frame_number,
                                                'annotations': annotations})
 
@@ -270,6 +271,7 @@ def detection(video, frame_folder_main, frame_folder_sub, image_path_tmp):
     img_name = os.path.basename(image_path_tmp)
     count_main = 0
     count_sub = 0
+
     # use the model to detect objects in the image
     results = model(image)
         
@@ -303,30 +305,31 @@ def detection(video, frame_folder_main, frame_folder_sub, image_path_tmp):
             name = obj_names[i]
             if confidence > 0.5:
                 # 计算文本位置
-                text_loc_name = (int(x1), int(y1) - 35)
-                text_loc_conf = (int(x1), int(y1) - 5)
+                text_loc_name = (int(x1) -2, int(y1) - 45)
+                text_loc_conf = (int(x1) -2, int(y1) - 5)
                 # 获取文本尺寸
-                text_siz_name = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
-                text_siz_conf = cv2.getTextSize(f'{confidence:.2f}', cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+                text_siz_name = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1.4, 2)[0]
+                text_siz_conf = cv2.getTextSize(f'{confidence:.2f}', cv2.FONT_HERSHEY_SIMPLEX, 1.4, 2)[0]
                 # 计算背景矩形的尺寸
-                bg_siz_name = (text_siz_name[0] + 10, text_siz_name[1] + 10)
-                bg_siz_conf = (text_siz_conf[0] + 10, text_siz_conf[1] + 10)
+                bg_siz_name = (text_siz_name[0] - 4, text_siz_name[1])
+                bg_siz_conf = (text_siz_conf[0] - 13, text_siz_conf[1])
                 
                 # 在图像上绘制边界框
                 cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (20, 255, 30), 2)
+                
                 # 绘制文字背景
-                bg_color = (30, 50, 150)  # 背景颜色
+                bg_color = (130, 50, 30) 
                 alpha = 0.8  # 设置透明度
                 overlay = image.copy()
                 cv2.rectangle(overlay, (text_loc_name[0], text_loc_name[1] - text_siz_name[1]), 
-                            (text_loc_name[0] + bg_siz_name[0], text_loc_name[1]), bg_color, -1)
+                            (text_loc_name[0] + bg_siz_name[0], text_loc_name[1]+15), bg_color, -1)
                 cv2.rectangle(overlay, (text_loc_conf[0], text_loc_conf[1] - text_siz_conf[1]), 
-                            (text_loc_conf[0] + bg_siz_conf[0], text_loc_conf[1]), bg_color, -1)
+                            (text_loc_conf[0] + bg_siz_conf[0], text_loc_conf[1]+4), bg_color, -1)
                 cv2.addWeighted(overlay, alpha, image, 1 - alpha, 0, image)
                 
                 # 在图像上标注对象名称和概率
-                cv2.putText(image, f'{name}', text_loc_name, cv2.FONT_HERSHEY_SIMPLEX, 1, (20, 255, 30), 2)
-                cv2.putText(image, f'{confidence:.2f}', text_loc_conf, cv2.FONT_HERSHEY_SIMPLEX, 1, (20, 255, 30), 2)
+                cv2.putText(image, f'{name}', text_loc_name, cv2.FONT_HERSHEY_SIMPLEX, 1.2, (20, 255, 30), 2)
+                cv2.putText(image, f'{confidence:.2f}', text_loc_conf, cv2.FONT_HERSHEY_SIMPLEX, 1.2, (20, 255, 30), 2)
 
                 # 保存带有边界框和标注的图像
                 frame_number = extractFrameIndexFromPath(image_path_tmp)

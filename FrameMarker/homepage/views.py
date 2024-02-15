@@ -206,7 +206,12 @@ def video_format_transform(video_path):
                 ffmpeg.input(video_path).output(new_video_path).run()
         except ffmpeg.Error as e:
             print(f'Error during ffmpeg conversion: {e.stderr}')
-            return video_path
+            print('Attempting conversion with automatic codec...')
+            try:
+                ffmpeg.input(video_path).output(new_video_path).run()
+            except ffmpeg.Error as e:
+                print(f'Error during ffmpeg conversion, converted with automatic codec: {e.stderr}')
+                return video_path
 
         # 移动原始文件到old_Video目录
         old_video_dir = os.path.join(settings.MEDIA_ROOT, 'old_Video')
