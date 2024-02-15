@@ -305,14 +305,14 @@ def detection(video, frame_folder_main, frame_folder_sub, image_path_tmp):
             name = obj_names[i]
             if confidence > 0.5:
                 # 计算文本位置
-                text_loc_name = (int(x1), int(y1) - 40)
-                text_loc_conf = (int(x1), int(y1) - 6)
+                text_loc_name = (int(x1) -2, int(y1) - 45)
+                text_loc_conf = (int(x1) -2, int(y1) - 5)
                 # 获取文本尺寸
-                text_siz_name = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1.4, 1)[0]
-                text_siz_conf = cv2.getTextSize(f'{confidence:.2f}', cv2.FONT_HERSHEY_SIMPLEX, 1.4, 1)[0]
+                text_siz_name = cv2.getTextSize(name, cv2.FONT_HERSHEY_SIMPLEX, 1.4, 2)[0]
+                text_siz_conf = cv2.getTextSize(f'{confidence:.2f}', cv2.FONT_HERSHEY_SIMPLEX, 1.4, 2)[0]
                 # 计算背景矩形的尺寸
-                bg_siz_name = (text_siz_name[0] + 10, text_siz_name[1])
-                bg_siz_conf = (text_siz_conf[0] + 10, text_siz_conf[1])
+                bg_siz_name = (text_siz_name[0] - 4, text_siz_name[1])
+                bg_siz_conf = (text_siz_conf[0] - 13, text_siz_conf[1])
                 
                 # 在图像上绘制边界框
                 cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), (20, 255, 30), 2)
@@ -322,9 +322,9 @@ def detection(video, frame_folder_main, frame_folder_sub, image_path_tmp):
                 alpha = 0.8  # 设置透明度
                 overlay = image.copy()
                 cv2.rectangle(overlay, (text_loc_name[0], text_loc_name[1] - text_siz_name[1]), 
-                            (text_loc_name[0] + bg_siz_name[0], text_loc_name[1]), bg_color, -1)
+                            (text_loc_name[0] + bg_siz_name[0], text_loc_name[1]+15), bg_color, -1)
                 cv2.rectangle(overlay, (text_loc_conf[0], text_loc_conf[1] - text_siz_conf[1]), 
-                            (text_loc_conf[0] + bg_siz_conf[0], text_loc_conf[1]), bg_color, -1)
+                            (text_loc_conf[0] + bg_siz_conf[0], text_loc_conf[1]+4), bg_color, -1)
                 cv2.addWeighted(overlay, alpha, image, 1 - alpha, 0, image)
                 
                 # 在图像上标注对象名称和概率
