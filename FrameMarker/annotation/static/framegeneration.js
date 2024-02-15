@@ -28,10 +28,10 @@ function generateFrames(videoId) {
             if (xhr.readyState == 4) {
                 if (xhr.status == 200) {
                     // Frame generation succeeded
-                    alert("Frame generation succeeded.");
+                    alert("Frame generated and objects detected.");
                     window.location.reload();
                 } else {
-                    alert("Frame generation takes too long: " + xhr.statusText);
+                    alert("Frame generation takes too long, try refresh the page: " + xhr.statusText);
                     window.location.reload();
                 }
             }
